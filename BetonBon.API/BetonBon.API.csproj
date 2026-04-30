@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BetonBon.Application\BetonBon.Application.csproj" />
+    <ProjectReference Include="..\BetonBon.Domain\BetonBon.Domain.csproj" />
+    <ProjectReference Include="..\BetonBon.Infrastructure\BetonBon.Infrastructure.csproj" />
+    <ProjectReference Include="..\BetonBon.Shared\BetonBon.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
