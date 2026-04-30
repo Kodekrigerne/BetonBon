@@ -1,1 +1,12 @@
-<Solution />
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path=".env.example" />
+  </Folder>
+  <Project Path="BetonBon.API/BetonBon.API.csproj" Id="447a713d-4305-434d-8408-32f6418c88a6" />
+  <Project Path="BetonBon.Application/BetonBon.Application.csproj" Id="b8b41574-f411-4305-ae61-3fcef0316270" />
+  <Project Path="BetonBon.Client/BetonBon.Client.csproj" Id="e5e869f2-be48-4588-8e91-70e80eb81d7a" />
+  <Project Path="BetonBon.Domain/BetonBon.Domain.csproj" Id="192e2c85-88b2-4156-9311-d4aa802ec022" />
+  <Project Path="BetonBon.Infrastructure/BetonBon.Infrastructure.csproj" Id="92feec80-7951-4254-a73c-81fa8bb2cc54" />
+  <Project Path="BetonBon.Shared/BetonBon.Shared.csproj" Id="4bf7dc81-099f-40b2-936d-7455707d2c08" />
+</Solution>
