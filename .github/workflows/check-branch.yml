@@ -1,0 +1,15 @@
+name: Branch Guard
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify dev as source
+        if: github.head_ref != 'dev'
+        run: |
+          echo "FEJL: Kun merges fra 'dev' er tilladt i 'main'."
+          exit 1
