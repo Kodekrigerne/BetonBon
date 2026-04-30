@@ -1,0 +1,16 @@
+name: Branch Guard
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify dev as source
+        # Denne linje tjekker om destinationen er main OG kilden IKKE er dev
+        if: github.base_ref == 'main' && github.head_ref != 'dev'
+        run: |
+          echo "FEJL: Pull Requests til main må kun komme fra dev."
+          exit 1
