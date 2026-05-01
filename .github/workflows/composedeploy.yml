@@ -1,0 +1,53 @@
+name: Deploy Docker Compose
+
+# Workflowet triggeres, når der pushes til main-branchen, 
+# og KUN hvis der er lavet ændringer i filen 'docker-compose.yml'.
+on:
+  push:
+    branches:
+      - main # Ret dette hvis din default branch hedder f.eks. 'master'
+    paths:
+      - 'docker-compose.prod.yml' # Ret stien, hvis filen ligger i en undermappe, f.eks. 'app/docker-compose.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+
+      - name: 1. Stop eksisterende containere (docker compose down)
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            # Gå til mappen på din VPS, hvor din docker-compose fil ligger
+            cd /root/betonbon
+            
+            # Vi tjekker om filen eksisterer for at undgå fejl ved allerførste deploy
+            if [ -f "docker-compose.prod.yml" ]; then
+              docker compose -f docker-compose.prod.yml down
+            fi
+
+      - name: 2. Overfør ny docker-compose.yml til VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_PASSWORD}}
+          source: "docker-compose.prod.yml"
+          target: "/root/betonbon"
+
+      - name: 3. Start nye containere (docker compose up)
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd /root/betonbon
+            # Vi kører med -d (detached) så workflowet ikke hænger og venter på log-output
+            docker compose -f docker-compose.prod.yml up -d
