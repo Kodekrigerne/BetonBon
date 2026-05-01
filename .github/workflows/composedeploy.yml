@@ -9,6 +9,7 @@ on:
     paths:
       - 'docker-compose.prod.yml' # Ret stien, hvis filen ligger i en undermappe, f.eks. 'app/docker-compose.yml'
 
+# Jobs to run
 jobs:
   deploy:
     runs-on: ubuntu-latest
