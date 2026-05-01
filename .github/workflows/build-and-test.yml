@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
 
@@ -37,10 +37,19 @@ jobs:
         run: dotnet build BetonBon.Infrastructure.Tests --no-restore
 
       - name: Run tests (Domain)
-        run: dotnet test BetonBon.Domain.Tests --no-build --logger:"console;verbosity=normal"
+        run: dotnet test BetonBon.Domain.Tests --no-build --configuration Release --logger trx --results-directory TestResults
 
       - name: Run tests (Application)
-        run: dotnet test BetonBon.Application.Tests --no-build --logger:"console;verbosity=normal"
+        run: dotnet test BetonBon.Application.Tests --no-build --configuration Release --logger trx --results-directory TestResults
 
       - name: Run tests (Infrastructure)
-        run: dotnet test BetonBon.Infrastructure.Tests --no-build --logger:"console;verbosity=normal"
+        run: dotnet test BetonBon.Infrastructure.Tests --no-build --configuration Release --logger trx --results-directory TestResults
+
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v3
+        if: always()
+        with:
+          name: Test Results
+          path: TestResults/*.trx
+          reporter: dotnet-trx
