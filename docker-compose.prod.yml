@@ -11,6 +11,7 @@ services:
       # Add any other Stream port you want to expose
       # - '21:21' # FTP
 
+    # Env variables
     environment:
       TZ: "Australia/Brisbane"
 
