@@ -1,0 +1,46 @@
+name: Pull Request Tests
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore dependencies (Domain)
+        run: dotnet restore BetonBon.Domain.Tests
+
+      - name: Restore dependencies (Application)
+        run: dotnet restore BetonBon.Application.Tests
+
+      - name: Restore dependencies (Infrastructure)
+        run: dotnet restore BetonBon.Infrastructure.Tests
+
+      - name: Build (Domain)
+        run: dotnet build BetonBon.Domain.Tests --no-restore
+
+      - name: Build (Application)
+        run: dotnet build BetonBon.Application.Tests --no-restore
+
+      - name: Build (Infrastructure)
+        run: dotnet build BetonBon.Infrastructure.Tests --no-restore
+
+      - name: Run tests (Domain)
+        run: dotnet test BetonBon.Domain.Tests --no-build --logger:"console;verbosity=normal"
+
+      - name: Run tests (Application)
+        run: dotnet test BetonBon.Application.Tests --no-build --logger:"console;verbosity=normal"
+
+      - name: Run tests (Infrastructure)
+        run: dotnet test BetonBon.Infrastructure.Tests --no-build --logger:"console;verbosity=normal"
