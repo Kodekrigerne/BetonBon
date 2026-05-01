@@ -3,6 +3,11 @@
     <File Path=".env" />
     <File Path=".env.example" />
   </Folder>
+  <Folder Name="/Testing/">
+    <Project Path="BetonBon.Application.Tests/BetonBon.Application.Tests.csproj" Id="75c6a9b7-3648-4964-9a3e-67d6c87744a8" />
+    <Project Path="BetonBon.Domain.Tests/BetonBon.Domain.Tests.csproj" Id="75430e88-fb2f-44f6-ab8a-244b136a01bd" />
+    <Project Path="BetonBon.Infrastructure.Tests/BetonBon.Infrastructure.Tests.csproj" Id="1bfce4c2-2f20-4a0c-af09-e952493f02ff" />
+  </Folder>
   <Project Path="BetonBon.API/BetonBon.API.csproj" Id="447a713d-4305-434d-8408-32f6418c88a6" />
   <Project Path="BetonBon.Application/BetonBon.Application.csproj" Id="b8b41574-f411-4305-ae61-3fcef0316270" />
   <Project Path="BetonBon.Client/BetonBon.Client.csproj" Id="e5e869f2-be48-4588-8e91-70e80eb81d7a" />
