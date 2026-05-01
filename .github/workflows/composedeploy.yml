@@ -23,7 +23,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_PASSWORD }}
+          password: ${{ secrets.VPS_PASSWORD }}
           script: |
             # Gå til mappen på din VPS, hvor din docker-compose fil ligger
             cd /root/betonbon
@@ -38,7 +38,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_PASSWORD}}
+          password: ${{ secrets.VPS_PASSWORD}}
           source: "docker-compose.prod.yml"
           target: "/root/betonbon"
 
@@ -47,7 +47,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_PASSWORD }}
+          password: ${{ secrets.VPS_PASSWORD }}
           script: |
             cd /root/betonbon
             # Vi kører med -d (detached) så workflowet ikke hænger og venter på log-output
