@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BetonBon.Application\BetonBon.Application.csproj" />
     <ProjectReference Include="..\BetonBon.Domain\BetonBon.Domain.csproj" />
     <ProjectReference Include="..\BetonBon.Shared\BetonBon.Shared.csproj" />
