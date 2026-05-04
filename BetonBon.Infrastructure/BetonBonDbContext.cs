@@ -1,4 +1,4 @@
-﻿using BetonBon.Domain;
+﻿using BetonBon.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure
