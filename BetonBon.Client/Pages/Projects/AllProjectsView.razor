@@ -1,0 +1,285 @@
+﻿@page "/projects"
+@inject NavigationManager Navigation
+
+<style>
+    .projects-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #f9fafb;
+        font-family: sans-serif;
+    }
+
+    /* Header */
+    .header {
+        background-color: white;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+        flex-shrink: 0;
+    }
+
+    .back-btn {
+        padding: 0.5rem;
+        margin-left: -0.5rem;
+        color: #2563eb;
+        background-color: #eff6ff;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+        .back-btn:active {
+            background-color: #dbeafe;
+        }
+
+    .back-btn-text {
+        font-weight: bold;
+        margin-left: 0.25rem;
+        font-size: 1.125rem;
+    }
+
+    .header-title {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.25rem;
+        padding-right: 5rem; /* For at centrere titlen når tilbage-knappen er der */
+        margin: 0;
+        color: #111827;
+    }
+
+    /* Info Banner (brugt efter stopur) */
+    .info-banner {
+        background-color: #eff6ff;
+        padding: 1rem;
+        border-bottom: 1px solid #dbeafe;
+        flex-shrink: 0;
+    }
+
+    .info-banner-text {
+        font-size: 0.875rem;
+        color: #1e40af;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    /* Search Area */
+    .search-area {
+        padding: 1rem;
+        background-color: white;
+        border-bottom: 1px solid #f3f4f6;
+        flex-shrink: 0;
+    }
+
+    .search-wrapper {
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background-color: #f3f4f6;
+        border: 2px solid transparent;
+        border-radius: 0.75rem;
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #111827;
+        outline: none;
+        transition: background-color 0.2s, border-color 0.2s;
+        box-sizing: border-box;
+    }
+
+        .search-input:focus {
+            background-color: white;
+            border-color: #3b82f6;
+        }
+
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+
+    /* Project List */
+    .project-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .project-item {
+        width: 100%;
+        text-align: left;
+        padding: 1.25rem;
+        background-color: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: background-color 0.1s, border-color 0.1s;
+    }
+
+        .project-item:active {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+    .project-number {
+        font-size: 0.875rem;
+        font-weight: bold;
+        color: #2563eb;
+        margin-bottom: 0.25rem;
+    }
+
+    .project-name {
+        font-weight: bold;
+        font-size: 1.125rem;
+        color: #111827;
+        margin: 0;
+    }
+
+    .project-info-badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        background-color: #f3f4f6;
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+    }
+
+    .chevron-wrapper {
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: #f9fafb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+    }
+</style>
+
+<div class="projects-container">
+    @* Header *@
+    <div class="header">
+        <button @onclick="GoBack" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span class="back-btn-text">Tilbage</span>
+        </button>
+        <h1 class="header-title">
+            "Vælg Projekt"
+        </h1>
+    </div>
+
+
+    @* Search Field *@
+    <div class="search-area">
+        <div class="search-wrapper">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text"
+                   placeholder="Søg på navn eller nummer..."
+                   @bind="SearchTerm"
+                   @bind:event="oninput"
+                   class="search-input" />
+        </div>
+    </div>
+
+    @* Project List *@
+    <div class="project-list">
+        @foreach (var project in FilteredProjects)
+        {
+            <button class="project-item">
+                <div>
+                    <div class="project-number">Projekt nr. @project.Id</div>
+                    <div class="project-name">@project.Name</div>
+                    @if (!string.IsNullOrEmpty(project.Info))
+                    {
+                        <div class="project-info-badge">@project.Info</div>
+                    }
+                </div>
+                <div class="chevron-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                </div>
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    // I en ægte Blazor app ville disse statetilstande nok blive styret af en AppStateContainer service
+    [Parameter]
+    public bool IsPrimarySelection { get; set; } = false;
+
+    private string SearchTerm { get; set; } = "";
+
+    private List<ProjectItem> MockProjects = new()
+    {
+        new ProjectItem { Id = 2621, Name = "Kriegersvej 3", Info = "1 materialeregistrering" },
+        new ProjectItem { Id = 2620, Name = "Kresten Koldvej 11", Info = "8 timer" },
+        new ProjectItem { Id = 2619, Name = "Eghovedvej 47", Info = "" },
+        new ProjectItem { Id = 2618, Name = "Birknæsvej 11", Info = "" },
+        new ProjectItem { Id = 2617, Name = "Favrskov Multiservice", Info = "" },
+        new ProjectItem { Id = 2615, Name = "Terp Skovvej 115", Info = "" },
+        new ProjectItem { Id = 2614, Name = "Forsythiavej 10", Info = "" },
+        new ProjectItem { Id = 2613, Name = "Søndergade 5", Info = "" }
+    };
+
+    private IEnumerable<ProjectItem> FilteredProjects =>
+        string.IsNullOrWhiteSpace(SearchTerm)
+            ? MockProjects
+            : MockProjects.Where(p =>
+                p.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                p.Id.ToString().Contains(SearchTerm));
+
+    private void GoBack()
+    {
+        // Naviger tilbage til hjemmeskærmen (eller forrige skærm afhængig af AppState)
+        Navigation.NavigateTo("/");
+    }
+
+    private override void OnInitializedAsync()
+    {
+        
+    }
+
+    private void SelectProject(ProjectItem project)
+    {
+        // Her ville man typisk gemme det valgte projekt i en AppState service
+        // og derefter navigere til aktivitets-vælgeren eller handlingsmenuen
+        // Navigation.NavigateTo("/activities");
+    }
+
+    public class ProjectItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Info { get; set; } = "";
+    }
+}
