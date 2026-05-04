@@ -4,7 +4,7 @@ namespace BetonBon.Client.Pages.Home
 {
     public partial class TimerCard : IAsyncDisposable
     {
-        private enum TimerState { NotStarted, Running }
+        private enum TimerState { NotStarted, Paused, Running }
         private TimerState _timerState = TimerState.NotStarted;
         private Stopwatch? _stopwatch;
 
@@ -23,6 +23,18 @@ namespace BetonBon.Client.Pages.Home
             _timerState = TimerState.NotStarted;
             _stopwatch?.Stop();
             _periodicTimer?.Dispose();
+        }
+
+        private void PauseTimer()
+        {
+            _timerState = TimerState.Paused;
+            _stopwatch?.Stop();
+        }
+
+        private void UnpauseTimer()
+        {
+            _timerState = TimerState.Running;
+            _stopwatch?.Start();
         }
 
         private async Task StartTicking()
