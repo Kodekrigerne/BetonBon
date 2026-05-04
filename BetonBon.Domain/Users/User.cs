@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BetonBon.Domain
+﻿namespace BetonBon.Domain.NewFolder
 {
     public class User
     {

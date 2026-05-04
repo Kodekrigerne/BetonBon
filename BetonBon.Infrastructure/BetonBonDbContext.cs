@@ -1,4 +1,4 @@
-﻿using BetonBon.Domain;
+﻿using BetonBon.Domain.NewFolder;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure
