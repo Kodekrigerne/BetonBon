@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace BetonBon.Client.Pages
+﻿namespace BetonBon.Client.Pages.Home
 {
-    public partial class Home
+    public partial class TimerCard
     {
-        [Inject]
-        public NavigationManager Navigation { get; set; } = default!;
-
         private enum TimerState { NotStarted, Running }
         private TimerState _timerState = TimerState.NotStarted;
         private DateTime? _startedAt = null;
         private Timer? _timer;
-
     }
 }
