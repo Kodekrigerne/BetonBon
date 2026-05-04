@@ -1,5 +1,6 @@
-
+using BetonBon.Infrastructure;
 using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.API
 {
@@ -16,6 +17,13 @@ namespace BetonBon.API
             var dbName = Environment.GetEnvironmentVariable("DB_NAME");
             var dbUser = Environment.GetEnvironmentVariable("DB_USER");
             var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
+
+            var connectionString =
+                $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
+
+            builder.Services.AddDbContext<BetonBonDbContext>(options =>
+                options.UseNpgsql(connectionString)
+            );
 
             // Add services to the container.
             builder.Services.AddAuthorization();
