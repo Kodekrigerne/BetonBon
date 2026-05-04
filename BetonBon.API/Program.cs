@@ -1,4 +1,8 @@
+using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +28,10 @@ namespace BetonBon.API
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<UserFactory>();
 
             // Add services to the container.
             builder.Services.AddAuthorization();
