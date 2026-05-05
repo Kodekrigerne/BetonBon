@@ -1,4 +1,13 @@
-﻿namespace BetonBon.Client.Pages.Projects
+﻿using System.Text.Json.Serialization;
+
+namespace BetonBon.Client.Pages.Projects
 {
-    public record ProjectDTO(int ProjectID, string ProjectName);
+    public class ProjectDTO(int number, string name)
+    {
+        [JsonPropertyName("number")]
+        public int Number { get; set; } = number;
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = name;
+    }
 }

@@ -1,5 +1,91 @@
 ﻿@page "/projects"
 @inject NavigationManager Navigation
+@inject ProjectService _projectFetcher
+
+<div class="projects-container">
+    @* Header *@
+    <div class="header">
+        <button @onclick="GoBack" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            <span class="back-btn-text">Tilbage</span>
+        </button>
+        <h1 class="header-title">
+            Vælg Projekt
+        </h1>
+    </div>
+
+
+    @* Search Field *@
+    <div class="search-area">
+        <div class="search-wrapper">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text"
+                   placeholder="Søg på navn eller nummer..."
+                   @bind="SearchTerm"
+                   @bind:event="oninput"
+                   class="search-input" />
+        </div>
+    </div>
+
+    @* Project List *@
+    <div class="project-list">
+        @foreach (var project in FilteredProjects)
+        {
+            <button class="project-item">
+                <div>
+                    <div class="project-number">Projekt nr. @project.Number</div>
+                    <div class="project-name">@project.Name</div>
+                </div>
+                <div class="chevron-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                </div>
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    private string SearchTerm { get; set; } = "";
+
+    private List<ProjectDTO> Projects = new List<ProjectDTO>();
+
+    private IEnumerable<ProjectDTO> FilteredProjects =>
+        string.IsNullOrWhiteSpace(SearchTerm)
+            ? Projects
+            : Projects.Where(p =>
+                p.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                p.Number.ToString().Contains(SearchTerm));
+
+    private void GoBack()
+    {
+        // Naviger tilbage til hjemmeskærmen (eller forrige skærm afhængig af AppState)
+        Navigation.NavigateTo("/");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Projects = await GetProjects();
+    }
+
+    private void SelectProject(ProjectDTO project)
+    {
+        // Her ville man typisk gemme det valgte projekt i en AppState service
+        // og derefter navigere til aktivitets-vælgeren eller handlingsmenuen
+        // Navigation.NavigateTo("/activities");
+    }
+
+    private async Task<List<ProjectDTO>> GetProjects()
+    {
+        return await _projectFetcher.GetAllProjectsAsync();
+    }
+}
 
 <style>
     .projects-container {
@@ -178,108 +264,3 @@
         color: #9ca3af;
     }
 </style>
-
-<div class="projects-container">
-    @* Header *@
-    <div class="header">
-        <button @onclick="GoBack" class="back-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m15 18-6-6 6-6"></path>
-            </svg>
-            <span class="back-btn-text">Tilbage</span>
-        </button>
-        <h1 class="header-title">
-            "Vælg Projekt"
-        </h1>
-    </div>
-
-
-    @* Search Field *@
-    <div class="search-area">
-        <div class="search-wrapper">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text"
-                   placeholder="Søg på navn eller nummer..."
-                   @bind="SearchTerm"
-                   @bind:event="oninput"
-                   class="search-input" />
-        </div>
-    </div>
-
-    @* Project List *@
-    <div class="project-list">
-        @foreach (var project in FilteredProjects)
-        {
-            <button class="project-item">
-                <div>
-                    <div class="project-number">Projekt nr. @project.Id</div>
-                    <div class="project-name">@project.Name</div>
-                    @if (!string.IsNullOrEmpty(project.Info))
-                    {
-                        <div class="project-info-badge">@project.Info</div>
-                    }
-                </div>
-                <div class="chevron-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m9 18 6-6-6-6"></path>
-                    </svg>
-                </div>
-            </button>
-        }
-    </div>
-</div>
-
-@code {
-    // I en ægte Blazor app ville disse statetilstande nok blive styret af en AppStateContainer service
-    [Parameter]
-    public bool IsPrimarySelection { get; set; } = false;
-
-    private string SearchTerm { get; set; } = "";
-
-    private List<ProjectItem> MockProjects = new()
-    {
-        new ProjectItem { Id = 2621, Name = "Kriegersvej 3", Info = "1 materialeregistrering" },
-        new ProjectItem { Id = 2620, Name = "Kresten Koldvej 11", Info = "8 timer" },
-        new ProjectItem { Id = 2619, Name = "Eghovedvej 47", Info = "" },
-        new ProjectItem { Id = 2618, Name = "Birknæsvej 11", Info = "" },
-        new ProjectItem { Id = 2617, Name = "Favrskov Multiservice", Info = "" },
-        new ProjectItem { Id = 2615, Name = "Terp Skovvej 115", Info = "" },
-        new ProjectItem { Id = 2614, Name = "Forsythiavej 10", Info = "" },
-        new ProjectItem { Id = 2613, Name = "Søndergade 5", Info = "" }
-    };
-
-    private IEnumerable<ProjectItem> FilteredProjects =>
-        string.IsNullOrWhiteSpace(SearchTerm)
-            ? MockProjects
-            : MockProjects.Where(p =>
-                p.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
-                p.Id.ToString().Contains(SearchTerm));
-
-    private void GoBack()
-    {
-        // Naviger tilbage til hjemmeskærmen (eller forrige skærm afhængig af AppState)
-        Navigation.NavigateTo("/");
-    }
-
-    private override void OnInitializedAsync()
-    {
-        
-    }
-
-    private void SelectProject(ProjectItem project)
-    {
-        // Her ville man typisk gemme det valgte projekt i en AppState service
-        // og derefter navigere til aktivitets-vælgeren eller handlingsmenuen
-        // Navigation.NavigateTo("/activities");
-    }
-
-    public class ProjectItem
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public string Info { get; set; } = "";
-    }
-}
