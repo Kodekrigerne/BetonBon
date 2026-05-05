@@ -14,6 +14,7 @@ namespace BetonBon.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
             Env.TraversePath().Load();
 
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
