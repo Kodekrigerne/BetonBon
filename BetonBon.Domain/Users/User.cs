@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BetonBon.Domain
+namespace BetonBon.Domain.Users
 {
     public class User
     {

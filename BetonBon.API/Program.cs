@@ -1,3 +1,4 @@
+using BetonBon.Application;
 using BetonBon.Infrastructure;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,10 @@ namespace BetonBon.API
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );
+
+            builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+
 
             // Add services to the container.
             builder.Services.AddAuthorization();
