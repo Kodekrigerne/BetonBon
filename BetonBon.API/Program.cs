@@ -1,4 +1,6 @@
+using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
@@ -33,6 +35,8 @@ namespace BetonBon.API
                 options.UseNpgsql(connectionString)
             );
 
+            builder.Services.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
+            builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<UserFactory>();
@@ -62,6 +66,8 @@ namespace BetonBon.API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            //app.MapPost()
 
             app.Run();
         }
