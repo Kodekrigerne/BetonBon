@@ -1,8 +1,11 @@
+using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
+using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +35,8 @@ namespace BetonBon.API
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<UserFactory>();
+
+            builder.Services.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
 
             // Add services to the container.
             builder.Services.AddAuthorization();
