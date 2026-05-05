@@ -2,10 +2,10 @@ using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
-using BetonBon.Application;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
+using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -17,7 +17,6 @@ namespace BetonBon.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
 
             Env.TraversePath().Load();
 
@@ -44,6 +43,7 @@ namespace BetonBon.API
             builder.Services.AddScoped<UserFactory>();
             builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
             builder.Services.AddSingleton<JsonWebTokenHandler>();
 
@@ -72,7 +72,14 @@ namespace BetonBon.API
 
             app.UseAuthorization();
 
-            //app.MapPost("createUser", async(ICommandDis))
+            app.MapPost("createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+            {
+                var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
+
+                var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
+
+                return Results.Ok(id);
+            });
 
             app.Run();
         }

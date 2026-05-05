@@ -1,5 +1,6 @@
 ﻿using BetonBon.Application;
 using BetonBon.Domain.Users;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -12,9 +13,9 @@ namespace BetonBon.Infrastructure.Services
         private readonly JwtSettings _jwtSettings;
         private readonly JsonWebTokenHandler _handler;
 
-        public JwtTokenService(JwtSettings jwtSettings, JsonWebTokenHandler handler)
+        public JwtTokenService(IOptions<JwtSettings> jwtSettings, JsonWebTokenHandler handler)
         {
-            _jwtSettings = jwtSettings;
+            _jwtSettings = jwtSettings.Value;
             _handler = handler;
         }
 
