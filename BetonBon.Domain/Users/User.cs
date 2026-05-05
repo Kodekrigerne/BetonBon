@@ -10,10 +10,12 @@ namespace BetonBon.Domain.Users
         public UserRole Role { get; private set; }
 
         // Parameterless constructor for EF purposes
-        public User() { }
+        private User() { }
 
         private User(string username, PasswordHash hashedPassword, UserRole role)
         {
+            ValidateUsername(username);
+
             Id = Guid.NewGuid();
             Username = username;
             HashedPassword = hashedPassword;
@@ -23,6 +25,19 @@ namespace BetonBon.Domain.Users
         internal static User CreateUser(string username, PasswordHash hashedPassword, UserRole role)
         {
             return new User(username, hashedPassword, role);
+        }
+
+        private static void ValidateUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                throw new ArgumentException("Username cannot be empty.", nameof(username));
+            }
+
+            if (username.Length > 20)
+            {
+                throw new ArgumentException("Username cannot be longer than 20 characters.", nameof(username));
+            }
         }
     }
 }
