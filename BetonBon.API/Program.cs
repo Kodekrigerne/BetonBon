@@ -1,6 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Refit;
@@ -12,6 +14,7 @@ namespace BetonBon.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
 
             Env.TraversePath().Load();
 
@@ -25,7 +28,7 @@ namespace BetonBon.API
             var apiGrant = Environment.GetEnvironmentVariable("API_GRANT");
 
             var connectionString =
-                $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
+                $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Trust Server Certificate=true;";
 
 
             builder.Services
@@ -43,6 +46,13 @@ namespace BetonBon.API
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<UserFactory>();
+            builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -62,12 +72,12 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
-            // Auto-migrates new migrations on startup
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-            //    dbContext.Database.Migrate();
-            //}
+            // Auto - migrates new migrations on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
