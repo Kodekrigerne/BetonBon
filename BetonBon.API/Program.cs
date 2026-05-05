@@ -1,5 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using BetonBon.Application;
+using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
@@ -72,12 +75,12 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
-            // Auto - migrates new migrations on startup
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-                dbContext.Database.Migrate();
-            }
+            //// Auto - migrates new migrations on startup
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+            //    dbContext.Database.Migrate();
+            //}
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
