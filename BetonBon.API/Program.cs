@@ -2,6 +2,7 @@ using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
+using BetonBon.Application;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
@@ -16,6 +17,7 @@ namespace BetonBon.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
 
             Env.TraversePath().Load();
 
@@ -35,6 +37,9 @@ namespace BetonBon.API
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<UserFactory>();
+            builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+
 
             builder.Services.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
 

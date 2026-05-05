@@ -15,10 +15,16 @@ namespace BetonBon.Infrastructure
             {
                 user.HasKey(u => u.Id);
 
+                user.HasIndex(u => u.Username)
+                    .IsUnique();
+
+                user.OwnsOne(u => u.HashedPassword);
+
                 user.Property(u => u.Id)
                     .ValueGeneratedNever();
 
-                user.OwnsOne(u => u.HashedPassword);
+                user.Property(u => u.Role)
+                    .HasConversion<string>();
             });
 
 
