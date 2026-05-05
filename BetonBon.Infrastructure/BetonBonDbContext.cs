@@ -17,7 +17,11 @@ namespace BetonBon.Infrastructure
 
                 user.Property(u => u.Id)
                     .ValueGeneratedNever();
+
+                user.OwnsOne(u => u.HashedPassword);
             });
+
+
         }
     }
 }
