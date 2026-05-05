@@ -1,3 +1,4 @@
+using BetonBon.Application;
 using BetonBon.Infrastructure;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,15 @@ namespace BetonBon.API
             var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
 
             var connectionString =
-                $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
+                $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Trust Server Certificate=true;";
 
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );
+
+            builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -33,7 +38,7 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
-            // Auto-migrates new migrations on startup
+            // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
