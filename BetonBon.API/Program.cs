@@ -1,6 +1,7 @@
 using BetonBon.Infrastructure;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace BetonBon.API
 {
@@ -11,6 +12,9 @@ namespace BetonBon.API
             var builder = WebApplication.CreateBuilder(args);
 
             Env.TraversePath().Load();
+
+            builder.Services.Configure<JwtSettings>(
+                builder.Configuration.GetSection(JwtSettings.SectionName));
 
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
@@ -24,6 +28,11 @@ namespace BetonBon.API
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<UserFactory>();
+            builder.Services.AddSingleton<JsonWebTokenHandler>();
 
             // Add services to the container.
             builder.Services.AddAuthorization();
