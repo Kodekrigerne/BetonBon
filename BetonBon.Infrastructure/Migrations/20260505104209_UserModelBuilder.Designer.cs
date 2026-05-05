@@ -3,6 +3,7 @@ using System;
 using BetonBon.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetonBon.Infrastructure.Migrations
 {
     [DbContext(typeof(BetonBonDbContext))]
-    partial class BetonBonDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260505104209_UserModelBuilder")]
+    partial class UserModelBuilder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

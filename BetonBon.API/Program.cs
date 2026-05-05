@@ -1,5 +1,9 @@
+using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Domain.Users;
 using BetonBon.Application;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +14,7 @@ namespace BetonBon.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
 
             Env.TraversePath().Load();
 
@@ -26,6 +31,9 @@ namespace BetonBon.API
                 options.UseNpgsql(connectionString)
             );
 
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<UserFactory>();
             builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
 
