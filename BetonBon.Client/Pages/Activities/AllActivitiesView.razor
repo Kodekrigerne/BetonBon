@@ -17,7 +17,7 @@
          
             @foreach (var act in FilteredActivities)
             {
-                <button @onclick="() => SelectActivity(act)" class="activity-item">
+                <button @onclick="() => SelectActivity()" class="activity-item">
                     <div>
                         <div class="activity-name">@act.Name</div>
                         <div class="activity-id">Nr. @act.Number</div>
@@ -52,12 +52,17 @@
                 p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
                 p.Number.ToString().Contains(Search));
 
-    private void SelectActivity(ActivityDTO activity)
+    
+
+    private void SelectActivity()
     {
 
     }
 
-        
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SelectedProject != null) Activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
+    }
 
 }
 

@@ -3,7 +3,7 @@
 @using BetonBon.Client.Pages.Projects
 @using BetonBon.Client.Shared.Components
 
-<AllActivitiesView OnClose="CloseActivities" IsVisible="IsVisibleActivities" SelectedProject="SelectedProject" ></AllActivitiesView>
+<AllActivitiesView @ref="@activitiesRef" OnClose="CloseActivities" IsVisible="IsVisibleActivities" SelectedProject="SelectedProject"></AllActivitiesView>
 <AllProjectsView ProjectsIsVisible="IsVisibleProjects" OnCloseProjects="CloseProjects" SelectProject="SelectProject"/>
 
 <div class="home-container">

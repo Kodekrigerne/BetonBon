@@ -1,10 +1,13 @@
-﻿using BetonBon.Client.Pages.Projects;
+﻿using BetonBon.Client.Pages.Activities;
+using BetonBon.Client.Pages.Projects;
 using BetonBon.Shared.Models;
 
 namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
+
+        private AllActivitiesView? activitiesRef;
         public void CloseProjects()
         {
             IsVisibleProjects = false;
@@ -26,6 +29,7 @@ namespace BetonBon.Client.Pages.Home
         public void CloseActivities()
         {
             IsVisibleActivities = false;
+            IsVisibleProjects = true;
         }
 
         public ProjectDTO? SelectedProject;

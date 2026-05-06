@@ -10,7 +10,8 @@ namespace BetonBon.API.RefitInterfaces
         
         [Get("/project-activities?filter=projectNumber$eq:{projectnumber}")]
         Task<AllProjectActivitiesResponse> GetProjectActivitiesAsync(int projectnumber);
-        [Get("/Activities?filter=activityNumber$eq:{number}")]
+        
+        [Get("/Activities/{number}")]
         Task<ActivityDTO> GetActivityByNumberAsync(int number);
     }
 }
