@@ -7,5 +7,10 @@ namespace BetonBon.API.RefitInterfaces
     {
         [Get("/Projects?cursor=0")]
         Task<AllProjectsResponse> GetProjectsAsync();
+        
+        [Get("/project-activities?filter=projectNumber$eq:{projectnumber}")]
+        Task<AllProjectActivitiesResponse> GetProjectActivitiesAsync(int projectnumber);
+        [Get("/Activities?filter=activityNumber$eq:{number}")]
+        Task<ActivityDTO> GetActivityByNumberAsync(int number);
     }
 }

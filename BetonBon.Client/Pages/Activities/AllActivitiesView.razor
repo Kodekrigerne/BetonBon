@@ -1,0 +1,272 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared
+@using BetonBon.Client.Shared.Components
+@using BetonBon.Client.Shared.Icons
+@using BetonBon.Shared.Models
+@inject IEconomicApi _economicApi
+
+<FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="OnClose">
+
+        @* Controls *@
+        <div class="controls-area">
+           <SearchComponent @bind-SearchTerm="@Search"/>
+        </div>
+
+        @* List Area *@
+        <div class="list-area">
+         
+            @foreach (var act in FilteredActivities)
+            {
+                <button @onclick="() => SelectActivity(act)" class="activity-item">
+                    <div>
+                        <div class="activity-name">@act.Name</div>
+                        <div class="activity-id">Nr. @act.Number</div>
+                    </div>
+                    <AddIcon/>
+                </button>
+            }
+    </div>
+
+</FullScreenModal>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public ProjectDTO SelectedProject { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback ProjectSelected { get; set; }
+
+    private List<ActivityDTO> Activities = [];
+
+    private IEnumerable<ActivityDTO> FilteredActivities=>
+        string.IsNullOrWhiteSpace(Search)
+            ? Activities
+            : Activities.Where(p =>
+                p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
+                p.Number.ToString().Contains(Search));
+
+    private void SelectActivity(ActivityDTO activity)
+    {
+
+    }
+
+        
+
+}
+
+    <style>
+            .activities-container {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                background-color: #f9fafb;
+                font-family: sans-serif;
+            }
+
+            /* Header */
+            .header {
+                background-color: white;
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                border-bottom: 1px solid #e5e7eb;
+                box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+                flex-shrink: 0;
+            }
+
+            .back-btn {
+                padding: 0.5rem;
+                margin-left: -0.5rem;
+                color: #2563eb;
+                background-color: #eff6ff;
+                border-radius: 0.5rem;
+                display: flex;
+                align-items: center;
+                border: none;
+                cursor: pointer;
+            }
+    
+                .back-btn:active {
+                    background-color: #dbeafe;
+                }
+
+            .back-btn-text {
+                font-weight: bold;
+                margin-left: 0.25rem;
+                font-size: 1.125rem;
+            }
+
+            .header-title {
+                flex: 1;
+                text-align: center;
+                font-weight: bold;
+                font-size: 1.25rem;
+                padding-right: 5rem;
+                margin: 0;
+                color: #111827;
+            }
+
+            /* Search & Sort Controls */
+            .controls-area {
+                padding: 1rem;
+                background-color: white;
+                border-bottom: 1px solid #f3f4f6;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .search-wrapper {
+                position: relative;
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6b7280;
+            }
+
+            .search-input {
+                width: 100%;
+                padding: 0.875rem 1rem 0.875rem 3rem;
+                background-color: #f3f4f6;
+                border: 2px solid transparent;
+                border-radius: 0.75rem;
+                font-size: 1rem;
+                font-weight: 500;
+                color: #111827;
+                outline: none;
+                box-sizing: border-box;
+            }
+
+                .search-input:focus {
+                    background-color: white;
+                    border-color: #3b82f6;
+                }
+
+            /* Compact Sort Toggle */
+            .sort-toggle-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: #f9fafb;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.5rem;
+                border: 1px solid #e5e7eb;
+            }
+
+            .sort-label {
+                font-size: 0.875rem;
+                font-weight: bold;
+                color: #4b5563;
+            }
+
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 44px;
+                height: 24px;
+            }
+
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #9ca3af;
+                transition: .3s;
+                border-radius: 24px;
+            }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 18px;
+                    width: 18px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: .3s;
+                    border-radius: 50%;
+                }
+
+            input:checked + .slider {
+                background-color: #2563eb;
+            }
+
+                input:checked + .slider:before {
+                    transform: translateX(20px);
+                }
+
+            /* List & Compact Headers */
+            .list-area {
+                flex: 1;
+                overflow-y: auto;
+                background-color: #f3f4f6;
+            }
+
+            .letter-group-header {
+                background-color: #e5e7eb;
+                padding: 0.35rem 1.25rem;
+                font-size: 0.75rem;
+                font-weight: 800;
+                color: #4b5563;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .activity-item {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem 1.25rem;
+                background-color: white;
+                border-bottom: 1px solid #f3f4f6;
+                border-left: none;
+                border-right: none;
+                border-top: none;
+                text-align: left;
+                cursor: pointer;
+            }
+
+                .activity-item:active {
+                    background-color: #eff6ff;
+                }
+
+            .activity-name {
+                font-weight: bold;
+                font-size: 1rem;
+                color: #111827;
+                margin: 0;
+            }
+
+            .activity-id {
+                font-size: 0.813rem;
+                color: #6b7280;
+                margin-top: 0.25rem;
+                font-weight: 500;
+            }
+
+    </style>

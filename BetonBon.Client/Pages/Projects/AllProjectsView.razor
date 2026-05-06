@@ -16,7 +16,7 @@
         <div class="project-list">
             @foreach (var project in FilteredProjects)
             {
-                <ProjectCard Project="@project"></ProjectCard>
+                <ProjectCard ProjectSelected="@ClickProject" Project="@project"></ProjectCard>
             }
         </div>
     </div>

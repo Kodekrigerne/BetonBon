@@ -19,7 +19,7 @@ namespace BetonBon.Client.Pages.Projects
 
         private string Search { get; set; } = "";
 
-        private List<ProjectDTO> Projects = new List<ProjectDTO>();
+        private List<ProjectDTO> Projects = [];
 
         private IEnumerable<ProjectDTO> FilteredProjects =>
             string.IsNullOrWhiteSpace(Search)

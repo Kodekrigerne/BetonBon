@@ -1,6 +1,7 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Infrastructure;
+using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Refit;
@@ -93,6 +94,22 @@ namespace BetonBon.API
                 return Results.Ok(response.Projects);
             }
             );
+
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
+            {
+                var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
+
+                var projectActivities = initialResponse.ProjectActivities;
+
+                List<ActivityDTO> activities = [];
+
+                foreach (var activity in projectActivities)
+                {
+                    activities.Add(economicApi.GetActivityByNumberAsync(activity.ActivityNumber).Result);
+                }
+
+                return Results.Ok(activities);
+            });
 
             app.Run();
         }
