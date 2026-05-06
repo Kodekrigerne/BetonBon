@@ -46,6 +46,8 @@ services:
       - DB_PASS=${DB_PASS}
       - ASPNETCORE_ENVIRONMENT=Production
       - ClientUrl=${CLIENT_URL}
+      - API_SECRET=${API_SECRET}
+      - API_GRANT=${GRANT}
     depends_on:
       - db
 
