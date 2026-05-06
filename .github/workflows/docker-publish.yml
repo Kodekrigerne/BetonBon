@@ -35,18 +35,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & push API
-        run: |
-          dotnet publish BetonBon.Api/BetonBon.Api.csproj \
-            -c Release \
-            /t:PublishContainer \
-            -p:ContainerRegistry=${{ env.REGISTRY }} \
-            -p:ContainerRepository=${{ env.IMAGE_NAME_API }} \
-            -p:ContainerImageTag=latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./DockerFile.API
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}:latest
 
       - name: Build & push Client
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile.Client
+          file: ./DockerFile.Client
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_CLIENT }}:latest
