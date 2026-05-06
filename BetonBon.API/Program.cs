@@ -1,7 +1,9 @@
+using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Infrastructure;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Refit;
 
 namespace BetonBon.API
 {
@@ -20,8 +22,24 @@ namespace BetonBon.API
             var dbUser = Environment.GetEnvironmentVariable("DB_USER");
             var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
 
+            var apiSecret = Environment.GetEnvironmentVariable("API_SECRET");
+            var apiGrant = Environment.GetEnvironmentVariable("API_GRANT");
+
             var connectionString =
                 $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Trust Server Certificate=true;";
+
+
+            builder.Services
+                    .AddRefitClient<IEconomicRelayApi>()
+                    .ConfigureHttpClient(c =>
+                    {
+                        c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0");
+                        if (!string.IsNullOrEmpty(apiSecret))
+                            c.DefaultRequestHeaders.Add("X-AppSecretToken", apiSecret);
+                        if (!string.IsNullOrEmpty(apiGrant))
+                            c.DefaultRequestHeaders.Add("X-AgreementGrantToken", apiGrant);
+                    }
+                    );
 
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
@@ -33,6 +51,16 @@ namespace BetonBon.API
 
             // Add services to the container.
             builder.Services.AddAuthorization();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -52,9 +80,19 @@ namespace BetonBon.API
                 app.MapOpenApi();
             }
 
+            app.UseCors("AllowAll");
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            // Get all projects
+            app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
+            {
+                var response = await economicApi.GetProjectsAsync();
+                return Results.Ok(response.Projects);
+            }
+            );
 
             app.Run();
         }

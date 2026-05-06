@@ -1,0 +1,121 @@
+﻿@if (IsVisible)
+{
+    <style>
+        .fs-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f9fafb;
+            z-index: 100; /* Sikrer at den ligger over bundmenu og andet indhold */
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @@keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .fs-modal-header {
+            background-color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        .fs-modal-close-btn {
+            padding: 0.5rem;
+            margin-left: -0.5rem;
+            color: #2563eb;
+            background-color: #eff6ff;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .fs-modal-close-btn:active {
+            background-color: #dbeafe;
+        }
+        
+        .fs-modal-btn-text {
+            font-weight: bold;
+            margin-left: 0.25rem;
+            font-size: 1.125rem;
+        }
+
+        .fs-modal-title {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            padding-right: 5rem; /* Balancerer tilbage-knappen så titlen står i midten */
+            margin: 0;
+            color: #111827;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fs-modal-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+
+    <div class="fs-modal-overlay">
+        <div class="fs-modal-header">
+            <button @onclick="CloseAsync" class="fs-modal-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span class="fs-modal-btn-text">Tilbage</span>
+            </button>
+            <h1 class="fs-modal-title">@Title</h1>
+        </div>
+        <div class="fs-modal-content">
+            @ChildContent
+        </div>
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Styrer om modalen er synlig.
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    /// <summary>
+    /// Titlen der vises i toppen af skærmen (f.eks. "Vælg Projekt").
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    /// <summary>
+    /// Indholdet der skal vises under overskriften.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Event der kaldes, når brugeren trykker "Tilbage".
+    /// </summary>
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private async Task CloseAsync()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

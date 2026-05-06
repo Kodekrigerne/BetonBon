@@ -18,4 +18,8 @@
     <ProjectReference Include="..\BetonBon.Shared\BetonBon.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
