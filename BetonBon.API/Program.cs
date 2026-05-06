@@ -1,11 +1,13 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
+using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Refit;
@@ -97,13 +99,8 @@ namespace BetonBon.API
             // Get all projects
             app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
             {
-                string rawJson = await economicApi.GetRawProjectsAsync();
-
-                using var document = JsonDocument.Parse(rawJson);
-
-                var collectionJson = document.RootElement.GetProperty("items");
-
-                return Results.Content(collectionJson.GetRawText(), "application/json");
+                var response = await economicApi.GetProjectsAsync();
+                return Results.Ok(response.Projects);
             }
             );
 

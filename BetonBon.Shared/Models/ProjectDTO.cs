@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BetonBon.Client.Pages.Projects
+namespace BetonBon.Shared.Models
 {
     public class ProjectDTO(int number, string name)
     {

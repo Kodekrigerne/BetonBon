@@ -1,7 +1,8 @@
-﻿<button class="project-item">
+﻿@using BetonBon.Shared.Models
+<button @onclick="@SelectProject" class="project-item">
     <div>
-        <div class="project-number">Projekt nr. @ProjectNumber</div>
-        <div class="project-name">@ProjectName</div>
+        <div class="project-number">Projekt nr. @Project.Number</div>
+        <div class="project-name">@Project.Name</div>
     </div>
     <div class="chevron-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -13,9 +14,13 @@
 @code {
 
     [Parameter, EditorRequired]
-    public int ProjectNumber { get; set; }
-    [Parameter, EditorRequired]
-    public string ProjectName { get; set; }
+    public ProjectDTO Project { get; set; }
+
+    [Parameter]
+    public EventCallback<ProjectDTO> ProjectSelected { get; set; }
+
+    private async Task SelectProject() => await ProjectSelected.InvokeAsync(Project);
+
 }
 
 <style>
@@ -62,5 +67,6 @@ margin: 0;
         align-items: center;
         justify-content: center;
         color: #9ca3af;
+    }
 
 </style>

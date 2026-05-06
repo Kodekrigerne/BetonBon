@@ -1,4 +1,5 @@
 using BetonBon.Client.Pages.Projects;
+using BetonBon.Client.RefitInterfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -15,9 +16,17 @@ namespace BetonBon.Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped<ProjectService>();
+            builder.Services.AddRefitClient<IEconomicApi>()
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri("https://localhost:7155");
+                });
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7155") });
+            builder.Services.AddRefitClient<IBetonBonApi>()
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri("https://localhost:7155");
+                });
 
             await builder.Build().RunAsync();
         }
