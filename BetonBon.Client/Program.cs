@@ -1,6 +1,4 @@
-using BetonBon.Client.Pages.Projects;
 using BetonBon.Client.RefitInterfaces;
-using DotNetEnv;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
@@ -15,6 +13,19 @@ namespace BetonBon.Client
 
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
+
+            var backendApiUrl = builder.Configuration["BackendApiUrl"];
+
+            Uri apiBaseAddress;
+
+            if (!string.IsNullOrEmpty(backendApiUrl))
+            {
+                apiBaseAddress = new Uri(backendApiUrl);
+            }
+            else
+            {
+                apiBaseAddress = new Uri(new Uri(builder.HostEnvironment.BaseAddress), "api/");
+            }
 
             builder.Services.AddRefitClient<IEconomicApi>()
                 .ConfigureHttpClient(c =>
