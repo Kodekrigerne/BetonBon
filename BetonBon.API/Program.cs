@@ -38,7 +38,7 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
-            builder.Services.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
+            
 
             // Add services to the container.
             builder.Services.AddAuthorization();
