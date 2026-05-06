@@ -2,7 +2,6 @@ using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
-using BetonBon.Application;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
@@ -50,6 +49,15 @@ namespace BetonBon.API
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+
+
+            app.MapGet("allUsers", async (IQueryDispatcher dispatcher) =>
+            {
+                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+
+                return Results.Ok(users);
+            });
+
 
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
