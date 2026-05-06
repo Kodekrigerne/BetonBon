@@ -1,4 +1,5 @@
 using BetonBon.Application;
+using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
@@ -33,12 +34,9 @@ namespace BetonBon.API
                 options.UseNpgsql(connectionString)
             );
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-            builder.Services.AddScoped<UserFactory>();
-            builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
-            builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-
+            builder.Services
+                .AddApplicationServices()
+                .AddInfrastructureServices();
 
             builder.Services.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
 
