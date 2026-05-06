@@ -56,8 +56,8 @@ namespace BetonBon.API
 
             builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
                 {
-                    //policy.WithOrigins(clientUrl!);
-                    policy.AllowAnyOrigin();
+                    policy.WithOrigins(clientUrl!);
+                    //policy.AllowAnyOrigin();
                     policy.AllowAnyMethod();
                     policy.AllowAnyHeader();
                 }));
@@ -83,7 +83,6 @@ namespace BetonBon.API
 
             app.UseHttpsRedirection();
             app.UseCors("CustomPolicy");
-            app.UsePathBase("/api");
 
             app.UseAuthorization();
 

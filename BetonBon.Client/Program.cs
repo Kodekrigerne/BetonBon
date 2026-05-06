@@ -14,29 +14,18 @@ namespace BetonBon.Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            var backendApiUrl = builder.Configuration["BackendApiUrl"];
-
-            Uri apiBaseAddress;
-
-            if (!string.IsNullOrEmpty(backendApiUrl))
-            {
-                apiBaseAddress = new Uri(backendApiUrl);
-            }
-            else
-            {
-                apiBaseAddress = new Uri(new Uri(builder.HostEnvironment.BaseAddress), "api/");
-            }
+            var backendApiUrl = new Uri(builder.Configuration["BackendApiUrl"]!);
 
             builder.Services.AddRefitClient<IEconomicApi>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = apiBaseAddress;
+                    c.BaseAddress = backendApiUrl;
                 });
 
             builder.Services.AddRefitClient<IBetonBonApi>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = apiBaseAddress;
+                    c.BaseAddress = backendApiUrl;
                 });
 
             await builder.Build().RunAsync();
