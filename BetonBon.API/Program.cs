@@ -9,6 +9,7 @@ using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
+using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -47,11 +48,26 @@ namespace BetonBon.API
 
             builder.Services.AddSingleton<JsonWebTokenHandler>();
 
+            builder.Services.ConfigureHttpJsonOptions(options =>
+                {
+                    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
             // Add services to the container.
             builder.Services.AddAuthorization();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -67,6 +83,8 @@ namespace BetonBon.API
             {
                 app.MapOpenApi();
             }
+
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
