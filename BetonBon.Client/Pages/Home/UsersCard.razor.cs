@@ -4,12 +4,7 @@ namespace BetonBon.Client.Pages.Home
 {
     public partial class UsersCard
     {
-        [Inject]
-        public NavigationManager Navigation { get; set; } = default!;
+        [Parameter] public EventCallback OpenUsers { get; set; }
 
-        private void NavigateToUsers()
-        {
-            Navigation.NavigateTo("/users");
-        }
     }
 }

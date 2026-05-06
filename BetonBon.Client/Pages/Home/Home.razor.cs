@@ -4,6 +4,9 @@ namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
+        public bool IsVisibleProjects = false;
+        public bool IsVisibleUsers = false;
+
         public void CloseProjects()
         {
             IsVisibleProjects = false;
@@ -14,6 +17,8 @@ namespace BetonBon.Client.Pages.Home
             IsVisibleProjects = true;
         }
 
-        public bool IsVisibleProjects = false;
+        public void OpenUsers() => IsVisibleUsers = true;
+        public void CloseUsers() => IsVisibleUsers = false;
+
     }
 }
