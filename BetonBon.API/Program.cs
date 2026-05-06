@@ -52,15 +52,14 @@ namespace BetonBon.API
             // Add services to the container.
             builder.Services.AddAuthorization();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
+            var clientUrl = builder.Configuration["ClientUrl"];
+
+            builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-            });
+                    policy.WithOrigins(clientUrl!);
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                }));
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -80,7 +79,8 @@ namespace BetonBon.API
                 app.MapOpenApi();
             }
 
-            app.UseCors("AllowAll");
+            app.UseCors("CustomPolicy");
+            app.UsePathBase("/api");
 
             app.UseHttpsRedirection();
 

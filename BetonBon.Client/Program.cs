@@ -30,13 +30,13 @@ namespace BetonBon.Client
             builder.Services.AddRefitClient<IEconomicApi>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = new Uri("https://localhost:7155");
+                    c.BaseAddress = new Uri(apiBaseAddress.ToString());
                 });
 
             builder.Services.AddRefitClient<IBetonBonApi>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = new Uri("https://localhost:7155");
+                    c.BaseAddress = new Uri(apiBaseAddress.ToString());
                 });
 
             await builder.Build().RunAsync();
