@@ -5,6 +5,7 @@
     <File Path="docker-compose.dev.yml" />
     <File Path="docker-compose.prod.yml" />
     <File Path="docker-publish.yml" />
+    <File Path="DockerFile.API" />
     <File Path="DockerFile.Client" />
     <File Path="nginx.conf" />
   </Folder>
