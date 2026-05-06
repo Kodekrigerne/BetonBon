@@ -5,9 +5,8 @@
                 <SearchIcon/>
                 <input type="text"
                        placeholder="Søg på navn eller nummer..."
-                       @bind="@SearchTerm"
-                       @bind:event="oninput"
-                       onchange="@OnInput"
+                       value="@SearchTerm"
+                       @oninput="HandleInput"
                        class="search-input" />
             </div>
         </div>
@@ -17,8 +16,15 @@
     [Parameter, EditorRequired]
     public string SearchTerm { get; set; } = "";
 
-    [Parameter, EditorRequired]
-    public EventCallback OnInput { get; set; }
+    [Parameter]
+    public EventCallback<string> SearchTermChanged { get; set; }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        SearchTerm = e.Value?.ToString() ?? "";
+        await SearchTermChanged.InvokeAsync(SearchTerm);
+    }
+
 }
 <style>
     /* Search Area */
@@ -33,13 +39,6 @@
         position: relative;
     }
 
-    .search-icon {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6b7280;
-    }
 
     .search-input {
         width: 100%;
