@@ -76,8 +76,10 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
+            app.UseCors("AllowAll");
 
-            app.MapGet("allUsers", async (IQueryDispatcher dispatcher) =>
+
+            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
             {
                 var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
 
@@ -97,8 +99,6 @@ namespace BetonBon.API
             {
                 app.MapOpenApi();
             }
-
-            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
