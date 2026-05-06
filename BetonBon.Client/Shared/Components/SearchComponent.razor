@@ -1,0 +1,67 @@
+﻿@using BetonBon.Client.Shared.Icons
+
+<div class="search-area">
+            <div class="search-wrapper">
+                <SearchIcon/>
+                <input type="text"
+                       placeholder="Søg på navn eller nummer..."
+                       @bind="@SearchTerm"
+                       @bind:event="oninput"
+                       onchange="@OnInput"
+                       class="search-input" />
+            </div>
+        </div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public string SearchTerm { get; set; } = "";
+
+    [Parameter, EditorRequired]
+    public EventCallback OnInput { get; set; }
+}
+<style>
+    /* Search Area */
+    .search-area {
+        padding: 1rem;
+        background-color: white;
+        border-bottom: 1px solid #f3f4f6;
+        flex-shrink: 0;
+    }
+
+    .search-wrapper {
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background-color: #f3f4f6;
+        border: 2px solid transparent;
+        border-radius: 0.75rem;
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #111827;
+        outline: none;
+        transition: background-color 0.2s, border-color 0.2s;
+        box-sizing: border-box;
+    }
+
+        .search-input:focus {
+            background-color: white;
+            border-color: #3b82f6;
+        }
+
+        .search-input::placeholder {
+            color: #6b7280;
+        }
+
+</style>

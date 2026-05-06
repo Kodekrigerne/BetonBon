@@ -1,4 +1,8 @@
 ﻿@page "/"
+@using BetonBon.Client.Pages.Projects
+@using BetonBon.Client.Shared.Components
+
+<AllProjectsView ProjectsIsVisible="IsVisibleProjects" OnCloseProjects="CloseProjects"/>
 
 <div class="home-container">
     @* Header *@
@@ -25,7 +29,7 @@
             <p>Hvad vil du registrere i dag?</p>
         </div>
 
-        <ProjectsCard />
+        <ProjectsCard OpenProjects="Openprojects" />
 
         <TimerCard />
 
@@ -33,3 +37,4 @@
 
     </div>
 </div>
+
