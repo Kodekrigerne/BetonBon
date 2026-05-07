@@ -2,7 +2,7 @@ name: Build & publish docker images
 
 on:
   push:
-    branches: [ "main", "setup/prod-environment" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 env:
