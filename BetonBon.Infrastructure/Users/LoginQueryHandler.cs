@@ -1,6 +1,7 @@
 ﻿using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
+using BetonBon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Authentication;
 
@@ -23,7 +24,6 @@ namespace BetonBon.Infrastructure.Users
         public async Task<LoginResponse?> HandleAsync(LoginQuery query)
         {
             var user = await _betonBonDb.Users
-                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Username == query.Username);
 
             if (user == null)
@@ -33,8 +33,14 @@ namespace BetonBon.Infrastructure.Users
                 throw new AuthenticationException("Invalid username or password");
 
             var token = _jwtTokenService.GenerateJwtToken(user);
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
+            var expiryDateTime = DateTime.UtcNow.AddDays(7);
 
-            return new LoginResponse(token, user.Username, user.Role);
+            user.UpdateRefreshToken(refreshToken, expiryDateTime);
+
+            await _betonBonDb.SaveChangesAsync();
+
+            return new LoginResponse(token, user.Username, user.Role, refreshToken);
         }
     }
 }

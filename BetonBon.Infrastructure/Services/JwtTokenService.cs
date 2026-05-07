@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BetonBon.Infrastructure.Services
@@ -41,6 +42,14 @@ namespace BetonBon.Infrastructure.Services
             var token = _handler.CreateToken(descriptor);
 
             return token;
+        }
+
+        string IJwtTokenService.GenerateRefreshToken()
+        {
+            byte[] refreshBytes = new byte[32];
+            RandomNumberGenerator.Fill(refreshBytes);
+
+            return Convert.ToBase64String(refreshBytes);
         }
     }
 }

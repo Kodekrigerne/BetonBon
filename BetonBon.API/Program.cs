@@ -1,18 +1,16 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application;
-using BetonBon.Application.RepositoryInterfaces;
-using BetonBon.Application.Users.UserQueries;
 using BetonBon.Application.Users;
-using BetonBon.Domain.Users;
+using BetonBon.Application.Users.UserQueries;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using Refit;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Refit;
+using System.Security.Authentication;
 using System.Text.Json.Serialization;
 
 namespace BetonBon.API
@@ -61,7 +59,7 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
-            
+
             builder.Services.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
             builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -85,18 +83,9 @@ namespace BetonBon.API
                     policy.AllowAnyHeader();
                 }));
 
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
-
-            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
-            {
-                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
-
-                return Results.Ok(users);
-            });
-
 
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
@@ -111,11 +100,18 @@ namespace BetonBon.API
                 app.MapOpenApi();
             }
 
-
             app.UseHttpsRedirection();
             app.UseCors("CustomPolicy");
 
             app.UseAuthorization();
+
+
+            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
+            {
+                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+
+                return Results.Ok(users);
+            });
 
             // Get all projects
             app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
@@ -125,13 +121,30 @@ namespace BetonBon.API
             }
             );
 
-            app.MapPost("createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+            app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
             {
                 var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
 
                 var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
                 return Results.Ok(id);
+            });
+
+            app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
+            {
+                try
+                {
+                    var query = new LoginQuery(userLogin.Username, userLogin.Password);
+
+                    var response = await queryDispatcher.DispatchAsync<LoginQuery, LoginResponse>(query);
+
+                    return Results.Ok(response);
+                }
+
+                catch (AuthenticationException)
+                {
+                    return Results.Unauthorized();
+                }
             });
 
             app.Run();
