@@ -36,7 +36,6 @@ namespace BetonBon.Client.Pages.Home
         }
 
         public ProjectDTO? SelectedProject;
-        public bool IsVisibleProjects = false;
         public bool IsVisibleActivities = false;
     }
 }

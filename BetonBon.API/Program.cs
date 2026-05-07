@@ -1,6 +1,5 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
