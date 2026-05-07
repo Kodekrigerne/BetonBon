@@ -22,7 +22,7 @@ namespace BetonBon.Client
                     c.BaseAddress = new Uri("https://localhost:7155");
                 });
 
-            builder.Services.AddRefitClient<IBetonBonApi>()
+            builder.Services.AddRefitClient<IBetonBonAPI>()
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://localhost:7155");
