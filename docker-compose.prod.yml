@@ -74,7 +74,6 @@ services:
       - WATCHTOWER_SCOPE=prod
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ~/.docker/config.json:/config.json:ro
     command: --interval 60 --cleanup
 
 volumes:
