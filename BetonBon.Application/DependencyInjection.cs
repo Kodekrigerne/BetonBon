@@ -1,4 +1,5 @@
-﻿using BetonBon.Domain.Users;
+﻿using BetonBon.Application.Users;
+using BetonBon.Domain.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetonBon.Application
@@ -10,6 +11,7 @@ namespace BetonBon.Application
             public IServiceCollection AddApplicationServices()
             {
                 collection.AddScoped<UserFactory>();
+                collection.AddScoped<ICommandHandler<CreateUserCommand, >>
 
                 return collection;
             }
