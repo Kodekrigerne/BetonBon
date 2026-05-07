@@ -6,6 +6,7 @@ namespace BetonBon.Client.Pages.Users
     public partial class Users
     {
         [Parameter] public bool UsersIsVisible { get; set; } = true;
+        private bool isCreating { get; set; } = false;
         [Parameter] public EventCallback OnCloseUsers { get; set; }
 
 
@@ -15,6 +16,8 @@ namespace BetonBon.Client.Pages.Users
         {
             await base.OnInitializedAsync();
             await LoadUsers();
+
+            isCreating = false;
         }
 
         private async Task LoadUsers()
@@ -25,15 +28,29 @@ namespace BetonBon.Client.Pages.Users
 
         public async Task CloseUsers()
         {
-            UsersIsVisible = false; 
-            await OnCloseUsers.InvokeAsync();
+            if (isCreating)
+            {
+                isCreating = false;
+            }
+            else
+            { 
+                UsersIsVisible = false; 
+            
+                await OnCloseUsers.InvokeAsync();
+            }
         }
 
 
 
         private void HandleCreateUser()
         {
+            isCreating = true;
+        }
 
+        private async Task HandleUserCreated()
+        {
+            isCreating = false;
+            await LoadUsers();
         }
 
         private void EditUser(Guid id)
