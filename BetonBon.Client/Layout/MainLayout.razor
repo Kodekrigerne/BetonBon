@@ -7,13 +7,20 @@
         min-height: 100vh;
         min-height: 100dvh;
         font-family: sans-serif;
-        background-color: white;
+        background-color: #f9fafb;
     }
     
     .main-content {
         flex: 1;
         overflow-y: auto;
         background-color: #f9fafb;
+    }
+
+    .content-wrapper {
+        max-width: 430px;
+        margin: 0 auto;
+        width: 100%;
+        min-height: 100%;
     }
     
     .bottom-nav {
@@ -27,6 +34,9 @@
         flex-shrink: 0;
         position: relative;
         z-index: 20;
+        max-width: 430px;
+        margin: 0 auto;
+        width: 100%;
     }
     
     .nav-link {
@@ -61,7 +71,9 @@
 <div class="layout-container">
     @* Main Content Area *@
     <div class="main-content">
-        @Body
+        <div class="content-wrapper">
+            @Body
+        </div>
     </div>
 
     @* Bottom Nav *@
