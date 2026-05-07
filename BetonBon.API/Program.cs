@@ -1,5 +1,8 @@
+using BetonBon.API.RefitInterfaces;
+using BetonBon.Application;
 using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users.UserQueries;
 using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
@@ -8,6 +11,7 @@ using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Refit;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Text.Json.Serialization;
 
@@ -30,20 +34,36 @@ namespace BetonBon.API
             var dbUser = Environment.GetEnvironmentVariable("DB_USER");
             var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
 
+            var apiSecret = Environment.GetEnvironmentVariable("API_SECRET");
+            var apiGrant = Environment.GetEnvironmentVariable("API_GRANT");
+
             var connectionString =
                 $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Trust Server Certificate=true;";
+
+
+            builder.Services
+                    .AddRefitClient<IEconomicRelayApi>()
+                    .ConfigureHttpClient(c =>
+                    {
+                        c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0");
+                        if (!string.IsNullOrEmpty(apiSecret))
+                            c.DefaultRequestHeaders.Add("X-AppSecretToken", apiSecret);
+                        if (!string.IsNullOrEmpty(apiGrant))
+                            c.DefaultRequestHeaders.Add("X-AgreementGrantToken", apiGrant);
+                    }
+                    );
 
             builder.Services.AddDbContext<BetonBonDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );
 
+            builder.Services
+                .AddApplicationServices()
+                .AddInfrastructureServices();
+
+            
             builder.Services.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
             builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-            builder.Services.AddScoped<UserFactory>();
-            builder.Services.AddScoped<IQueryDispatcher, QueryDispatcher>();
-            builder.Services.AddScoped<ICommandDispatcher, CommandDispatcher>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
             builder.Services.AddSingleton<JsonWebTokenHandler>();
@@ -56,20 +76,27 @@ namespace BetonBon.API
             // Add services to the container.
             builder.Services.AddAuthorization();
 
+            var clientUrl = builder.Configuration["ClientUrl"];
+
+            builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
+                {
+                    policy.WithOrigins(clientUrl!);
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                }));
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddCors(options =>
+            var app = builder.Build();
+
+            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
             {
-                options.AddDefaultPolicy(policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+
+                return Results.Ok(users);
             });
 
-            var app = builder.Build();
 
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
@@ -84,11 +111,19 @@ namespace BetonBon.API
                 app.MapOpenApi();
             }
 
-            app.UseCors();
 
             app.UseHttpsRedirection();
+            app.UseCors("CustomPolicy");
 
             app.UseAuthorization();
+
+            // Get all projects
+            app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
+            {
+                var response = await economicApi.GetProjectsAsync();
+                return Results.Ok(response.Projects);
+            }
+            );
 
             app.MapPost("createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
             {

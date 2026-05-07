@@ -1,0 +1,60 @@
+﻿/* Beholderen for det enkelte kort */
+.user-card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Avatar cirklen */
+.user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: #f3f4f6;
+    color: #4b5563;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+/* Info sektion */
+.user-info {
+    flex: 1;
+}
+
+    .user-info h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #111827;
+    }
+
+    .user-info p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+/* Edit-knappen til højre */
+.back-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+    .back-btn:hover {
+        color: #2563eb;
+    }

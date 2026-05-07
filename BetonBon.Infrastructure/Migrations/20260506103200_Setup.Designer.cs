@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetonBon.Infrastructure.Migrations
 {
     [DbContext(typeof(BetonBonDbContext))]
-    [Migration("20260505104209_UserModelBuilder")]
-    partial class UserModelBuilder
+    [Migration("20260506103200_Setup")]
+    partial class Setup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

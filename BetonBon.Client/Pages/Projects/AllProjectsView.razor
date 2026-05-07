@@ -1,0 +1,35 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared
+@using BetonBon.Client.Shared.Components
+@using BetonBon.Client.Shared.Icons
+@using BetonBon.Shared.Models
+@inject IEconomicApi _economicApi
+
+<FullScreenModal IsVisible="ProjectsIsVisible" OnClose="CloseProjects" Title="Vælg Projekt">
+
+    <div class="projects-container">
+
+        
+        <div class="search-area">
+            <div class="search-wrapper">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>                <input type="text"
+                       placeholder="Søg på navn eller nummer..."
+                       @bind="@Search"
+                       @bind:event="oninput"
+                       class="search-input" />
+            </div>
+        </div>
+
+
+        <div class="project-list">
+            @foreach (var project in FilteredProjects)
+            {
+                <ProjectCard Project="@project"></ProjectCard>
+            }
+        </div>
+    </div>
+
+</FullScreenModal>
