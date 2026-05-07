@@ -34,7 +34,7 @@ namespace BetonBon.Domain.Users
                 throw new ArgumentException("Username cannot be empty.", nameof(username));
             }
 
-            if (username.Length > 20)
+            if (username.Length > 50)
             {
                 throw new ArgumentException("Username cannot be longer than 20 characters.", nameof(username));
             }
