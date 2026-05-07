@@ -12,7 +12,7 @@ namespace BetonBon.Client.Pages.Users
 
         private List<UserViewModel>? users;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()        
         {
             await base.OnInitializedAsync();
             await LoadUsers();
