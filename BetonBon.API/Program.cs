@@ -1,6 +1,12 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
+using BetonBon.Application;
+using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users.UserQueries;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
@@ -50,30 +56,42 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
+            
+
             // Add services to the container.
             builder.Services.AddAuthorization();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
+            var clientUrl = builder.Configuration["ClientUrl"];
+
+            builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-            });
+                    policy.WithOrigins(clientUrl!);
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                }));
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
-            //// Auto - migrates new migrations on startup
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-            //    dbContext.Database.Migrate();
-            //}
+            app.UseCors("AllowAll");
+
+
+            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
+            {
+                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+
+                return Results.Ok(users);
+            });
+
+
+            // Auto - migrates new migrations on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+                dbContext.Database.Migrate();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -81,9 +99,9 @@ namespace BetonBon.API
                 app.MapOpenApi();
             }
 
-            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
+            app.UseCors("CustomPolicy");
 
             app.UseAuthorization();
 
