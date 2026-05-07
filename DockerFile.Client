@@ -1,0 +1,33 @@
+# TRIN 1: Build (.NET 10 SDK)
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Kopier kun projektfilerne først for at udnytte Docker caching
+# Bemærk: Client har brug for Shared-projektet for at kunne bygge!
+COPY ["BetonBon.Client/BetonBon.Client.csproj", "BetonBon.Client/"]
+COPY ["BetonBon.Shared/BetonBon.Shared.csproj", "BetonBon.Shared/"]
+RUN dotnet restore "BetonBon.Client/BetonBon.Client.csproj"
+
+# Kopier resten af kildekoden ind på maskinen
+COPY . .
+
+# Gå ind i Client-mappen og byg koden til produktion (Release)
+WORKDIR "/src/BetonBon.Client"
+RUN dotnet publish "BetonBon.Client.csproj" -c Release -o /app/publish
+
+# TRIN 2: (Nginx)
+# Kasser build og start en ny op
+FROM nginx:alpine AS final
+WORKDIR /usr/share/nginx/html
+
+# Slet standard Nginx forsiden
+RUN rm -rf ./*
+
+# Kopier de færdigbyggede filer (/wwwroot) fra "build" over til Nginx
+COPY --from=build /app/publish/wwwroot .
+
+# Kopier speciel Nginx-konfiguration ind
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Åbn port 80 på containeren
+EXPOSE 80

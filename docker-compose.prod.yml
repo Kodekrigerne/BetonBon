@@ -1,27 +1,82 @@
+# Docker compose used for production setup
+
+name: betonbon-prod
+
 services:
-  app:
+
+# Proxy manager (gatekeeper)
+  npm:
     image: 'jc21/nginx-proxy-manager:latest'
-    restart: unless-stopped
-
+    container_name: nginx-proxy-manager
+    restart: always
     ports:
-      # These ports are in format <host-port>:<container-port>
-      - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
-      - '81:81' # Admin Web Port
-      # Add any other Stream port you want to expose
-      # - '21:21' # FTP
-
-    # Env variables
-    environment:
-      TZ: "Australia/Brisbane"
-
-      # Uncomment this if you want to change the location of
-      # the SQLite DB file within the container
-      # DB_SQLITE_FILE: "/data/database.sqlite"
-
-      # Uncomment this if IPv6 is not enabled on your host
-      # DISABLE_IPV6: 'true'
-
+      - '80:80'      # Incoming HTTP
+      - '443:443'    # Incoming HTTPS
+      - '81:81'      # Controlpanel
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+
+
+# PostgreSQL database
+  db:
+    image: postgres:18-alpine
+    container_name: beton-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+
+# Backend API
+  api:
+    labels:
+      - "com.centurylinklabs.watchtower.scope=prod"
+    image: ghcr.io/kodekrigerne/betonbon-api:latest
+    container_name: beton-api
+    restart: always
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ClientUrl=${CLIENT_URL}
+      - API_SECRET=${API_SECRET}
+      - API_GRANT=${GRANT}
+    depends_on:
+      - db
+
+
+# Frontend project
+  client:
+    labels:
+      - "com.centurylinklabs.watchtower.scope=prod"
+    image: ghcr.io/kodekrigerne/betonbon-client:latest
+    container_name: beton-client
+    restart: always
+    depends_on:
+      - api
+
+
+# Fetches new images from GitHub Container Registry
+# and replaces running containers with them.
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: always
+    environment:
+      - DOCKER_API_VERSION=1.44
+      - WATCHTOWER_SCOPE=prod
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 60 --cleanup
+
+volumes:
+  pgdata:
+  npm_data:
+  npm_letsencrypt:
