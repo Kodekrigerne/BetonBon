@@ -7,5 +7,8 @@ namespace BetonBon.Client.RefitInterfaces
     {
         [Post("/createUser")]
         Task<Guid> CreateUser(CreateUserDTO userToCreate);
+
+        [Get("/viewUsers")]
+        Task<List<UserDto>> GetAllUsers();
     }
 }
