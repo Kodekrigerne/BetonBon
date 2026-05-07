@@ -26,6 +26,8 @@ namespace BetonBon.Infrastructure
                 user.Property(u => u.Role)
                     .HasConversion<string>();
             });
+
+
         }
     }
 }

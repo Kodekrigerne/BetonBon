@@ -1,0 +1,51 @@
+﻿body {
+}
+/* Selve knappen/beholderen */
+.user-nav-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1rem;
+    border: 2px solid #f3f4f6;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+    /* Klik-effekt */
+    .user-nav-card:active {
+        transform: scale(0.98);
+        background-color: #f9fafb;
+    }
+
+/* Ikon cirklen */
+.user-nav-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: #07559f;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Tekst sektionen */
+.user-nav-text h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.user-nav-text p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
