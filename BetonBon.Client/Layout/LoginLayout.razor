@@ -1,0 +1,40 @@
+﻿@inherits LayoutComponentBase
+
+<style>
+    .layout-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: sans-serif;
+    }
+    
+    .device-wrapper {
+        width: 100%;
+        max-width: 400px;
+        height: 800px;
+        background-color: white;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .main-content {
+        flex: 1;
+        overflow-y: auto;
+        background-color: #f9fafb;
+    }
+
+</style>
+
+<div class="layout-container">
+    @* Mobile Device Wrapper *@
+    <div class="device-wrapper">
+        
+        @* Main Content Area *@
+        <div class="main-content">
+            @Body
+        </div>
+    </div>
+</div>
