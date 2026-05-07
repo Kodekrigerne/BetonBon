@@ -1,0 +1,39 @@
+﻿@page "/users"
+
+@using BetonBon.Client.Pages.Home
+@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared.Components
+
+@inject IBetonBonApi _api
+
+
+<FullScreenModal IsVisible="UsersIsVisible" OnClose="CloseUsers" Title="Medarbejdere">
+
+    <div class="content">
+
+        @* Opret Bruger Knap *@
+
+        <button class="create-btn" @onclick="HandleCreateUser">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7v14"/></svg>
+            Opret Bruger
+        </button>
+
+        @* Oversigt over brugere *@
+
+        <div class="user-list">
+
+            @if (users == null)
+            {
+                <p>Henter brugere...</p>
+            }
+            else
+            {
+                @foreach (var user in users)
+{
+                <SingleUserCard User="@user" OnEditRequested="EditUser" />
+}
+            }
+        </div>
+    </div>
+
+</FullScreenModal>

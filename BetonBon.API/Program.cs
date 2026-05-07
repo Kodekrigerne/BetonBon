@@ -1,6 +1,13 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
+using BetonBon.Application;
+using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users.UserQueries;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
+using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Refit;
@@ -49,6 +56,8 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
+            
+
             // Add services to the container.
             builder.Services.AddAuthorization();
 
@@ -65,6 +74,17 @@ namespace BetonBon.API
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+
+            app.UseCors("AllowAll");
+
+
+            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
+            {
+                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+
+                return Results.Ok(users);
+            });
+
 
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
