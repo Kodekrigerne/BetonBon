@@ -22,7 +22,7 @@ namespace BetonBon.Client
                     c.BaseAddress = backendApiUrl;
                 });
 
-            builder.Services.AddRefitClient<IBetonBonApi>()
+            builder.Services.AddRefitClient<IBetonBonAPI>()
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = backendApiUrl;

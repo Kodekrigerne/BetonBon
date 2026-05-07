@@ -1,6 +1,5 @@
+using BetonBon.Application;
 using BetonBon.API.RefitInterfaces;
-using BetonBon.Application;
-using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
@@ -10,7 +9,10 @@ using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using System.Text.Json.Serialization;
 using Refit;
+using BetonBon.Application.Users;
 
 namespace BetonBon.API
 {
@@ -20,8 +22,10 @@ namespace BetonBon.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             Env.TraversePath().Load();
+
+            builder.Services.Configure<JwtSettings>(
+                builder.Configuration.GetSection(JwtSettings.SectionName));
 
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
@@ -57,6 +61,10 @@ namespace BetonBon.API
                 .AddInfrastructureServices();
 
             
+            builder.Services.ConfigureHttpJsonOptions(options =>
+                {
+                    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -72,6 +80,16 @@ namespace BetonBon.API
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -112,6 +130,15 @@ namespace BetonBon.API
                 return Results.Ok(response.Projects);
             }
             );
+
+            app.MapPost("createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+            {
+                var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
+
+                var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
+
+                return Results.Ok(id);
+            });
 
             app.Run();
         }
