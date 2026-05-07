@@ -21,13 +21,11 @@ namespace BetonBon.Client.Pages.Home
         {
             SelectedProject = projectDTO;
             IsVisibleActivities = true;
-            IsVisibleProjects = false;
         }
 
         public void CloseActivities()
         {
             IsVisibleActivities = false;
-            IsVisibleProjects = true;
             SelectedProject = null;
         }
 

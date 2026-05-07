@@ -31,14 +31,9 @@ namespace BetonBon.Client.Pages.Projects
 
         private async Task ClickProject(ProjectDTO selectedProject) => await SelectProject.InvokeAsync(selectedProject);
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
-            Projects = await GetProjects();
-        }
-
-        private async Task<List<ProjectDTO>> GetProjects()
-        {
-            return await _economicApi.GetAllProjectsAsync();
+            if (ProjectsIsVisible == true) Projects = await _economicApi.GetAllProjectsAsync();
         }
 
         public async Task CloseProjects() => await OnCloseProjects.InvokeAsync();
