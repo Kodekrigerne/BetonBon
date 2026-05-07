@@ -1,7 +1,5 @@
 using BetonBon.Application;
 using BetonBon.API.RefitInterfaces;
-using BetonBon.Application;
-using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
@@ -14,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Text.Json.Serialization;
 using Refit;
+using BetonBon.Application.Users;
 
 namespace BetonBon.API
 {

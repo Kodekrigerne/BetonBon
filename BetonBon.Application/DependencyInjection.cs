@@ -11,7 +11,7 @@ namespace BetonBon.Application
             public IServiceCollection AddApplicationServices()
             {
                 collection.AddScoped<UserFactory>();
-                collection.AddScoped<ICommandHandler<CreateUserCommand, >>
+                collection.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
 
                 return collection;
             }
