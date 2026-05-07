@@ -5,7 +5,7 @@
 @using BetonBon.Shared.Models
 @inject IEconomicApi _economicApi
 
-<FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="OnClose">
+<FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="@Close">
 
         @* Controls *@
         <div class="controls-area">
@@ -52,7 +52,12 @@
                 p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
                 p.Number.ToString().Contains(Search));
 
-    
+
+    private async Task Close()
+    {
+        Activities = [];
+        await OnClose.InvokeAsync();
+    }
 
     private void SelectActivity()
     {
@@ -101,6 +106,8 @@
                 .back-btn:active {
                     background-color: #dbeafe;
                 }
+
+
 
             .back-btn-text {
                 font-weight: bold;

@@ -6,8 +6,6 @@ namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
-
-        private AllActivitiesView? activitiesRef;
         public void CloseProjects()
         {
             IsVisibleProjects = false;
@@ -21,15 +19,16 @@ namespace BetonBon.Client.Pages.Home
 
         public void SelectProject(ProjectDTO projectDTO)
         {
-            IsVisibleProjects = false;
             SelectedProject = projectDTO;
             IsVisibleActivities = true;
+            IsVisibleProjects = false;
         }
 
         public void CloseActivities()
         {
             IsVisibleActivities = false;
             IsVisibleProjects = true;
+            SelectedProject = null;
         }
 
         public ProjectDTO? SelectedProject;
