@@ -1,0 +1,35 @@
+# TRIN 1: Build (.NET 10 SDK)
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# 1. Kopier alle projektfiler (.csproj) separat for at optimere Docker caching.
+# Da din API afhænger af alle de andre lag, skal de alle være til stede for at restore.
+COPY ["BetonBon.API/BetonBon.API.csproj", "BetonBon.API/"]
+COPY ["BetonBon.Application/BetonBon.Application.csproj", "BetonBon.Application/"]
+COPY ["BetonBon.Infrastructure/BetonBon.Infrastructure.csproj", "BetonBon.Infrastructure/"]
+COPY ["BetonBon.Domain/BetonBon.Domain.csproj", "BetonBon.Domain/"]
+COPY ["BetonBon.Shared/BetonBon.Shared.csproj", "BetonBon.Shared/"]
+
+# 2. Kør restore på API-projektet (dette henter NuGet-pakker for alle afhængigheder)
+RUN dotnet restore "BetonBon.API/BetonBon.API.csproj"
+
+# 3. Kopier nu resten af kildekoden ind
+COPY . .
+
+# 4. Skift til API-mappen og byg applikationen
+WORKDIR "/src/BetonBon.API"
+RUN dotnet publish "BetonBon.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# TRIN 2: Runtime (ASP.NET Core Runtime - meget mindre end SDK'en)
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+
+# Kopier de færdigbyggede filer fra build-stadiet
+COPY --from=build /app/publish .
+
+# Definer miljøvariabler (valgfrit, men god praksis)
+ENV ASPNETCORE_URLS=http://+:80
+EXPOSE 80
+
+# Start API'en
+ENTRYPOINT ["dotnet", "BetonBon.API.dll"]

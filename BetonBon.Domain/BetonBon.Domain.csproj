@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BetonBon.Shared\BetonBon.Shared.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="BetonBon.Domain.Tests"/>
+	</ItemGroup>
+
 </Project>

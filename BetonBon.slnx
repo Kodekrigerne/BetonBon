@@ -2,6 +2,12 @@
   <Folder Name="/Solution Items/">
     <File Path=".env" />
     <File Path=".env.example" />
+    <File Path="docker-compose.dev.yml" />
+    <File Path="docker-compose.prod.yml" />
+    <File Path="docker-publish.yml" />
+    <File Path="DockerFile.API" />
+    <File Path="DockerFile.Client" />
+    <File Path="nginx.conf" />
   </Folder>
   <Folder Name="/Testing/">
     <Project Path="BetonBon.Application.Tests/BetonBon.Application.Tests.csproj" Id="75c6a9b7-3648-4964-9a3e-67d6c87744a8" />
