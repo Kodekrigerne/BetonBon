@@ -10,11 +10,11 @@
     <div class="projects-container">
 
         
-        <SearchComponent @bind-SearchTerm="@Search"/>
+        <SearchComponent @bind-SearchTerm="@Search" OnSearchTermChanged="@OnSearch"/>
 
 
         <div class="project-list">
-            @foreach (var project in FilteredProjects)
+            @foreach (var project in _filteredProjects)
             {
                 <ProjectCard ProjectSelected="@ClickProject" Project="@project"></ProjectCard>
             }

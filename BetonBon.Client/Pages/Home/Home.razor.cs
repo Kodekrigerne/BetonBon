@@ -6,36 +6,14 @@ namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
-        public bool IsVisibleProjects = false;
         public bool IsVisibleUsers = false;
-
-        public void CloseProjects()
-        {
-            IsVisibleProjects = false;
-            IsVisibleActivities = false;
-        }
-
-        public void OpenProjects()
-        {
-            IsVisibleProjects = true;
-        }
 
         public void OpenUsers() => IsVisibleUsers = true;
         public void CloseUsers() => IsVisibleUsers = false;
 
-        public void SelectProject(ProjectDTO projectDTO)
+        public void OpenRegistrations()
         {
-            SelectedProject = projectDTO;
-            IsVisibleActivities = true;
+            _navigation.NavigateTo("/registration");
         }
-
-        public void CloseActivities()
-        {
-            IsVisibleActivities = false;
-            SelectedProject = null;
-        }
-
-        public ProjectDTO? SelectedProject;
-        public bool IsVisibleActivities = false;
     }
 }

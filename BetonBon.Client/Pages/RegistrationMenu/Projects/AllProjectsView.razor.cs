@@ -1,41 +1,44 @@
 ﻿using BetonBon.Shared.Models;
 using Microsoft.AspNetCore.Components;
 
-namespace BetonBon.Client.Pages.Projects
+namespace BetonBon.Client.Pages.RegistrationMenu.Projects
 {
     public partial class AllProjectsView
     {
 
-        [Parameter]
-        public bool ProjectsIsVisible { get; set; }
+        [Parameter, EditorRequired]
+        public bool IsVisible { get; set; }
 
-        [Parameter]
+        [Parameter, EditorRequired]
         public EventCallback<ProjectDTO> SelectProject { get; set; }
 
-        [Parameter]
+        [Parameter, EditorRequired]
         public EventCallback OnCloseProjects { get; set; }
 
         public ProjectDTO? SelectedProject;
 
         private string Search { get; set; } = "";
+        
+        private List<ProjectDTO> _projects = [];
+        private IEnumerable<ProjectDTO> _filteredProjects = [];
 
-        private List<ProjectDTO> Projects = [];
-
-        private IEnumerable<ProjectDTO> FilteredProjects =>
-            string.IsNullOrWhiteSpace(Search)
-                ? Projects
-                : Projects.Where(p =>
+        private async Task OnSearch()
+        {
+            _filteredProjects = string.IsNullOrWhiteSpace(Search)
+                ? _projects
+                : _projects.Where(p =>
                     p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
                     p.Number.ToString().Contains(Search));
+        }
 
 
         private async Task ClickProject(ProjectDTO selectedProject) => await SelectProject.InvokeAsync(selectedProject);
 
         protected override async Task OnParametersSetAsync()
         {
-            if (ProjectsIsVisible == true) Projects = await _economicApi.GetAllProjectsAsync();
+            if (IsVisible == true) _projects = await _economicApi.GetAllProjectsAsync();
         }
 
-        public async Task CloseProjects() => await OnCloseProjects.InvokeAsync();
+        private async Task CloseProjects() => await OnCloseProjects.InvokeAsync();
     }
 }

@@ -1,38 +1,40 @@
 ﻿using BetonBon.Shared.Models;
 using Microsoft.AspNetCore.Components;
 
-namespace BetonBon.Client.Pages.Activities
+namespace BetonBon.Client.Pages.RegistrationMenu.Activities
 {
     public partial class AllActivitiesView
     {
         private string Search = "";
 
-
         [Parameter, EditorRequired]
         public ProjectDTO SelectedProject { get; set; }
 
-        [Parameter]
+        [Parameter, EditorRequired]
         public bool IsVisible { get; set; }
 
-        [Parameter]
+        [Parameter, EditorRequired]
         public EventCallback OnClose { get; set; }
 
-        [Parameter]
+        [Parameter, EditorRequired]
         public EventCallback ProjectSelected { get; set; }
 
-        private List<ActivityDTO> Activities = [];
 
-        private IEnumerable<ActivityDTO> FilteredActivities =>
-            string.IsNullOrWhiteSpace(Search)
-                ? Activities
-                : Activities.Where(p =>
+        private List<ActivityDTO> _activities = [];
+        private IEnumerable<ActivityDTO> _filteredActivities = [];
+
+        private async Task OnSearch()
+        {
+            _filteredActivities = string.IsNullOrWhiteSpace(Search)
+                ? _activities
+                : _activities.Where(p =>
                     p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
                     p.Number.ToString().Contains(Search));
-
+        }
 
         private async Task Close()
         {
-            Activities = [];
+            _activities = [];
             await OnClose.InvokeAsync();
         }
 
@@ -43,7 +45,7 @@ namespace BetonBon.Client.Pages.Activities
 
         protected override async Task OnParametersSetAsync()
         {
-            if (SelectedProject != null) Activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
+            if (SelectedProject!= null && IsVisible == true) _activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
         }
 
     }

@@ -17,15 +17,15 @@
     public string SearchTerm { get; set; } = "";
 
     [Parameter]
-    public EventCallback<string> SearchTermChanged { get; set; }
+    public EventCallback OnSearchTermChanged { get; set; }
 
     private async Task HandleInput(ChangeEventArgs e)
     {
         SearchTerm = e.Value?.ToString() ?? "";
-        await SearchTermChanged.InvokeAsync(SearchTerm);
+        await OnSearchTermChanged.InvokeAsync();
     }
-
 }
+
 <style>
     /* Search Area */
     .search-area {

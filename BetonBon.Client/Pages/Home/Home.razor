@@ -1,12 +1,8 @@
 ﻿@page "/"
-@using BetonBon.Client.Pages.Activities
-@using BetonBon.Client.Pages.Projects
 @using BetonBon.Client.Pages.RegistrationMenu
 @using BetonBon.Client.Pages.Users
 @using BetonBon.Client.Shared.Components
-
-<AllActivitiesView OnClose="CloseActivities" IsVisible="IsVisibleActivities" SelectedProject="SelectedProject"></AllActivitiesView>
-<AllProjectsView ProjectsIsVisible="IsVisibleProjects" OnCloseProjects="CloseProjects" SelectProject="SelectProject"/>
+@inject NavigationManager _navigation
 
 <Users UsersIsVisible="IsVisibleUsers" OnCloseUsers="CloseUsers" />
 
@@ -35,7 +31,7 @@
             <p>Hvad vil du registrere i dag?</p>
         </div>
 
-        <ProjectsCard OpenProjects="OpenProjects" />
+        <ProjectsCard OpenProjects="OpenRegistrations" />
 
         <TimerCard />
 
