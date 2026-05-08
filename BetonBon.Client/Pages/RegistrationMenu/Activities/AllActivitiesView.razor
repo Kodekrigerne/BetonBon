@@ -1,0 +1,20 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared
+@using BetonBon.Client.Shared.Components
+@using BetonBon.Client.Shared.Icons
+@using BetonBon.Shared.Models
+@inject IEconomicApi _economicApi
+
+<FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="@Close" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" ZIndex="101">
+
+        <SearchComponent @bind-SearchTerm="@Search" @bind-SearchTerm:after="OnSearch" />
+
+        <div class="list-area">
+         
+            @foreach (var activity in _filteredActivities)
+            {
+               <ActivityCard ActivitySelected="SelectActivity" SelectedActivity="activity"/>
+            }
+    </div>
+
+</FullScreenModal>

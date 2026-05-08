@@ -7,5 +7,8 @@ namespace BetonBon.Client.RefitInterfaces
     {
         [Get("/api/projects")]
         Task<List<ProjectDTO>> GetAllProjectsAsync();
+
+        [Get("/api/activitiesByProjectNumber")]
+        Task<List<ActivityDTO>> GetAllActivitiesByProjectAsync(int projectNumber);
     }
 }
