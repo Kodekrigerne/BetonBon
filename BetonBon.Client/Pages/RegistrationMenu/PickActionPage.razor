@@ -1,10 +1,10 @@
 ﻿@using BetonBon.Client.Shared.Components
 @using BetonBon.Shared.Models
 
+
 @if (SelectedProject != null && SelectedActivity != null)
 {
-    <div style="z-index:200">
-        <FullScreenModal IsVisible="IsVisible" Title="Hvad vil du?" OnClose="@OnClosed" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop">
+        <FullScreenModal IsVisible="IsVisible" Title="Hvad vil du?" OnClose="@OnClosed" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop" ZIndex="102">
 
             @* Content *@
             <div class="content">
@@ -80,7 +80,6 @@
 
             </div>
         </FullScreenModal>
-    </div>
 }
 @code {
     [Parameter, EditorRequired]

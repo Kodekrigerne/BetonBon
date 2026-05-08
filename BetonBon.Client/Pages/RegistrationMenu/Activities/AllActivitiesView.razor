@@ -5,8 +5,7 @@
 @using BetonBon.Shared.Models
 @inject IEconomicApi _economicApi
 
-<div style="z-index:101;">
-<FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="@Close" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft">
+<FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="@Close" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" ZIndex="101">
 
         <SearchComponent @bind-SearchTerm="@Search" @bind-SearchTerm:after="OnSearch" />
 
@@ -19,4 +18,3 @@
     </div>
 
 </FullScreenModal>
-</div>

@@ -6,13 +6,14 @@
 
 @page "/registration"
 @inject NavigationManager Navigation
+<AllProjectsView IsVisible="ProjectsIsVisible" OnCloseProjects="OnCloseProjects" SelectProject="SelectProject"/>
+<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" ActivitySelected="OpenRegistrationMenu"/>
 
 <PickActionPage SelectedProject="SelectedProject" SelectedActivity="SelectedActivity"OnClose="ClosePickActionMenu" IsVisible="RegistrationMenuIsVisible"
     OnViewMaterialHistory="OpenMaterialRegistrationHistory" OnViewTimeHistory="OpenTimeRegistrationHistory" OnOpenTimeRegistration="OpenTimeRegistration"
     OnOpenMaterialRegistration="OpenMaterialRegistration"/>
 
-<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" ActivitySelected="OpenRegistrationMenu"/>
-<AllProjectsView IsVisible="ProjectsIsVisible" OnCloseProjects="OnCloseProjects" SelectProject="SelectProject"/>
+
 
 
 @code {
@@ -49,12 +50,17 @@
     private void OpenRegistrationMenu(ActivityDTO activity)
     {
         SelectedActivity = activity;
+        // ActivitiesIsVisible = false;
+        // ProjectsIsVisible = false;
         RegistrationMenuIsVisible = true;
+        StateHasChanged();
     }
 
     private void ClosePickActionMenu()
     {
         RegistrationMenuIsVisible = false;
+        // ActivitiesIsVisible = true;
+        // ProjectsIsVisible = true;
         SelectedActivity = null;
     }
 
