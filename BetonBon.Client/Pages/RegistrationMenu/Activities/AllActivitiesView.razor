@@ -12,15 +12,9 @@
 
         <div class="list-area">
          
-            @foreach (var act in _filteredActivities)
+            @foreach (var activity in _filteredActivities)
             {
-                <button @onclick="() => SelectActivity()" class="activity-item">
-                    <div>
-                        <div class="activity-name">@act.Name</div>
-                        <div class="activity-id">Nr. @act.Number</div>
-                    </div>
-                    <AddIcon/>
-                </button>
+               <ActivityCard ActivitySelected="SelectActivity" SelectedActivity="activity"/>
             }
     </div>
 

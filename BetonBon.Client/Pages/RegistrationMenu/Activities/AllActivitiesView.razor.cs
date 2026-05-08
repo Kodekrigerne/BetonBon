@@ -17,7 +17,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Activities
         public EventCallback OnClose { get; set; }
 
         [Parameter, EditorRequired]
-        public EventCallback ProjectSelected { get; set; }
+        public EventCallback<ActivityDTO> ActivitySelected { get; set; }
 
 
         private List<ActivityDTO> _activities = [];
@@ -34,14 +34,12 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Activities
 
         private async Task Close()
         {
-            _filteredActivities = [];
-            _activities = [];
             await OnClose.InvokeAsync();
         }
 
-        private void SelectActivity()
+        private async Task SelectActivity(ActivityDTO activity)
         {
-
+            await ActivitySelected.InvokeAsync(activity);
         }
 
         protected override async Task OnParametersSetAsync()

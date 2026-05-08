@@ -7,7 +7,11 @@
 @page "/registration"
 @inject NavigationManager Navigation
 
-<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" ProjectSelected="OpenRegistrationMenu"/>
+<PickActionPage SelectedProject="SelectedProject" SelectedActivity="SelectedActivity"OnClose="ClosePickActionMenu" IsVisible="RegistrationMenuIsVisible"
+    OnViewMaterialHistory="OpenMaterialRegistrationHistory" OnViewTimeHistory="OpenTimeRegistrationHistory" OnOpenTimeRegistration="OpenTimeRegistration"
+    OnOpenMaterialRegistration="OpenMaterialRegistration"/>
+
+<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" ActivitySelected="OpenRegistrationMenu"/>
 <AllProjectsView IsVisible="ProjectsIsVisible" OnCloseProjects="OnCloseProjects" SelectProject="SelectProject"/>
 
 
@@ -39,22 +43,41 @@
 
     private void ViewHistory()
     {
-        
+
     }
 
-    private void OpenRegistrationMenu()
+    private void OpenRegistrationMenu(ActivityDTO activity)
+    {
+        SelectedActivity = activity;
+        RegistrationMenuIsVisible = true;
+    }
+
+    private void ClosePickActionMenu()
+    {
+        RegistrationMenuIsVisible = false;
+        SelectedActivity = null;
+    }
+
+    private void OpenTimeRegistrationHistory()
+    {
+        // TODO: Create Time Registration Module
+    }
+
+    private void OpenMaterialRegistrationHistory()
+    {
+        
+    }
+    
+    private void OpenTimeRegistration()
+    {
+        
+    }
+    
+    private void OpenMaterialRegistration()
     {
         
     }
 
-	public bool IsVisible { get; set; } = false;
-
-	public EventCallback OnClose { get; set; }
-
-	private async Task CloseMenu()
-	{
-    
-	}
 }
 
 <style>
