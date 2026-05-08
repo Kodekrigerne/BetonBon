@@ -5,12 +5,12 @@
 @using BetonBon.Shared.Models
 @inject IEconomicApi _economicApi
 
-<FullScreenModal IsVisible="ProjectsIsVisible" OnClose="CloseProjects" Title="Vælg Projekt">
+<FullScreenModal IsVisible="IsVisible" OnClose="CloseProjects" Title="Vælg Projekt">
 
     <div class="projects-container">
 
         
-        <SearchComponent @bind-SearchTerm="@Search" OnSearchTermChanged="@OnSearch"/>
+        <SearchComponent @bind-SearchTerm="@Search" @bind-SearchTerm:after="OnSearch"/>
 
 
         <div class="project-list">

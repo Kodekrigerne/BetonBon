@@ -34,6 +34,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Activities
 
         private async Task Close()
         {
+            _filteredActivities = [];
             _activities = [];
             await OnClose.InvokeAsync();
         }
@@ -46,6 +47,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Activities
         protected override async Task OnParametersSetAsync()
         {
             if (SelectedProject!= null && IsVisible == true) _activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
+            _filteredActivities = _activities;
         }
 
     }

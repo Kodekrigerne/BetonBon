@@ -1,5 +1,4 @@
-﻿using BetonBon.Client.Pages.Activities;
-using BetonBon.Client.Pages.Projects;
+﻿
 using BetonBon.Shared.Models;
 
 namespace BetonBon.Client.Pages.Home

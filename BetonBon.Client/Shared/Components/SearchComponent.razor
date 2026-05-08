@@ -16,13 +16,13 @@
     [Parameter, EditorRequired]
     public string SearchTerm { get; set; } = "";
 
-    [Parameter]
-    public EventCallback OnSearchTermChanged { get; set; }
+    [Parameter, EditorRequired]
+    public EventCallback<string> SearchTermChanged { get; set; }
 
     private async Task HandleInput(ChangeEventArgs e)
     {
         SearchTerm = e.Value?.ToString() ?? "";
-        await OnSearchTermChanged.InvokeAsync();
+        await SearchTermChanged.InvokeAsync(SearchTerm);
     }
 }
 
