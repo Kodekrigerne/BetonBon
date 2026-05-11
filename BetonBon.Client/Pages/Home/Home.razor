@@ -1,10 +1,9 @@
 ﻿@page "/"
-@using BetonBon.Client.Pages.Projects
+@using BetonBon.Client.Pages.RegistrationMenu
 @using BetonBon.Client.Pages.Users
 @using BetonBon.Client.Shared.Components
+@inject NavigationManager _navigation
 @using Microsoft.AspNetCore.Authorization
-
-<AllProjectsView ProjectsIsVisible="IsVisibleProjects" OnCloseProjects="CloseProjects"/>
 
 <Users UsersIsVisible="IsVisibleUsers" OnCloseUsers="CloseUsers" />
 
@@ -33,7 +32,7 @@
             <p>Hvad vil du registrere i dag?</p>
         </div>
 
-        <ProjectsCard OpenProjects="Openprojects" />
+        <ProjectsCard OpenProjects="OpenRegistrations" />
 
         <TimerCard />
 

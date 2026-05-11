@@ -1,7 +1,8 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application.Users;
+using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Refit;
 using System.Security.Authentication;
 using System.Text.Json.Serialization;
+using BetonBon.Application.Users;
 
 namespace BetonBon.API
 {
@@ -64,8 +66,7 @@ namespace BetonBon.API
             builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
-            builder.Services.AddSingleton<JsonWebTokenHandler>();
-
+            
             builder.Services.ConfigureHttpJsonOptions(options =>
                 {
                     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -105,6 +106,15 @@ namespace BetonBon.API
 
             app.UseAuthorization();
 
+            // Get all projects
+            app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
+            {
+                var response = await economicApi.GetProjectsAsync();
+                return Results.Ok(response.Projects);
+            }
+            );
+
+            app.MapPost("createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
 
             app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
             {
@@ -145,6 +155,24 @@ namespace BetonBon.API
                 {
                     return Results.Unauthorized();
                 }
+            });
+                var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
+
+                return Results.Ok(id);
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
+            {
+                var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
+
+                var projectActivities = initialResponse.ProjectActivities;
+
+                List<ActivityDTO> activities = [];
+
+                foreach (var activity in projectActivities)
+                {
+                    activities.Add(economicApi.GetActivityByNumberAsync(activity.ActivityNumber).Result);
+                }
+
+                return Results.Ok(activities);
             });
 
             app.Run();

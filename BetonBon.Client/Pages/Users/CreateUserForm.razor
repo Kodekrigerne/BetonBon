@@ -1,0 +1,118 @@
+﻿@using BetonBon.Client.Shared.ViewModels
+@using BetonBon.Shared.Models
+@using BetonBon.Shared.Enums
+@using BetonBon.Client.RefitInterfaces
+@inject IBetonBonAPI _api
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        <h2>Opret ny bruger</h2>
+
+    </div>
+
+    <EditForm EditContext="@editContext" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+
+            <label>Brugernavn</label>
+            <InputText @bind-Value="createUserModel.Username" class="form-input" placeholder="Indtast navn..." />
+            <ValidationMessage For="@(() => createUserModel.Username)" class="validation-error" />
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Adgangskode</label>
+            <InputText type="password" @bind-Value="createUserModel.Password" class="form-input" />
+            <ValidationMessage For="@(() => createUserModel.Password)" class="validation-error" />
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Rolle</label>
+            <InputSelect @bind-Value="createUserModel.Role" class="form-input">
+
+                @foreach (var role in Enum.GetValues<UserRole>())
+                {
+                    <option value="@role">@role.ToString()</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => createUserModel.Role)" class="validation-error" />
+        </div>
+
+        <div class="form-actions">
+
+            <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
+
+            <button type="submit" class="btn-primary" disabled="@(!formIsValid || isSubmitting)">
+
+                @if (isSubmitting)
+                {
+                    <span>Opretter...</span>
+                }
+                else
+                {
+                    <span>Gem Medarbejder</span>
+                }
+
+            </button>
+
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnUserCreated { get; set; }
+
+    private CreateNewUserModel createUserModel = new();
+
+    private EditContext? editContext;
+    private bool isSubmitting = false;
+    private bool formIsValid = false;
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+        editContext = new EditContext(createUserModel);
+        editContext.OnFieldChanged += HandleFieldChanged;
+
+	}
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        formIsValid = editContext?.Validate() ?? false;
+        StateHasChanged();
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+        try
+        {
+            var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role);
+            await _api.CreateUser(newUser);
+            await OnUserCreated.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            //Snackbar ?
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (editContext != null)
+            editContext.OnFieldChanged -= HandleFieldChanged;
+    }
+
+
+}

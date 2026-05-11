@@ -4,11 +4,17 @@
 @using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Shared.Components
 
-@inject IBetonBonApi _api
+@inject IBetonBonAPI _api
 
 
-<FullScreenModal IsVisible="UsersIsVisible" OnClose="CloseUsers" Title="Medarbejdere">
+<FullScreenModal IsVisible="UsersIsVisible" OnClose="CloseUsers" Title="@(isCreating ? "Ny bruger" : "Medarbejdere")">
 
+    @if(isCreating)
+    {
+        <CreateUserForm OnCancel="() => isCreating = false" OnUserCreated="HandleUserCreated" />
+    }
+    else
+    {
     <div class="content">
 
         @* Opret Bruger Knap *@
@@ -35,5 +41,7 @@
             }
         </div>
     </div>
+    }
+
 
 </FullScreenModal>

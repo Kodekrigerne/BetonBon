@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace BetonBon.Shared.Models
 {
-    public class AllProjectsResponse(List<ProjectDTO> projects)
+    public class AllActivitiesResponse(List<ActivityDTO> activities)
     {
         [JsonPropertyName("items")]
-        public List<ProjectDTO> Projects { get; set; } = projects;
+        public List<ActivityDTO> Activities { get; set; } = activities;
     }
 }
