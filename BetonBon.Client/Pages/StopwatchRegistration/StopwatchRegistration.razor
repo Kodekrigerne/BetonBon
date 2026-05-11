@@ -1,7 +1,13 @@
 ﻿@page "/stopwatch-registration"
     
+    @using BetonBon.Client.Pages.RegistrationMenu.Activities
+@using BetonBon.Client.Pages.RegistrationMenu.Projects
+
 @if (_initialized)
 {
+    <AllProjectsView IsVisible="_projectsIsVisible" SelectProject="OnProjectSelected" OnCloseProjects="OnProjectsClosed" />
+    <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="OnActivitiesClosed" ActivitySelected="OnActivitySelected" />
+
     <div class="allocate-page">
         @* Header *@
         <div class="allocate-header">
@@ -56,7 +62,7 @@
                         }
 
                         <div class="project-selector" @onclick="() => SelectProjectForAllocation(d.Id)">
-                            @if (d.ProjectName != null)
+                            @if (d.ProjectDTO != null && d.ActivityDTO != null)
                             {
                                 <div class="project-selected">
                                     <div class="project-label">
@@ -64,8 +70,8 @@
                                             ? "Primært Projekt & Aktivitet"
                                             : "Projekt & Aktivitet")
                                     </div>
-                                    <div class="project-name">@d.ProjectName</div>
-                                    <div class="activity-name">@d.ActivityName</div>
+                                    <div class="project-name">@d.ProjectDTO.Name</div>
+                                    <div class="activity-name">@d.ActivityDTO.Name</div>
                                 </div>
                             }
                             else
