@@ -1,4 +1,13 @@
 ﻿@page "/login"
+@using BetonBon.Client.Auth
+@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Shared.Models
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IBetonBonAPI Api;
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthStateProvider;
 
 @attribute [AllowAnonymous]
 @layout LoginLayout
@@ -18,16 +27,23 @@
     <div class="login-card">
         <div class="input-group">
             <label for="username">Brugernavn</label>
-            <input type="text" id="username" class="theme-input" placeholder="Indtast dit brugernavn" />
+            <input type="text" id="username" class="theme-input" placeholder="Indtast dit brugernavn" @bind="@Username"/>
         </div>
 
         <div class="input-group">
             <label for="password">Adgangskode</label>
-            <input type="password" id="password" class="theme-input" placeholder="Indtast din adgangskode" />
+            <input type="password" id="password" class="theme-input" placeholder="Indtast din adgangskode" @bind="@Password"/>
         </div>
 
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div style="color: red; font: 0.875rem; font-weight: bold;">
+                @ErrorMessage
+            </div>
+        }
+
         <div class="btn-group">
-            <button class="btn-primary">Log ind</button>
+            <button class="btn-primary" @onclick="@SignIn">Log ind</button>
             <button class="btn-secondary">Annuller</button>
         </div>
     </div>
@@ -35,4 +51,37 @@
 
 @code {
 
+    public string? Username { get; set; }
+    public string? Password { get; set; }
+
+    public string? ErrorMessage { get; set; }
+
+    public async Task SignIn()
+    {
+        ErrorMessage = null;
+
+        try
+        {
+            var loginCredentials = new UserLoginDto(Username, Password);
+            var response = await Api.LoginUser(loginCredentials);
+
+            if (response != null)
+            {
+                await JSRuntime.InvokeVoidAsync("storage.save", "bb_token", response.Token);
+                await JSRuntime.InvokeVoidAsync("storage.save", "bb_refresh_token", response.RefreshToken);
+
+                var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+
+                customAuthStateProvider.MarkUserAsAuthenticated();
+
+                Thread.Sleep(100);
+
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Ugyldigt brugernavn eller adgangskode.";
+        }
+    }
 }

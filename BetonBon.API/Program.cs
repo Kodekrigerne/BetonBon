@@ -1,8 +1,7 @@
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
-using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
@@ -13,7 +12,6 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Refit;
 using System.Security.Authentication;
 using System.Text.Json.Serialization;
-using BetonBon.Application.Users;
 
 namespace BetonBon.API
 {
@@ -25,6 +23,7 @@ namespace BetonBon.API
 
             Env.TraversePath().Load();
 
+            builder.Configuration.AddEnvironmentVariables();
             builder.Services.Configure<JwtSettings>(
                 builder.Configuration.GetSection(JwtSettings.SectionName));
 
@@ -65,8 +64,9 @@ namespace BetonBon.API
             builder.Services.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
             builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            builder.Services.AddScoped<JsonWebTokenHandler>();
 
-            
+
             builder.Services.ConfigureHttpJsonOptions(options =>
                 {
                     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -114,22 +114,12 @@ namespace BetonBon.API
             }
             );
 
-            app.MapPost("createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
-
             app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
             {
                 var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
 
                 return Results.Ok(users);
             });
-
-            // Get all projects
-            app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
-            {
-                var response = await economicApi.GetProjectsAsync();
-                return Results.Ok(response.Projects);
-            }
-            );
 
             app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
             {
@@ -156,9 +146,7 @@ namespace BetonBon.API
                     return Results.Unauthorized();
                 }
             });
-                var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
-                return Results.Ok(id);
             app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
             {
                 var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
