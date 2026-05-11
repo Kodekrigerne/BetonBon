@@ -1,5 +1,5 @@
-using BetonBon.Application;
 using BetonBon.API.RefitInterfaces;
+using BetonBon.Application;
 using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
@@ -138,6 +138,20 @@ namespace BetonBon.API
                 var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
                 return Results.Ok(id);
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
+            {
+                var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
+
+                var projectActivities = initialResponse.ProjectActivities;
+
+                List<ActivityDTO> activities = [];
+
+                foreach (var activity in projectActivities)
+                {
+                    activities.Add(economicApi.GetActivityByNumberAsync(activity.ActivityNumber).Result);
+                }
+
+                return Results.Ok(activities);
             });
 
             app.Run();

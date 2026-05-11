@@ -1,0 +1,134 @@
+﻿@using BetonBon.Client.Shared.Components
+@using BetonBon.Shared.Models
+
+
+@if (SelectedProject != null && SelectedActivity != null)
+{
+        <FullScreenModal IsVisible="IsVisible" Title="Hvad vil du?" OnClose="@OnClosed" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop" ZIndex="102">
+
+            @* Content *@
+            <div class="content">
+
+                @* Context Card *@
+                <div class="context-card">
+                    <div class="context-row">
+                        <div class="context-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>
+                        </div>
+                        <div>
+                            <div class="context-label">Valgt projekt</div>
+                            <div class="context-value">@SelectedProject.Name</div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="context-row">
+                        <div class="context-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h7"/><path d="M11 16h7"/><path d="M11 8h7"/><path d="M3 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+                        </div>
+                        <div>
+                            <div class="context-label">Valgt aktivitet</div>
+                            <div class="context-value">@SelectedActivity.Name</div>
+                        </div>
+                    </div>
+                </div>
+
+                @* Create New Section *@
+                <div>
+                    <div class="section-label">Opret ny registrering</div>
+                    <div class="action-list">
+                        <button @onclick="OpenTimeRegistration" class="action-btn">
+                            <div class="icon-circle bg-green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div class="action-text">
+                                <h2>Registrer timer</h2>
+                                <p>Tilføj arbejdstid for i dag</p>
+                            </div>
+                        </button>
+
+                        <button @onclick"" class="action-btn">
+                            <div class="icon-circle bg-orange">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                            </div>
+                            <div class="action-text">
+                                <h2>Registrer materialer</h2>
+                                <p>Tilføj forbrug af materialer</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                @* History Section *@
+                <div style="margin-top: 0.5rem;">
+                    <div class="section-label">Historik for denne aktivitet</div>
+
+                    <div @onclick="ViewTimeHistory" class="history-item">
+                        <div class="context-icon" style="background-color:#f3f4f6; color:#6b7280;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h7"/><path d="M11 16h7"/><path d="M11 8h7"/><path d="M3 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+                        </div>
+                        <div class="history-text">Se tidsregistreringer</div>
+
+                    </div>
+
+                    <div @onclick="ViewMaterialHistory" class="history-item">
+                        <div class="context-icon" style="background-color:#f3f4f6; color:#6b7280;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h7"/><path d="M11 16h7"/><path d="M11 8h7"/><path d="M3 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+                        </div>
+                        <div class="history-text">Se materialeregistreringer</div>
+                    </div>
+                </div>
+
+            </div>
+        </FullScreenModal>
+}
+@code {
+    [Parameter, EditorRequired]
+    public ProjectDTO SelectedProject { get; set; }
+
+    [Parameter, EditorRequired]
+    public ActivityDTO SelectedActivity { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter, EditorRequired]
+    public bool IsVisible { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnViewMaterialHistory { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnViewTimeHistory { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnOpenTimeRegistration { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback OnOpenMaterialRegistration { get; set; }
+
+    private async Task OnClosed()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task ViewMaterialHistory()
+    {
+        await OnViewMaterialHistory.InvokeAsync();
+    }
+
+    private async Task ViewTimeHistory()
+    {
+        await OnViewTimeHistory.InvokeAsync();
+    }
+
+    private async Task OpenTimeRegistration()
+    {
+        await OnOpenTimeRegistration.InvokeAsync();
+    }
+
+    private async Task OpenMaterialRegistration()
+    {
+        await OnOpenMaterialRegistration.InvokeAsync();
+    }
+
+}
