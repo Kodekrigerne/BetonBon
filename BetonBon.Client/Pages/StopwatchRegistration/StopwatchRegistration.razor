@@ -1,8 +1,10 @@
 ﻿@page "/stopwatch-registration"
 @using BetonBon.Client.Pages.Home
 @using System.Text.Json
+@using BetonBon.Client.Services
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
+@inject LocalStorage LocalStorage
 
 @if (_initialized)
 {
@@ -151,7 +153,7 @@
     {
         if (firstRender)
         {
-            var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
+            var json = await LocalStorage.LoadAsync("bb_timer");
             if (json == null)
                 throw new InvalidOperationException(
                     "Invalid state: Navigated to stopwatch-registration with no session recorded.");

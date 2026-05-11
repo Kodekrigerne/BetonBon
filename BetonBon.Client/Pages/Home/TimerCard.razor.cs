@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
+using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace BetonBon.Client.Pages.Home
 {
     public partial class TimerCard : IAsyncDisposable
     {
         [Inject]
-        private IJSRuntime JS { get; set; } = default!;
+        private NavigationManager NavigationManager { get; set; } = null!;
 
         [Inject]
-        private NavigationManager NavigationManager { get; set; } = null!;
+        private LocalStorage LocalStorage { get; set; } = null!;
 
         private bool _initialized = false;
         private enum TimerState { NotStarted, Paused, Running }
@@ -27,7 +27,7 @@ namespace BetonBon.Client.Pages.Home
         {
             if (firstRender)
             {
-                var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
+                var json = await LocalStorage.LoadAsync("bb_timer");
                 if (json != null)
                 {
                     var session = JsonSerializer.Deserialize<StopwatchSession>(json)
@@ -134,7 +134,7 @@ namespace BetonBon.Client.Pages.Home
         private async Task SaveSession()
         {
             var json = JsonSerializer.Serialize(_session);
-            await JS.InvokeVoidAsync("storage.save", "bb_timer", json);
+            await LocalStorage.SaveAsync("bb_timer", json);
         }
 
         public async ValueTask DisposeAsync()
