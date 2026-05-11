@@ -18,7 +18,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
         public ProjectDTO? SelectedProject;
 
         private string Search { get; set; } = "";
-        
+
         private List<ProjectDTO> _projects = [];
         private IEnumerable<ProjectDTO> _filteredProjects = [];
 
@@ -40,7 +40,13 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
 
         protected override async Task OnInitializedAsync()
         {
-            if (IsVisible == true) _projects = await _economicApi.GetAllProjectsAsync();
+            if (IsVisible == true && (_projects == null || _projects.Count == 0)) _projects = await _economicApi.GetAllProjectsAsync();
+            _filteredProjects = _projects;
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (IsVisible == true && (_projects == null || _projects.Count == 0)) _projects = await _economicApi.GetAllProjectsAsync();
             _filteredProjects = _projects;
         }
 
