@@ -1,7 +1,9 @@
 ﻿@page "/stopwatch-registration"
 @using BetonBon.Client.Pages.Home
 @using System.Text.Json
+@using BetonBon.Client.Services
 @inject NavigationManager NavigationManager
+@inject LocalStorage LocalStorage
 @inject IJSRuntime JS
 
 @if (_initialized)
@@ -81,8 +83,7 @@
                         </div>
 
                         <div class="minutes-control">
-                            <span class="minutes-label">Tid:</span>
-                            <div class="minutes-value">@FormatMinutes(d.Minutes)</div>
+                            <div class="minutes-value">Tid: @FormatMinutes(d.Minutes)</div>
                             <div class="minutes-buttons">
                                 <button class="min-btn"
                                         disabled="@(d.Minutes == 0)"
@@ -149,10 +150,9 @@
     {
         if (firstRender)
         {
-            var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
+            var json = await LocalStorage.LoadAsync("bb_timer");
             if (json == null)
-                throw new InvalidOperationException(
-                    "Invalid state: Navigated to stopwatch-registration with no session recorded.");
+                throw new InvalidOperationException("Invalid state: Navigated to stopwatch-registration with no session recorded.");
 
             _session = JsonSerializer.Deserialize<StopwatchSession>(json)
                 ?? throw new InvalidOperationException("Invalid stopwatch session data.");
@@ -170,7 +170,10 @@
         }
     }
 
-    private void NavigateBack() { }
+    private async Task NavigateBack()
+    {
+        await JS.InvokeVoidAsync("history.back");
+    }
 
     private void SelectProjectForAllocation(Guid draftId) { }
 
@@ -419,11 +422,6 @@
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-    }
-
-    .minutes-label {
-        font-weight: 700;
-        color: #374151;
     }
 
     .minutes-value {
