@@ -10,5 +10,8 @@ namespace BetonBon.Client.RefitInterfaces
 
         [Get("/viewUsers")]
         Task<List<UserDto>> GetAllUsers();
+
+        [Post("/login")]
+        Task<LoginResponse?> LoginUser(UserLoginDto userToLogin);
     }
 }
