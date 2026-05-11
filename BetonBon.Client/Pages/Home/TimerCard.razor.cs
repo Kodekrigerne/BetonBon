@@ -10,6 +10,9 @@ namespace BetonBon.Client.Pages.Home
         [Inject]
         private IJSRuntime JS { get; set; } = default!;
 
+        [Inject]
+        private NavigationManager NavigationManager { get; set; } = null!;
+
         private enum TimerState { NotStarted, Paused, Running }
         private TimerState _timerState = TimerState.NotStarted;
         private Stopwatch? _stopwatch = null;
@@ -28,6 +31,8 @@ namespace BetonBon.Client.Pages.Home
                 {
                     var session = JsonSerializer.Deserialize<StopwatchSession>(json)
                         ?? throw new InvalidOperationException("Invalid stopwatch session data.");
+
+                    if (session.StopTime != null) session.ResetStopTime();
 
                     _session = session;
 
@@ -61,12 +66,21 @@ namespace BetonBon.Client.Pages.Home
         /// </summary>
         private async Task StopTimer()
         {
-            _timerState = TimerState.NotStarted;
-            _stopwatch?.Stop();
-            _session?.SetStopTime(DateTime.UtcNow);
-            _session = null;
+            if (_stopwatch == null) throw new InvalidOperationException("Invalid state: Stopwatch null when stopping.");
+            if (_session == null) throw new InvalidOperationException("Invalid state: Session null when stopping stopwatch.");
+            //TODO: Bekræft stop
+
+            _timerState = TimerState.Paused;
+            _stopwatch.Stop();
+            _session.SetStopTime(DateTime.UtcNow);
             StopTicking();
-            await JS.InvokeVoidAsync("storage.remove", "bb_timer");
+            await SaveSession();
+            _session = null;
+
+            NavigationManager.NavigateTo($"/stopwatch-registration");
+
+            //TODO: Flyt dette til efter timer er registrerede
+            //await JS.InvokeVoidAsync("storage.remove", "bb_timer");
         }
 
         private async Task PauseTimer()

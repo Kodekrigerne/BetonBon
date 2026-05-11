@@ -1,0 +1,29 @@
+﻿@page "/stopwatch-registration"
+@using BetonBon.Client.Pages.Home
+@using System.Text.Json
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<p>Test</p>
+@if (_session != null)
+{
+    <p>@_session.GetSessionString()</p>
+}
+
+@code {
+    private StopwatchSession _session = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
+        if (json != null)
+        {
+            var session = JsonSerializer.Deserialize<StopwatchSession>(json)
+                ?? throw new InvalidOperationException("Invalid stopwatch session data.");
+
+            _session = session;
+            StateHasChanged();
+        }
+        await base.OnInitializedAsync();
+    }
+}
