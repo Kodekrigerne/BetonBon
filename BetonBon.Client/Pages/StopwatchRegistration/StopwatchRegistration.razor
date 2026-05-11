@@ -172,9 +172,9 @@
         }
     }
 
-    private void NavigateBack()
+    private async Task NavigateBack()
     {
-        
+        await JS.InvokeVoidAsync("history.back");
     }
 
     private void SelectProjectForAllocation(Guid draftId) { }
