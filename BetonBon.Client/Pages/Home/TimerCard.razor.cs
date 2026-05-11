@@ -13,6 +13,7 @@ namespace BetonBon.Client.Pages.Home
         [Inject]
         private NavigationManager NavigationManager { get; set; } = null!;
 
+        private bool _initialized = false;
         private enum TimerState { NotStarted, Paused, Running }
         private TimerState _timerState = TimerState.NotStarted;
         private Stopwatch? _stopwatch = null;
@@ -46,6 +47,7 @@ namespace BetonBon.Client.Pages.Home
 
                     _offset = session.GetOffset(DateTime.UtcNow);
                 }
+                _initialized = true;
             }
         }
 
