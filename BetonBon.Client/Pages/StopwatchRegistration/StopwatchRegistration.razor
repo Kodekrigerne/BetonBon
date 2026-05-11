@@ -122,9 +122,12 @@
                 }
             </div>
 
-            <button class="add-project-btn" @onclick="AddAllocation">
-                + Tilføj et projekt mere
-            </button>
+            @if (RemainingMinutes != 0)
+            {
+                <button class="add-project-btn" @onclick="AddAllocation">
+                    + Tilføj et projekt mere
+                </button>
+            }
         </div>
 
         @* Sticky save button *@
