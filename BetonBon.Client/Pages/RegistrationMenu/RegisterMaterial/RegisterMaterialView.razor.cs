@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 {
-    public partial class RegisterMaterialPage
+    public partial class RegisterMaterialView
     {
 
         [Parameter, EditorRequired]

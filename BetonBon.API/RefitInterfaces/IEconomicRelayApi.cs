@@ -16,5 +16,8 @@ namespace BetonBon.API.RefitInterfaces
 
         [Get("/CostTypes?filter=isBarred$eq:false")]
         Task<AllMaterialResponse> GetAllMaterialsAsync();
+
+        [Post("/journals")]
+        Task<JournalResponseDTO> PostNewJournalAsync();
     }
 }
