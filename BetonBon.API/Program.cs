@@ -1,18 +1,13 @@
+using System.Text.Json.Serialization;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
-using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
-using BetonBon.Infrastructure.Services;
-using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
-using System.Text.Json.Serialization;
 using Refit;
-using BetonBon.Application.Users;
 
 namespace BetonBon.API
 {
@@ -60,7 +55,7 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
-            
+
             builder.Services.ConfigureHttpJsonOptions(options =>
                 {
                     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -138,6 +133,8 @@ namespace BetonBon.API
                 var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
                 return Results.Ok(id);
+            });
+
             app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
             {
                 var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
