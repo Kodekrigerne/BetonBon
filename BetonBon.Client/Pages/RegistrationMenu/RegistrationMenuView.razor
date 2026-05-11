@@ -1,11 +1,14 @@
 ﻿@using BetonBon.Client.Pages.RegistrationMenu.Activities
 @using BetonBon.Client.Pages.RegistrationMenu.Projects
+@using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 @using BetonBon.Client.Shared.Components
 @using BetonBon.Client.Shared.Icons
 @using BetonBon.Shared.Models
 
 @page "/registration"
 @inject NavigationManager Navigation
+
+
 <AllProjectsView IsVisible="ProjectsIsVisible" OnCloseProjects="OnCloseProjects" SelectProject="SelectProject"/>
 <AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" ActivitySelected="OpenRegistrationMenu"/>
 
@@ -13,6 +16,7 @@
     OnViewMaterialHistory="OpenMaterialRegistrationHistory" OnViewTimeHistory="OpenTimeRegistrationHistory" OnOpenTimeRegistration="OpenTimeRegistration"
     OnOpenMaterialRegistration="OpenMaterialRegistration"/>
 
+<RegisterMaterialPage Activity="SelectedActivity" Project="SelectedProject" OnClosed="CloseMaterialRegistration" ShowMaterialModal="MaterialRegistrationIsVisible"></RegisterMaterialPage>
 
 
 
@@ -21,6 +25,8 @@
     private ProjectDTO? SelectedProject;
 
     private ActivityDTO? SelectedActivity;
+
+    private bool MaterialRegistrationIsVisible;
 
     private bool ProjectsIsVisible = true;
     private bool ActivitiesIsVisible = false;
@@ -71,17 +77,22 @@
 
     private void OpenMaterialRegistrationHistory()
     {
-        
+
     }
-    
+
     private void OpenTimeRegistration()
     {
-        
+
     }
-    
+
     private void OpenMaterialRegistration()
     {
-        
+        MaterialRegistrationIsVisible = true;
+    }
+
+    private void CloseMaterialRegistration()
+    {
+        MaterialRegistrationIsVisible = false;
     }
 
 }

@@ -128,6 +128,13 @@ namespace BetonBon.API
                 return Results.Ok(activities);
             });
 
+            app.MapGet("/api/materials", async (IEconomicRelayApi economicApi) =>
+            {
+                var response = await economicApi.GetAllMaterialsAsync();
+
+                return Results.Ok(response.Materials);
+            }); 
+
             app.Run();
         }
     }

@@ -1,0 +1,134 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared.Components
+@using BetonBon.Shared.Models
+@inject IEconomicApi _economicApi
+
+<FullScreenModal SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" ZIndex="130" IsVisible="IsVisible" Title="Vælg materiale" OnClose="OnClose">
+
+    <div style="flex:1; overflow-y:auto; background-color:#f9fafb;">
+        @if (_materials != null)
+        {
+            
+            @foreach (var mat in _materials)
+            {
+                <button @onclick="() => MaterialSelect(mat)" class="modal-mat-item">
+                    <div>
+                        <div style="font-weight:bold; font-size:1.125rem; color:#111827;">@mat.Name</div>
+                        <div style="font-size:0.875rem; color:#6b7280; margin-top:0.25rem; font-weight:500;">Måles i: @mat.Unit</div>
+                    </div>
+                    <div style="width:2.5rem; height:2.5rem; background-color:#eff6ff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#2563eb;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </div>
+                </button>
+            }
+        }
+    </div>
+</FullScreenModal>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter, EditorRequired]
+    public EventCallback OnClosed { get; set; }
+
+    [Parameter, EditorRequired]
+    public MaterialDTO SelectedMaterial { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<MaterialDTO> MaterialSelected { get; set; }
+
+    private List<MaterialDTO>? _materials { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsVisible == true) _materials = await _economicApi.GetAllMaterialsAsync();
+    }
+
+    private async Task OnClose()
+    {
+        await OnClosed.InvokeAsync();
+    }
+
+    private async Task MaterialSelect(MaterialDTO material)
+    {
+        await MaterialSelected.InvokeAsync(material);
+    }
+}
+
+    <style>
+    /* Note Input */
+    .note-input {
+        width: 100%;
+        height: 6rem;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        resize: none;
+        color: #111827;
+        font-size: 1rem;
+        font-family: inherit;
+    }
+
+        .note-input::placeholder {
+            color: #9ca3af;
+        }
+
+    /* Bottom Fixed Button */
+    .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.25rem;
+        background-color: white;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.05);
+        z-index: 20;
+    }
+
+    .save-btn {
+        width: 100%;
+        background-color: #2563eb;
+        color: white;
+        font-weight: bold;
+        font-size: 1.25rem;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        box-shadow: 0 10px 15px -3px rgba(37,99,235,0.3);
+        transition: transform 0.1s;
+    }
+
+        .save-btn:active {
+            background-color: #1d4ed8;
+            transform: scale(0.98);
+        }
+
+    /* Modal List Items */
+    .modal-mat-item {
+        width: 100%;
+        text-align: left;
+        padding: 1.25rem;
+        background-color: white;
+        border-bottom: 1px solid #f3f4f6;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+        .modal-mat-item:active {
+            background-color: #eff6ff;
+        }
+
+    </style>

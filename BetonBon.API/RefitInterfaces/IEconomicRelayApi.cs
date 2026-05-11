@@ -13,5 +13,8 @@ namespace BetonBon.API.RefitInterfaces
         
         [Get("/Activities/{number}")]
         Task<ActivityDTO> GetActivityByNumberAsync(int number);
+
+        [Get("/CostTypes?filter=isBarred$eq:false")]
+        Task<AllMaterialResponse> GetAllMaterialsAsync();
     }
 }
