@@ -4,27 +4,565 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
 
-<p>Test</p>
-@if (_session != null)
+@if (_initialized)
 {
-    <p>@_session.GetOffset()</p>
-    <pre>@_session.GetSessionString()</pre>
+    <div class="allocate-page">
+        @* Header *@
+        <div class="header">
+            <button class="back-btn" @onclick="NavigateBack">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <h1 class="header-title">Fordel tid</h1>
+        </div>
+
+        <div class="allocate-content">
+            @* Total time summary *@
+            <div class="time-summary">
+                <div class="time-summary-label">Samlet tid på stopur</div>
+                <div class="time-summary-value">@FormatSessionElapsed()</div>
+                <div class="time-summary-status @(RemainingMinutes == 0 && AllAssigned ? "status-complete" : "status-remaining")">
+                    @if (RemainingMinutes == 0 && AllAssigned)
+                    {
+                        <span>✓ Al tid er fordelt</span>
+                    }
+                    else if (RemainingMinutes == 0)
+                    {
+                        <span>Vælg projekt og aktivitet for alle linjer</span>
+                    }
+                    else
+                    {
+                        <span>Tid tilbage at fordele: @FormatMinutes(RemainingMinutes)</span>
+                    }
+                </div>
+            </div>
+
+            @* Allocation lines *@
+            <div class="allocations-section">
+                <div class="allocations-intro">
+                    <h2>Hvor skal tiden registreres?</h2>
+                    <p>
+                        Dette er din primære registrering. Du kan tilføje flere
+                        projekter/aktiviteter nedenfor, hvis tiden skal fordeles
+                        på andet arbejde.
+                    </p>
+                </div>
+
+                @foreach (var draft in _allocationDrafts)
+                {
+                    var d = draft;
+                    <div class="allocation-card">
+                        @if (_allocationDrafts.Count > 1)
+                        {
+                            <button class="remove-btn" @onclick="() => RemoveAllocation(d.Id)">
+                                ✕
+                            </button>
+                        }
+
+                        <div class="project-selector" @onclick="() => SelectProjectForAllocation(d.Id)">
+                            @if (d.ProjectName != null)
+                            {
+                                <div class="project-selected">
+                                    <div class="project-label">
+                                        @(d == _allocationDrafts[0]
+                                            ? "Primært Projekt & Aktivitet"
+                                            : "Projekt & Aktivitet")
+                                    </div>
+                                    <div class="project-name">@d.ProjectName</div>
+                                    <div class="activity-name">@d.ActivityName</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="project-empty">
+                                    <span>+ Tryk for at vælge projekt</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="minutes-control">
+                            <span class="minutes-label">Tid (minutter):</span>
+                            <div class="minutes-row">
+                                <div class="minutes-buttons-left">
+                                    <button class="min-btn"
+                                            disabled="@(d.Minutes == 0)"
+                                            @onclick="() => UpdateMinutes(d.Id, -60)">
+                                        -60
+                                    </button>
+                                    <button class="min-btn"
+                                            disabled="@(d.Minutes == 0)"
+                                            @onclick="() => UpdateMinutes(d.Id, -15)">
+                                        -15
+                                    </button>
+                                    <button class="min-btn"
+                                            disabled="@(d.Minutes == 0)"
+                                            @onclick="() => UpdateMinutes(d.Id, -1)">
+                                        -1
+                                    </button>
+                                </div>
+                                <span class="minutes-value">@FormatMinutes(d.Minutes)</span>
+                                <div class="minutes-buttons-right">
+                                    <button class="min-btn-add"
+                                            disabled="@(RemainingMinutes == 0)"
+                                            @onclick="() => UpdateMinutes(d.Id, 1)">
+                                        +1
+                                    </button>
+                                    <button class="min-btn-add"
+                                            disabled="@(RemainingMinutes == 0)"
+                                            @onclick="() => UpdateMinutes(d.Id, 15)">
+                                        +15
+                                    </button>
+                                    <button class="min-btn-add"
+                                            disabled="@(RemainingMinutes == 0)"
+                                            @onclick="() => UpdateMinutes(d.Id, 60)">
+                                        +60
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button class="add-project-btn" @onclick="AddAllocation">
+                + Tilføj et projekt mere
+            </button>
+        </div>
+
+        @* Sticky save button *@
+        <div class="save-bar">
+            <button class="save-btn" @onclick="SaveAllocations">
+                ✓ Gem registreringer
+            </button>
+        </div>
+    </div>
 }
 
 @code {
+    private bool _initialized;
     private StopwatchSession _session = null!;
+    private List<AllocationDraft> _allocationDrafts = [];
+    private int _totalMinutes;
 
-    protected override async Task OnInitializedAsync()
+    private int TotalAllocated => _allocationDrafts.Sum(d => d.Minutes);
+    private int RemainingMinutes => _totalMinutes - TotalAllocated;
+    private bool AllAssigned => _allocationDrafts.All(d => d.ProjectId != null && d.ActivityId != null);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
-        if (json != null)
+        if (firstRender)
         {
-            var session = JsonSerializer.Deserialize<StopwatchSession>(json)
+            var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
+            if (json == null)
+                throw new InvalidOperationException(
+                    "Invalid state: Navigated to stopwatch-registration with no session recorded.");
+
+            _session = JsonSerializer.Deserialize<StopwatchSession>(json)
                 ?? throw new InvalidOperationException("Invalid stopwatch session data.");
 
-            _session = session;
+            _totalMinutes = Math.Max(1, (int)Math.Round(_session.GetOffset().TotalMinutes));
+
+            _allocationDrafts.Add(new AllocationDraft
+            {
+                Id = Guid.NewGuid(),
+                Minutes = _totalMinutes
+            });
+
+            _initialized = true;
             StateHasChanged();
         }
-        await base.OnInitializedAsync();
+    }
+
+    private void NavigateBack()
+    {
+        
+    }
+
+    private void SelectProjectForAllocation(Guid draftId) { }
+
+    private void RemoveAllocation(Guid id)
+    {
+        _allocationDrafts.RemoveAll(d => d.Id == id);
+    }
+
+    private void UpdateMinutes(Guid id, int delta)
+    {
+        var draft = _allocationDrafts.FirstOrDefault(d => d.Id == id);
+        if (draft == null) return;
+
+        var maxAddable = RemainingMinutes;
+        var actualDelta = delta;
+
+        if (delta > 0 && delta > maxAddable)
+            actualDelta = maxAddable;
+
+        if (draft.Minutes + actualDelta < 0)
+            actualDelta = -draft.Minutes;
+
+        draft.Minutes += actualDelta;
+    }
+
+    private void AddAllocation()
+    {
+        if (RemainingMinutes == 0) return;
+
+        var newId = Guid.NewGuid();
+        _allocationDrafts.Add(new AllocationDraft { Id = newId });
+        SelectProjectForAllocation(newId);
+    }
+
+    private void SaveAllocations() { }
+
+    private string FormatSessionElapsed()
+    {
+        var ts = _session.GetOffset();
+        if (ts.TotalHours >= 1)
+            return $"{(int)ts.TotalHours}t {ts.Minutes}m {ts.Seconds}s";
+        if (ts.TotalMinutes >= 1)
+            return $"{ts.Minutes}m {ts.Seconds}s";
+        return $"{ts.Seconds}s";
+    }
+
+    private static string FormatMinutes(int totalMinutes)
+    {
+        if (totalMinutes == 0) return "0m";
+        var h = totalMinutes / 60;
+        var m = totalMinutes % 60;
+        if (h > 0 && m > 0) return $"{h}t {m}m";
+        if (h > 0) return $"{h}t";
+        return $"{m}m";
+    }
+
+    private class AllocationDraft
+    {
+        public Guid Id { get; set; }
+        public int? ProjectId { get; set; }
+        public string? ProjectName { get; set; }
+        public int? ActivityId { get; set; }
+        public string? ActivityName { get; set; }
+        public int Minutes { get; set; }
     }
 }
+
+<style>
+    .allocate-page {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #f9fafb;
+        font-family: sans-serif;
+        position: relative;
+    }
+
+    /* Header — matches PickActionPage */
+    .header {
+        background-color: white;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+        flex-shrink: 0;
+    }
+
+    .back-btn {
+        padding: 0.4rem;
+        margin-left: -0.4rem;
+        color: #2563eb;
+        background-color: #eff6ff;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1rem;
+        gap: 0.1rem;
+    }
+
+    .header-title {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        padding-right: 4rem;
+        margin: 0;
+        color: #111827;
+    }
+
+    /* Content */
+    .allocate-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.25rem;
+        padding-bottom: 8rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Time summary — styled like context-card from PickActionPage */
+    .time-summary {
+        background-color: #eff6ff;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid #bfdbfe;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+
+    .time-summary-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #1e40af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .time-summary-value {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: #111827;
+        font-family: monospace;
+    }
+
+    .time-summary-status {
+        margin-top: 0.75rem;
+        padding: 0.5rem 1rem;
+        display: inline-block;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    .status-complete {
+        background-color: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-remaining {
+        background-color: #ffedd5;
+        color: #c2410c;
+    }
+
+    /* Section intro — matches section-label style */
+    .allocations-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .allocations-intro h2 {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0 0 0.25rem 0.25rem;
+    }
+
+    .allocations-intro p {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin: 0 0 0 0.25rem;
+    }
+
+    /* Allocation card — matches action-btn card style */
+    .allocation-card {
+        background-color: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        position: relative;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: none;
+        border: none;
+        color: #f87171;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.25rem;
+    }
+
+    .project-selector {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        cursor: pointer;
+    }
+
+        .project-selector:active {
+            background-color: #f3f4f6;
+        }
+
+    .project-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .project-name {
+        font-weight: bold;
+        font-size: 0.95rem;
+        color: #111827;
+        margin-top: 0.15rem;
+        line-height: 1.2;
+    }
+
+    .activity-name {
+        font-size: 0.875rem;
+        font-weight: bold;
+        color: #2563eb;
+        margin-top: 0.1rem;
+    }
+
+    .project-empty {
+        color: #2563eb;
+        font-weight: 700;
+        padding: 0.5rem 0.25rem;
+    }
+
+    /* Minutes control */
+    .minutes-control {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .minutes-label {
+        font-weight: 700;
+        color: #374151;
+        font-size: 0.95rem;
+    }
+
+    .minutes-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.25rem;
+        width: 100%;
+    }
+
+    .minutes-buttons-left,
+    .minutes-buttons-right {
+        display: flex;
+        gap: 0.25rem;
+    }
+
+    .min-btn,
+    .min-btn-add {
+        height: 2.25rem;
+        padding: 0 0.75rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.8rem;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.1s;
+    }
+
+        .min-btn:active,
+        .min-btn-add:active {
+            transform: scale(0.95);
+        }
+
+    .min-btn {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    .min-btn-add {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+    }
+
+        .min-btn:disabled,
+        .min-btn-add:disabled {
+            opacity: 0.4;
+            cursor: default;
+            transform: none;
+        }
+
+    .minutes-value {
+        font-size: 1.25rem;
+        font-weight: 900;
+        color: #2563eb;
+        flex: 1;
+        text-align: center;
+        white-space: nowrap;
+        min-width: 4rem;
+    }
+
+    /* Add project button — matches action-btn outline style */
+    .add-project-btn {
+        width: 100%;
+        background-color: white;
+        color: #2563eb;
+        border: 2px solid #bfdbfe;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 1rem;
+        padding: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: transform 0.1s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+        .add-project-btn:active {
+            background-color: #eff6ff;
+            transform: scale(0.98);
+        }
+
+    /* Sticky save bar */
+    .save-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.25rem;
+        background-color: white;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .save-btn {
+        width: 100%;
+        background-color: #2563eb;
+        color: white;
+        font-weight: bold;
+        font-size: 1.25rem;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: transform 0.1s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+        .save-btn:active {
+            background-color: #1d4ed8;
+            transform: scale(0.98);
+        }
+</style>
