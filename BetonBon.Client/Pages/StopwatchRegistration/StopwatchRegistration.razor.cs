@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using BetonBon.Client.Pages.Home;
 using BetonBon.Client.Services;
+using BetonBon.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -17,6 +18,11 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
         [Inject]
         public LocalStorage LocalStorage { get; set; } = null!;
 
+        private bool _projectsIsVisible;
+        private bool _activitiesIsVisible;
+        private Guid? _selectingForDraftId;
+        private ProjectDTO? _selectedProject;
+
         private bool _initialized;
         private StopwatchSession _session = null!;
         private readonly List<AllocationDraft> _allocationDrafts = [];
@@ -24,7 +30,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
 
         private int TotalAllocated => _allocationDrafts.Sum(d => d.Minutes);
         private int RemainingMinutes => _totalMinutes - TotalAllocated;
-        private bool AllAssigned => _allocationDrafts.All(d => d.ProjectId != null && d.ActivityId != null);
+        private bool AllAssigned => _allocationDrafts.All(d => d.ProjectDTO != null && d.ActivityDTO != null);
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -53,8 +59,6 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
         {
             await JS.InvokeVoidAsync("history.back");
         }
-
-        private void SelectProjectForAllocation(Guid draftId) { }
 
         private void RemoveAllocation(Guid id)
         {
@@ -108,13 +112,44 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             return $"{m} min";
         }
 
+        private void SelectProjectForAllocation(Guid draftId)
+        {
+            _selectingForDraftId = draftId;
+            _projectsIsVisible = true;
+        }
+
+        private void OnProjectSelected(ProjectDTO project)
+        {
+            _selectedProject = project;
+            _projectsIsVisible = false;
+            _activitiesIsVisible = true;
+        }
+
+        private void OnProjectsClosed()
+        {
+            _projectsIsVisible = false;
+        }
+
+        private void OnActivitySelected(ActivityDTO activity)
+        {
+            var draft = _allocationDrafts.Single(x => x.Id == _selectingForDraftId);
+            draft.ProjectDTO = _selectedProject;
+            draft.ActivityDTO = activity;
+            _activitiesIsVisible = false;
+        }
+
+        private void OnActivitiesClosed()
+        {
+            _activitiesIsVisible = false;
+            _selectedProject = null;
+            _selectingForDraftId = null;
+        }
+
         private class AllocationDraft
         {
             public Guid Id { get; set; }
-            public int? ProjectId { get; set; }
-            public string? ProjectName { get; set; }
-            public int? ActivityId { get; set; }
-            public string? ActivityName { get; set; }
+            public ProjectDTO? ProjectDTO { get; set; }
+            public ActivityDTO? ActivityDTO { get; set; }
             public int Minutes { get; set; }
         }
     }
