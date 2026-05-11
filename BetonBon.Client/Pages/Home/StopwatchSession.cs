@@ -53,6 +53,12 @@ namespace BetonBon.Client.Pages.Home
             StopTime = null;
         }
 
+        public TimeSpan GetOffset()
+        {
+            if (StopTime == null) throw new InvalidOperationException("Use GetOffset(DateTime) for active sessions.");
+            return GetOffset(default);
+        }
+
         public TimeSpan GetOffset(DateTime currentTime)
         {
             var end = StopTime ?? currentTime;
