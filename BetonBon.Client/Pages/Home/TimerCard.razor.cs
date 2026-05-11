@@ -48,6 +48,7 @@ namespace BetonBon.Client.Pages.Home
                     _offset = session.GetOffset(DateTime.UtcNow);
                 }
                 _initialized = true;
+                StateHasChanged();
             }
         }
 
