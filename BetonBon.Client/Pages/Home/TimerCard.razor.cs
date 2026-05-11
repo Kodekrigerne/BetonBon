@@ -57,8 +57,8 @@ namespace BetonBon.Client.Pages.Home
             _timerState = TimerState.Running;
             _stopwatch = new();
             _stopwatch.Start();
-            _offset = TimeSpan.Zero;
-            _session ??= new(DateTime.UtcNow);
+            _session ??= new(DateTime.UtcNow.AddHours(-7).AddMinutes(-30));
+            _offset = _session.GetOffset(DateTime.UtcNow);
             await SaveSession();
             _ = StartTicking();
         }
