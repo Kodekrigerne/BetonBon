@@ -39,6 +39,20 @@ namespace BetonBon.Client.Pages.Home
             StopTime = stopTime;
         }
 
+        public void ResetStopTime()
+        {
+            if (StopTime == null) throw new InvalidOperationException("Session is not stopped.");
+
+            // If the stop auto-closed a pause, restore that paused state
+            if (SessionPauses.Count > 0 && SessionPauses[^1].StartedAgainAt == StopTime)
+            {
+                PausedAt = SessionPauses[^1].PausedAt;
+                SessionPauses.RemoveAt(SessionPauses.Count - 1);
+            }
+
+            StopTime = null;
+        }
+
         public TimeSpan GetOffset(DateTime currentTime)
         {
             var end = StopTime ?? currentTime;
