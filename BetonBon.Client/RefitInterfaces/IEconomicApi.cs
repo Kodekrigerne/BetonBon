@@ -13,5 +13,8 @@ namespace BetonBon.Client.RefitInterfaces
 
         [Get("/api/materials")]
         Task<List<MaterialDTO>> GetAllMaterialsAsync();
+
+        [Post("/api/newDraftEntry")]
+        Task<HttpResponseMessage> CreateNewDraftEntry(NewDraftEntryDTO newDraftEntry);
     }
 }

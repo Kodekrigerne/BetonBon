@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using BetonBon.Shared.Models;
 using Microsoft.AspNetCore.Components;
 
@@ -24,7 +25,9 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 
         private MaterialDTO? SelectedMaterial;
 
-        private int Quantity { get; set; } = 1;
+        private double EnteredPrice { get; set; } = 5;
+
+        private int Amount { get; set; } = 0;
 
         private bool _materialsPickerIsVisible = false;
 
@@ -42,7 +45,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         {
             SelectedMaterial = material;
             _materialsPickerIsVisible = false;
-            Quantity = 1;
+            Amount = 0;
         }
 
         private async Task GoBack()
@@ -59,22 +62,26 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         {
             // TODO: ChangeActiity in material registration?
         }
-        private void IncreaseQuantity()
-        {
-            Quantity++;
-        }
 
-        private void DecreaseQuantity()
+        private async Task SaveRegistration()
         {
-            if (Quantity > 1)
+            if (SelectedMaterial != null && Amount >= 1)
             {
-                Quantity--;
+                string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+
+                var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id));
+
+
+                if (result.IsSuccessStatusCode)
+                {
+                    ReturnToHome();
+                }
             }
         }
 
-        private void SaveRegistration()
+        private void ReturnToHome()
         {
-           // TODO: Save Registration logic
+            Navigation.NavigateTo("/");
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-.reg-container {
+﻿.reg-container {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -198,8 +197,8 @@
 
 .smc-quantity-row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0.5rem;
     margin-top: 0.5rem;
     padding-top: 1rem;
     border-top: 1px solid rgba(191, 219, 254, 0.5);
@@ -208,55 +207,49 @@
 .smc-quantity-label {
     font-weight: bold;
     color: #374151;
-    font-size: 1.125rem;
+    font-size: 1rem;
 }
 
-.quantity-controls {
+/* New Amount Input Wrapper */
+.amount-input-wrapper {
     display: flex;
     align-items: center;
-    gap: 1rem;
     background-color: white;
-    padding: 0.25rem;
-    border-radius: 2rem;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    border: 2px solid #bfdbfe;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02);
+    transition: border-color 0.2s;
 }
 
-.qty-btn {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-}
-
-.qty-btn-minus {
-    background-color: #f3f4f6;
-    color: #4b5563;
-}
-
-    .qty-btn-minus:active {
-        background-color: #e5e7eb;
+    .amount-input-wrapper:focus-within {
+        border-color: #2563eb;
     }
 
-.qty-btn-plus {
-    background-color: #dbeafe;
-    color: #1d4ed8;
-}
-
-    .qty-btn-plus:active {
-        background-color: #bfdbfe;
-    }
-
-.qty-value {
+.amount-input {
+    flex: 1;
     font-size: 1.5rem;
     font-weight: 900;
     color: #2563eb;
-    width: 2rem;
-    text-align: center;
+    border: none;
+    outline: none;
+    text-align: right;
+    background: transparent;
+    min-width: 0; /* Sikrer at den ikke bryder flexbox på små skærme */
+}
+
+    .amount-input::placeholder {
+        color: #9ca3af;
+        font-weight: 500;
+    }
+
+.amount-unit-label {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #6b7280;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #e5e7eb;
 }
 
 .change-material-btn {

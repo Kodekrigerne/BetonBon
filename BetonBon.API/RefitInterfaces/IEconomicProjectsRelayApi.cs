@@ -3,7 +3,7 @@ using Refit;
 
 namespace BetonBon.API.RefitInterfaces
 {
-    public interface IEconomicRelayApi
+    public interface IEconomicProjectsRelayApi
     {
         [Get("/Projects?cursor=0")]
         Task<AllProjectsResponse> GetProjectsAsync();
@@ -17,7 +17,5 @@ namespace BetonBon.API.RefitInterfaces
         [Get("/CostTypes?filter=isBarred$eq:false")]
         Task<AllMaterialResponse> GetAllMaterialsAsync();
 
-        [Post("/journals")]
-        Task<JournalResponseDTO> PostNewJournalAsync();
     }
 }

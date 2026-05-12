@@ -36,10 +36,22 @@ namespace BetonBon.API
 
 
             builder.Services
-                    .AddRefitClient<IEconomicRelayApi>()
+                    .AddRefitClient<IEconomicProjectsRelayApi>()
                     .ConfigureHttpClient(c =>
                     {
-                        c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0");
+                        c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0/");
+                        if (!string.IsNullOrEmpty(apiSecret))
+                            c.DefaultRequestHeaders.Add("X-AppSecretToken", apiSecret);
+                        if (!string.IsNullOrEmpty(apiGrant))
+                            c.DefaultRequestHeaders.Add("X-AgreementGrantToken", apiGrant);
+                    }
+                    );
+
+            builder.Services
+                    .AddRefitClient<IEconomicJournalsRelayApi>()
+                    .ConfigureHttpClient(c =>
+                    {
+                        c.BaseAddress = new Uri("https://apis.e-conomic.com/journalsapi/v14.0.1/");
                         if (!string.IsNullOrEmpty(apiSecret))
                             c.DefaultRequestHeaders.Add("X-AppSecretToken", apiSecret);
                         if (!string.IsNullOrEmpty(apiGrant))
@@ -105,14 +117,15 @@ namespace BetonBon.API
             app.UseAuthorization();
 
             // Get all projects
-            app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
+            app.MapGet("/api/projects", async (IEconomicProjectsRelayApi economicApi) =>
             {
+          
                 var response = await economicApi.GetProjectsAsync();
                 return Results.Ok(response.Projects);
             }
             );
 
-            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
             {
                 var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
 
@@ -128,12 +141,24 @@ namespace BetonBon.API
                 return Results.Ok(activities);
             });
 
-            app.MapGet("/api/materials", async (IEconomicRelayApi economicApi) =>
+            app.MapGet("/api/materials", async (IEconomicProjectsRelayApi economicApi) =>
             {
                 var response = await economicApi.GetAllMaterialsAsync();
 
                 return Results.Ok(response.Materials);
-            }); 
+            });
+
+            app.MapPost("/api/newDraftEntry", async (IEconomicJournalsRelayApi economicApi, NewDraftEntryDTO entry) =>
+            {
+                var creationResponse = await economicApi.PostNewEntryAsync(entry);
+
+                BookEntryNumberDTO entryNumber = new([creationResponse.CreatedEntryNumber]);
+
+                var response = await economicApi.BookDraftEntryAsync(entryNumber);
+                return Results.Ok(response.StatusCode);
+
+            });
+
 
             app.Run();
         }
