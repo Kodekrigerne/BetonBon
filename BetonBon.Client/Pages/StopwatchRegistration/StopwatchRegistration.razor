@@ -1,0 +1,140 @@
+﻿@page "/stopwatch-registration"
+    
+    @using BetonBon.Client.Pages.RegistrationMenu.Activities
+@using BetonBon.Client.Pages.RegistrationMenu.Projects
+
+@if (_initialized)
+{
+    <AllProjectsView IsVisible="_projectsIsVisible" SelectProject="OnProjectSelected" OnCloseProjects="OnProjectsClosed" />
+    <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="OnActivitiesClosed" ActivitySelected="OnActivitySelected" />
+
+    <div class="allocate-page">
+        @* Header *@
+        <div class="allocate-header">
+            <button class="back-btn" @onclick="NavigateBack">
+                <span class="back-icon">‹</span>
+                <span>Hjem</span>
+            </button>
+            <h1>Fordel tid</h1>
+        </div>
+
+        <div class="allocate-content">
+            @* Total time summary *@
+            <div class="time-summary">
+                <div class="time-summary-label">Samlet tid på stopur</div>
+                <div class="time-summary-value">@FormatSessionElapsed()</div>
+                <div class="time-summary-status @(RemainingMinutes == 0 && AllAssigned ? "status-complete" : "status-remaining")">
+                    @if (RemainingMinutes == 0 && AllAssigned)
+                    {
+                        <span>✓ Al tid er fordelt</span>
+                    }
+                    else if (RemainingMinutes == 0)
+                    {
+                        <span>Vælg projekt og aktivitet for alle linjer</span>
+                    }
+                    else
+                    {
+                        <span>Tid tilbage at fordele: @FormatMinutes(RemainingMinutes)</span>
+                    }
+                </div>
+            </div>
+
+            @* Allocation lines *@
+            <div class="allocations-section">
+                <div class="allocations-intro">
+                    <h2>Hvor skal tiden registreres?</h2>
+                    <p>
+                        Dette er din primære registrering. Du kan tilføje flere
+                        projekter/aktiviteter nedenfor, hvis tiden skal fordeles
+                        på andet arbejde.
+                    </p>
+                </div>
+
+                @foreach (var draft in _allocationDrafts)
+                {
+                    var d = draft;
+                    <div class="allocation-card">
+                        @if (_allocationDrafts.Count > 1)
+                        {
+                            <button class="remove-btn" @onclick="() => RemoveAllocation(d.Id)">
+                                ✕
+                            </button>
+                        }
+
+                        <div class="project-selector" @onclick="() => SelectProjectForAllocation(d.Id)">
+                            @if (d.ProjectDTO != null && d.ActivityDTO != null)
+                            {
+                                <div class="project-selected">
+                                    <div class="project-label">
+                                        @(d == _allocationDrafts[0]
+                                            ? "Primært Projekt & Aktivitet"
+                                            : "Projekt & Aktivitet")
+                                    </div>
+                                    <div class="project-name">@d.ProjectDTO.Name</div>
+                                    <div class="activity-name">@d.ActivityDTO.Name</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="project-empty">
+                                    <span>+ Tryk for at vælge projekt</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="minutes-control">
+                            <div class="minutes-value">Tid: @FormatMinutes(d.Minutes)</div>
+                            <div class="minutes-buttons">
+                                <button class="min-btn"
+                                        disabled="@(d.Minutes == 0)"
+                                        @onclick="() => UpdateMinutes(d.Id, -60)">
+                                    -60
+                                </button>
+                                <button class="min-btn"
+                                        disabled="@(d.Minutes == 0)"
+                                        @onclick="() => UpdateMinutes(d.Id, -15)">
+                                    -15
+                                </button>
+                                <button class="min-btn"
+                                        disabled="@(d.Minutes == 0)"
+                                        @onclick="() => UpdateMinutes(d.Id, -1)">
+                                    -1
+                                </button>
+                                <div class="minutes-spacer"></div>
+                                <button class="min-btn-add"
+                                        disabled="@(RemainingMinutes == 0)"
+                                        @onclick="() => UpdateMinutes(d.Id, 1)">
+                                    +1
+                                </button>
+                                <button class="min-btn-add"
+                                        disabled="@(RemainingMinutes == 0)"
+                                        @onclick="() => UpdateMinutes(d.Id, 15)">
+                                    +15
+                                </button>
+                                <button class="min-btn-add"
+                                        disabled="@(RemainingMinutes == 0)"
+                                        @onclick="() => UpdateMinutes(d.Id, 60)">
+                                    +60
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (RemainingMinutes != 0)
+            {
+                <button class="add-project-btn" @onclick="AddAllocation">
+                    + Tilføj et projekt mere
+                </button>
+            }
+        </div>
+
+        @* Sticky save button *@
+        <div class="save-bar">
+            <button class="save-btn" @onclick="SaveAllocations">
+                ✓ Gem registreringer
+            </button>
+        </div>
+    </div>
+}
