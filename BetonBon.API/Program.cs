@@ -1,10 +1,9 @@
+using System.Text.Json.Serialization;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Infrastructure;
-using BetonBon.Infrastructure.Services;
-using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
