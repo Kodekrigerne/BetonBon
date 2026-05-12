@@ -7,10 +7,13 @@ using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using Refit;
 using System.Security.Authentication;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace BetonBon.API
@@ -26,6 +29,23 @@ namespace BetonBon.API
             builder.Configuration.AddEnvironmentVariables();
             builder.Services.Configure<JwtSettings>(
                 builder.Configuration.GetSection(JwtSettings.SectionName));
+
+            var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings!.Issuer,
+                        ValidAudience = jwtSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                    };
+                });
 
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
@@ -104,6 +124,7 @@ namespace BetonBon.API
             app.UseHttpsRedirection();
             app.UseCors("CustomPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             // Get all projects
@@ -111,8 +132,8 @@ namespace BetonBon.API
             {
                 var response = await economicApi.GetProjectsAsync();
                 return Results.Ok(response.Projects);
-            }
-            );
+            })
+            .RequireAuthorization();
 
             app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
             {
