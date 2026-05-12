@@ -130,6 +130,15 @@ namespace BetonBon.API
                 return Results.Ok(id);
             });
 
+            app.MapDelete("/deleteUser/{id}", async (ICommandDispatcher commandDispatcher, Guid id) =>
+            {
+                var command = new DeleteUserCommand(id);
+
+                await commandDispatcher.DispatchAsync(command);
+
+                return Results.NoContent();
+            });
+
             app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
             {
                 try
