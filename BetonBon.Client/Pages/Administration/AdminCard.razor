@@ -1,0 +1,25 @@
+﻿<div class="card admin-card" @onclick="OpenAdmin">
+    <div class="card-content">
+        <div class="icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+        <div class="text-wrapper">
+            <h3>Administration</h3>
+            <p>Styr brugere og indstillinger</p>
+        </div>
+    </div>
+    <div class="arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public EventCallback OpenAdmin { get; set; }
+
+}
