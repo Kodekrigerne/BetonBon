@@ -69,11 +69,7 @@
         originalUsername = User.Username;
 
         editContext = new EditContext(User);
-        editContext.OnFieldChanged += (s, e) =>
-        {
-            formIsValid = editContext.Validate();
-            StateHasChanged();
-        };
+        editContext.OnFieldChanged += HandleFieldChanged;
     }
 
     private async Task HandleSubmit()
@@ -88,4 +84,15 @@
             isSubmitting = false;
         }
     }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        if (editContext != null)
+        {
+            formIsValid = editContext.Validate();
+            
+            StateHasChanged();
+        }
+    }
+
 }
