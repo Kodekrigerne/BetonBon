@@ -5,7 +5,12 @@ namespace BetonBon.Client.Pages.Users
 {
     public partial class Users
     {
+        private UserViewModel? selectedUser;
+        private UpdateUserModel? editModel;
+
         private bool isCreating { get; set; } = false;
+        private bool isEditing = false;
+
         [Parameter] public EventCallback OnCloseUsers { get; set; }
 
 
@@ -44,15 +49,38 @@ namespace BetonBon.Client.Pages.Users
             isCreating = true;
         }
 
+        private async Task HandleDeleteUser()
+        {
+            if (selectedUser == null) return;
+
+            await _api.DeleteUser(selectedUser.Id);
+
+            isEditing = false;
+            selectedUser = null;
+
+            await LoadUsers();
+        }
+
+
         private async Task HandleUserCreated()
         {
             isCreating = false;
             await LoadUsers();
         }
 
-        private void EditUser(Guid id)
+        private async Task HandleEditUser(Guid id)
         {
-
+            selectedUser = users?.FirstOrDefault(u => u.Id == id);
+            if (selectedUser != null)
+            {
+                editModel = new UpdateUserModel
+                {
+                    Id = selectedUser.Id,
+                    Username = selectedUser.Name,
+                    Role = selectedUser.Role
+                };
+                isEditing = true;
+            }
         }
     }
 }

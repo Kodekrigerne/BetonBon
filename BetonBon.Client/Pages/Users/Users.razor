@@ -11,8 +11,8 @@
 
 <div class="users-page-container">
     <div class="users-header">
-        <h1>@(isCreating ? "Ny bruger" : "Medarbejdere")</h1>
-        @if (!isCreating)
+        <h1>@(isCreating ? "Ny bruger" : isEditing ? "Rediger medarbejder" : "Medarbejdere")</h1>
+        @if (!isCreating && !isEditing)
         {
             <button class="create-btn" @onclick="HandleCreateUser">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
@@ -30,6 +30,17 @@
             <CreateUserForm OnCancel="() => isCreating = false" OnUserCreated="HandleUserCreated" />
         </div>
     }
+    else if (isEditing && selectedUser != null)
+    {
+        <div class="form-container">
+
+            <EditUserForm User="editModel"
+                          OnCancel="() => isEditing = false"
+                          OnUserUpdated="HandleUserCreated"
+                          OnDelete="HandleDeleteUser" />
+
+        </div>
+    }
     else
     {
         <div class="content">
@@ -42,7 +53,7 @@
                 {
                     @foreach (var user in users)
                     {
-                        <SingleUserCard User="@user" OnEditRequested="EditUser" />
+                        <SingleUserCard User="@user" OnEditRequested="HandleEditUser" />
                     }
                 }
             </div>
