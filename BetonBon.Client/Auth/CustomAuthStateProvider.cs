@@ -14,7 +14,7 @@ namespace BetonBon.Client.Auth
             _jsRuntime = jsRuntime;
         }
 
-        public async Task MarkUserAsAuthenticated()
+        public async Task UpdateAuthenticationStatus()
         {
             var authState = await GetAuthenticationStateAsync();
 

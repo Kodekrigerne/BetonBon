@@ -82,7 +82,7 @@
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 
-                await customAuthStateProvider.MarkUserAsAuthenticated();
+                await customAuthStateProvider.UpdateAuthenticationStatus();
 
                 NavigationManager.NavigateTo("/");
             }

@@ -1,9 +1,15 @@
 ﻿@page "/"
+
+@using BetonBon.Client.Auth
 @using BetonBon.Client.Pages.RegistrationMenu
 @using BetonBon.Client.Pages.Users
 @using BetonBon.Client.Shared.Components
-@inject NavigationManager _navigation
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject NavigationManager _navigation
+@inject IJSRuntime jsRuntime
+@inject AuthenticationStateProvider AuthStateProvider
 
 <Users UsersIsVisible="IsVisibleUsers" OnCloseUsers="CloseUsers" />
 
@@ -11,7 +17,17 @@
     @* Header *@
     <div class="header">
         <div class="header-profile">
-            <div class="avatar">HE</div>
+            
+            <div style="position: relative;">
+                <button class="avatar" @onclick="@ToggleDropdown">HE</button>
+                @if (IsDropdownVisible)
+                {
+                <div name="dropdown" style="position: absolute; right: 0; top: 100%;">
+                    <button @onclick="@Logout">Log ud</button>
+                </div>
+                }
+            </div>
+            
             <div class="header-info">
                 <h1>Holmsgaard Entreprenør</h1>
                 <p>CVR: 1728451 NH</p>
