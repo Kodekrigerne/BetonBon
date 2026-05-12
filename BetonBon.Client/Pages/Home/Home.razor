@@ -4,8 +4,8 @@
 @using BetonBon.Client.Shared.Components
 @inject NavigationManager _navigation
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 
-<Users UsersIsVisible="IsVisibleUsers" OnCloseUsers="CloseUsers" />
 
 <div class="home-container">
     @* Header *@
@@ -36,7 +36,13 @@
 
         <TimerCard />
 
-        <UsersCard OpenUsers="OpenUsers"/>
+        <AuthorizeView Roles="Admin">
+
+            <Authorized>
+                <UsersCard OpenUsers="NavigateToUsers"/>
+            </Authorized>
+
+        </AuthorizeView>
 
     </div>
 </div>
