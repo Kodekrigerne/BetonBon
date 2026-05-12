@@ -5,14 +5,13 @@ namespace BetonBon.Client.Pages.Users
 {
     public partial class Users
     {
-        [Parameter] public bool UsersIsVisible { get; set; } = true;
         private bool isCreating { get; set; } = false;
         [Parameter] public EventCallback OnCloseUsers { get; set; }
 
 
         private List<UserViewModel>? users;
 
-        protected override async Task OnParametersSetAsync()        
+        protected override async Task OnParametersSetAsync()
         {
             await base.OnInitializedAsync();
             await LoadUsers();
@@ -33,9 +32,7 @@ namespace BetonBon.Client.Pages.Users
                 isCreating = false;
             }
             else
-            { 
-                UsersIsVisible = false; 
-            
+            {
                 await OnCloseUsers.InvokeAsync();
             }
         }
