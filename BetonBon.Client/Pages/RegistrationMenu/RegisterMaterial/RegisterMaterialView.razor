@@ -27,7 +27,8 @@
         </div>
 
         @* Date Picker *@
-        <div class="card">
+        <div class="calendar-note-container">
+        <div class="card-flex">
             <div class="card-title-row">
                 <label class="card-label">Vælg Dato</label>
                 @if (IsToday())
@@ -37,9 +38,17 @@
             </div>
             <input type="date" @bind="RegistrationDate" class="date-input" />
         </div>
+            @* Note Input *@
+            <div class="card-flex">
+                <label class="card-label" style="display:block; margin-bottom:0.5rem;">Note (valgfri)</label>
+                <textarea @bind="Note"
+                          placeholder="Skriv ekstra information her..."
+                          class="note-input"></textarea>
+            </div>
 
+        </div>
         @* Material Selection *@
-        <div class="card" style="padding: 1.25rem;">
+        <div class="card">
             <label class="card-label" style="display:block; margin-bottom: 1rem;">Hvilket materiale har du brugt?</label>
             
             @if (SelectedMaterial == null)
@@ -63,8 +72,7 @@
                                    inputmode="numeric"
                                    placeholder="0,00"
                                    value="@Amount"
-                                   class="amount-input"
-                                   />
+                                   class="amount-input"/>
                             <span class="amount-unit-label">kr.</span>
                         </div>
                     </div>
@@ -77,14 +85,7 @@
             }
         </div>
 
-        @* Note Input *@
-        <div class="card">
-            <label class="card-label" style="display:block; margin-bottom:0.5rem;">Note (valgfri)</label>
-            <textarea 
-                @bind="Note" 
-                placeholder="Skriv ekstra information her, f.eks. hvis der skete noget uventet..." 
-                class="note-input"></textarea>
-        </div>
+       
 
     </div>
 
