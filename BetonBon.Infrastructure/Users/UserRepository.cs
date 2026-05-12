@@ -28,5 +28,18 @@ namespace BetonBon.Infrastructure.Users
         {
             await _dbContext.SaveChangesAsync();
         }
+
+        void IUserRepository.Delete(User user)
+        {
+            _dbContext.Users
+                .Remove(user);
+        }
+
+        async Task<User> IUserRepository.GetByIdAsync(Guid id)
+        {
+            return await _dbContext.Users
+                .FindAsync(id)
+                ?? throw new KeyNotFoundException($"User with ID {id} not found.");
+        }
     }
 }
