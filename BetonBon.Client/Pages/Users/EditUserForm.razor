@@ -6,7 +6,7 @@
 
 <div class="form-container">
     <div class="form-header">
-        <h2>Rediger @User.Username</h2>
+        <h2>Rediger @originalUsername</h2>
     </div>
 
     <EditForm EditContext="@editContext" OnValidSubmit="HandleSubmit">
@@ -56,11 +56,18 @@
     [Parameter] public EventCallback OnDelete { get; set; }
 
     private EditContext? editContext;
+
+    private string originalUsername = string.Empty;
+
     private bool isSubmitting = false;
     private bool formIsValid = true;
 
     protected override void OnInitialized()
     {
+        if (User == null) return;
+
+        originalUsername = User.Username;
+
         editContext = new EditContext(User);
         editContext.OnFieldChanged += (s, e) =>
         {
@@ -74,7 +81,6 @@
         isSubmitting = true;
         try
         {
-            // Vi implementerer Update-kaldet i næste skridt
             await OnUserUpdated.InvokeAsync();
         }
         finally
