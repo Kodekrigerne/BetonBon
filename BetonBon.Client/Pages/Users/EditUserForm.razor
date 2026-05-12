@@ -1,0 +1,85 @@
+﻿@using BetonBon.Client.Shared.ViewModels
+@using BetonBon.Shared.Models
+@using BetonBon.Shared.Enums
+@using BetonBon.Client.RefitInterfaces
+@inject IBetonBonAPI _api
+
+<div class="form-container">
+    <div class="form-header">
+        <h2>Rediger @User.Username</h2>
+    </div>
+
+    <EditForm EditContext="@editContext" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label>Brugernavn</label>
+            <InputText @bind-Value="User.Username" class="form-input" />
+            <ValidationMessage For="@(() => User.Username)" class="validation-error" />
+        </div>
+
+        <div class="form-group">
+            <label>Nyt Password (valgfrit)</label>
+            <InputText type="password" @bind-Value="User.NewPassword" class="form-input" />
+            <ValidationMessage For="@(() => User.NewPassword)" class="validation-error" />
+        </div>
+
+        <div class="form-group">
+            <label>Rolle</label>
+            <InputSelect @bind-Value="User.Role" class="form-input">
+                @foreach (var role in Enum.GetValues<UserRole>())
+                {
+                    <option value="@role">@role.ToString()</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary" disabled="@(!formIsValid || isSubmitting)">
+                @(isSubmitting ? "Gemmer..." : "Gem ændringer")
+            </button>
+            <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
+        </div>
+
+        <div class="danger-zone">
+            <button type="button" class="btn-delete" @onclick="OnDelete">
+                Slet Medarbejder
+            </button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public UpdateUserModel User { get; set; } = null!;
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnUserUpdated { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+
+    private EditContext? editContext;
+    private bool isSubmitting = false;
+    private bool formIsValid = true;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(User);
+        editContext.OnFieldChanged += (s, e) =>
+        {
+            formIsValid = editContext.Validate();
+            StateHasChanged();
+        };
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+        try
+        {
+            // Vi implementerer Update-kaldet i næste skridt
+            await OnUserUpdated.InvokeAsync();
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}
