@@ -3,9 +3,10 @@ namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
-        public void NavigateToUsers()
+
+        public void NavigateToAdministration()
         {
-            _navigation.NavigateTo("/users");
+            _navigation.NavigateTo("/administration");
         }
 
         public void OpenRegistrations()
