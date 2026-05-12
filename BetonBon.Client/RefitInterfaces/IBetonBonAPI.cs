@@ -11,6 +11,9 @@ namespace BetonBon.Client.RefitInterfaces
         [Get("/viewUsers")]
         Task<List<UserDto>> GetAllUsers();
 
+        [Delete("/deleteUser/{id}")]
+        Task DeleteUser(Guid id);
+
         [Post("/login")]
         Task<LoginResponse?> LoginUser(UserLoginDto userToLogin);
     }
