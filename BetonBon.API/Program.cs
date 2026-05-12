@@ -5,6 +5,7 @@ using BetonBon.Application.Users.UserQueries;
 using BetonBon.Infrastructure;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
+using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -93,7 +94,10 @@ namespace BetonBon.API
                 });
 
             // Add services to the container.
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+            });
 
             var clientUrl = builder.Configuration["ClientUrl"];
 
@@ -140,7 +144,8 @@ namespace BetonBon.API
                 var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
 
                 return Results.Ok(users);
-            });
+            })
+            .RequireAuthorization();
 
             app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
             {
@@ -149,7 +154,8 @@ namespace BetonBon.API
                 var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
                 return Results.Ok(id);
-            });
+            })
+            .RequireAuthorization(nameof(UserRole.Admin));
 
             app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
             {
@@ -182,7 +188,8 @@ namespace BetonBon.API
                 }
 
                 return Results.Ok(activities);
-            });
+            })
+            .RequireAuthorization();
 
             app.Run();
         }
