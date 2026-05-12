@@ -20,19 +20,24 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         [Parameter, EditorRequired]
         public EventCallback OnClosed { get; set; }
 
+        [Parameter, EditorRequired]
+        public EventCallback OnChangeActivity { get; set; }
+        [Parameter, EditorRequired]
+        public EventCallback OnChangeProject { get; set; }
+
         private DateTime RegistrationDate { get; set; } = DateTime.Today;
         private string Note { get; set; } = "";
 
         private MaterialDTO? SelectedMaterial;
 
-        private double EnteredPrice { get; set; } = 5;
-
-        private int Amount { get; set; } = 0;
+        private double Amount { get; set; }
 
         private bool _materialsPickerIsVisible = false;
 
-        // Computed property for at tjekke om datoen er "i dag"
-        private bool IsToday => RegistrationDate.Date == DateTime.Today;
+        private bool IsToday()
+        {
+            return RegistrationDate == DateTime.Today ? true : false;
+        }
 
         private async Task CloseMaterialPicker()
         {
@@ -58,18 +63,25 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
             _materialsPickerIsVisible = true;
         }
 
-        private void ChangeActivity()
+        private async Task ChangeActivity()
         {
-            // TODO: ChangeActiity in material registration?
+            SelectedMaterial = null;
+            await OnChangeActivity.InvokeAsync();
+        }
+
+        private async Task ChangeProject()
+        {
+            SelectedMaterial = null;
+            await OnChangeProject.InvokeAsync();
         }
 
         private async Task SaveRegistration()
         {
-            if (SelectedMaterial != null && Amount >= 1)
+            if (SelectedMaterial != null && Amount > 0)
             {
                 string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
 
-                var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id));
+                var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id, Note));
 
 
                 if (result.IsSuccessStatusCode)

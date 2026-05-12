@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace BetonBon.Shared.Models
 {
-    public class NewDraftEntryDTO(string date, double amount, int projectNumber, int costTypeNumber)
+    public class NewDraftEntryDTO(string date, double amount, int projectNumber, int costTypeNumber, string note)
     {
         [JsonPropertyName("date")]
         public string Date { get; set; } = date;
@@ -23,5 +23,7 @@ namespace BetonBon.Shared.Models
         public int AccountNumber { get; set; } = 1025;
         [JsonPropertyName("currency")]
         public string Currency { get; set; } = "DKK";
+        [JsonPropertyName("text")]
+        public string Note { get; set; } = note;
     }
 }

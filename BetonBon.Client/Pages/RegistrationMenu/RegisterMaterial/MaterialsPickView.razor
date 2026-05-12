@@ -14,7 +14,6 @@
                 <button @onclick="() => MaterialSelect(mat)" class="modal-mat-item">
                     <div>
                         <div style="font-weight:bold; font-size:1.125rem; color:#111827;">@mat.Name</div>
-                        <div style="font-size:0.875rem; color:#6b7280; margin-top:0.25rem; font-weight:500;">Måles i: @mat.Unit</div>
                     </div>
                     <div style="width:2.5rem; height:2.5rem; background-color:#eff6ff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#2563eb;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -43,7 +42,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (IsVisible == true) _materials = await _economicApi.GetAllMaterialsAsync();
+        if (IsVisible == true && _materials == null) _materials = await _economicApi.GetAllMaterialsAsync();
     }
 
     private async Task OnClose()

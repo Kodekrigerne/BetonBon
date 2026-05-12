@@ -14,11 +14,9 @@
 
 <PickActionView SelectedProject="SelectedProject" SelectedActivity="SelectedActivity"OnClose="ClosePickActionMenu" IsVisible="RegistrationMenuIsVisible"
     OnViewMaterialHistory="OpenMaterialRegistrationHistory" OnViewTimeHistory="OpenTimeRegistrationHistory" OnOpenTimeRegistration="OpenTimeRegistration"
-    OnOpenMaterialRegistration="OpenMaterialRegistration"/>
+    OnOpenMaterialRegistration="OpenMaterialRegistration" ChangeActivity="ReturnToActivities" ChangeProject="ReturnToProjects"/>
 
-<RegisterMaterialView Activity="SelectedActivity" Project="SelectedProject" OnClosed="CloseMaterialRegistration" ShowMaterialModal="MaterialRegistrationIsVisible"></RegisterMaterialView>
-
-
+<RegisterMaterialView Activity="SelectedActivity" Project="SelectedProject" OnClosed="CloseMaterialRegistration" ShowMaterialModal="MaterialRegistrationIsVisible" OnChangeActivity="ReturnToActivities" OnChangeProject="ReturnToProjects"></RegisterMaterialView>
 
 @code {
 
@@ -40,7 +38,15 @@
 
     private void ReturnToProjects()
     {
+        MaterialRegistrationIsVisible = false;
+        RegistrationMenuIsVisible = false;
         ActivitiesIsVisible = false;
+    }
+
+    private void ReturnToActivities()
+    {
+        MaterialRegistrationIsVisible = false;
+        RegistrationMenuIsVisible = false;
     }
 
     private void OnCloseProjects()
