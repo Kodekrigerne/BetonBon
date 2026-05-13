@@ -1,0 +1,100 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared.Components
+@inject NavigationManager Navigation
+@inject IEconomicApi _economicApi
+
+<ConfirmationPopUp IsVisible="ConfirmationIsVisible" Project="Project" Material="SelectedMaterial" Amount="Amount" RegistrationDate="RegistrationDate" Note="Note" OnCancel="CancelConfirm" OnConfirm="SaveRegistration"></ConfirmationPopUp>
+
+<FullScreenModal IsVisible="ShowMaterialModal" ZIndex="120" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop" Title="Ny Materialeregistrering" OnClose="GoBack">
+
+    @* Form Content *@
+    <div class="content">
+        
+        @* Context Info *@
+        <div class="context-box">
+            <div>
+                <div class="context-label">Projekt</div>
+                <div class="context-value" @onclick="@ChangeProject">@Project.Name</div>
+            </div>
+            <div class="divider"></div>
+            <div class="activity-row" @onclick="@ChangeActivity">
+                <div>
+                    <div class="context-label">Valgt Aktivitet (Tryk for at ændre)</div>
+                    <div class="context-value">@Activity.Name</div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            </div>
+        </div>
+
+        @* Date Picker *@
+        <div class="calendar-note-container">
+        <div class="card-flex">
+            <div class="card-title-row">
+                <label class="card-label">Vælg Dato</label>
+                @if (IsToday())
+                {
+                    <span class="today-badge">I dag</span>
+                }
+            </div>
+            <input type="date" @bind="RegistrationDate" class="date-input" />
+        </div>
+            @* Note Input *@
+            <div class="card-flex">
+                <label class="card-label" style="display:block; margin-bottom:0.5rem;">Note (valgfri)</label>
+                <textarea @bind="Note"
+                          placeholder="Skriv ekstra information her..."
+                          class="note-input"></textarea>
+            </div>
+
+        </div>
+        @* Material Selection *@
+        <div class="card">
+            <label class="card-label" style="display:block; margin-bottom: 1rem;">Hvilket materiale har du brugt?</label>
+            
+            @if (SelectedMaterial == null)
+            {
+                <button @onclick="@OpenPicker" class="material-empty-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Vælg et materiale
+                </button>
+            }
+            else
+            {
+                <div class="selected-material-card">
+                    <div>
+                        <div class="smc-name">@SelectedMaterial.Name</div>
+                    </div>
+                    
+                    <div class="smc-quantity-row">
+                        <label class="smc-quantity-label">Angiv pris / beløb:</label>
+                        <div class="amount-input-wrapper">
+                            <input type="number"
+                                   placeholder="0,00"
+                                   @bind="Amount"
+                                   class="amount-input"/>
+                            <span class="amount-unit-label">kr.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button @onclick="@OpenPicker" class="change-material-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                    Skift valgte materiale
+                </button>
+            }
+        </div>
+       
+
+    </div>
+
+    @* Bottom Save Button *@
+    <div class="bottom-bar">
+        <button @onclick="SaveButtonPressed" class="save-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            Gem registrering
+        </button>
+    </div>
+
+</FullScreenModal>
+
+<MaterialsPickView IsVisible="_materialsPickerIsVisible" OnClosed="CloseMaterialPicker" MaterialSelected="SelectMaterial" SelectedMaterial="SelectedMaterial"/>

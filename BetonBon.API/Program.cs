@@ -2,7 +2,10 @@ using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using DotNetEnv;
@@ -12,8 +15,6 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
 using System.Security.Authentication;
-using BetonBon.Infrastructure.Users;
-using BetonBon.Infrastructure.Services;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -48,10 +49,22 @@ namespace BetonBon.API
 
 
             builder.Services
-                    .AddRefitClient<IEconomicRelayApi>()
+                    .AddRefitClient<IEconomicProjectsRelayApi>()
                     .ConfigureHttpClient(c =>
                     {
-                        c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0");
+                        c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0/");
+                        if (!string.IsNullOrEmpty(apiSecret))
+                            c.DefaultRequestHeaders.Add("X-AppSecretToken", apiSecret);
+                        if (!string.IsNullOrEmpty(apiGrant))
+                            c.DefaultRequestHeaders.Add("X-AgreementGrantToken", apiGrant);
+                    }
+                    );
+
+            builder.Services
+                    .AddRefitClient<IEconomicJournalsRelayApi>()
+                    .ConfigureHttpClient(c =>
+                    {
+                        c.BaseAddress = new Uri("https://apis.e-conomic.com/journalsapi/v14.0.1/");
                         if (!string.IsNullOrEmpty(apiSecret))
                             c.DefaultRequestHeaders.Add("X-AppSecretToken", apiSecret);
                         if (!string.IsNullOrEmpty(apiGrant))
@@ -110,9 +123,10 @@ namespace BetonBon.API
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-                dbContext.Database.Migrate();
+                var db = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+                db.Database.Migrate();
             }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -127,8 +141,9 @@ namespace BetonBon.API
             app.UseAuthorization();
 
             // Get all projects
-            app.MapGet("/api/projects", async (IEconomicRelayApi economicApi) =>
+            app.MapGet("/api/projects", async (IEconomicProjectsRelayApi economicApi) =>
             {
+          
                 var response = await economicApi.GetProjectsAsync();
                 return Results.Ok(response.Projects);
             })
@@ -187,7 +202,7 @@ namespace BetonBon.API
                 }
             });
 
-            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
             {
                 var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
 
@@ -203,6 +218,25 @@ namespace BetonBon.API
                 return Results.Ok(activities);
             })
             .RequireAuthorization();
+
+            app.MapGet("/api/materials", async (IEconomicProjectsRelayApi economicApi) =>
+            {
+                var response = await economicApi.GetAllMaterialsAsync();
+
+                return Results.Ok(response.Materials);
+            });
+
+            app.MapPost("/api/newDraftEntry", async (IEconomicJournalsRelayApi economicApi, NewDraftEntryDTO entry) =>
+            {
+                var creationResponse = await economicApi.PostNewEntryAsync(entry);
+
+                BookEntryNumberDTO entryNumber = new([creationResponse.CreatedEntryNumber]);
+
+                var response = await economicApi.BookDraftEntryAsync(entryNumber);
+                return Results.Ok(response.StatusCode);
+
+            });
+
 
             app.Run();
         }

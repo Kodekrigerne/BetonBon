@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetonBon.Infrastructure.Migrations
 {
     [DbContext(typeof(BetonBonDbContext))]
-    [Migration("20260507101843_AddRefreshTokenToUser")]
+    [Migration("20260513085052_AddRefreshTokenToUser")]
     partial class AddRefreshTokenToUser
     {
         /// <inheritdoc />
