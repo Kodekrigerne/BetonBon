@@ -126,6 +126,8 @@ namespace BetonBon.API
             {
                 var db = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
 
+                db.Database.Migrate();
+
                 if (!db.Users.Any(u => u.Username == adminUsername))
                 {
                     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
@@ -136,8 +138,6 @@ namespace BetonBon.API
                     db.Users.Add(adminUser);
                     db.SaveChanges();
                 }
-
-                db.Database.Migrate();
             }
 
 
