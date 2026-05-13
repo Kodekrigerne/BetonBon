@@ -1,6 +1,4 @@
-﻿using BetonBon.Application.RepositoryInterfaces;
-
-namespace BetonBon.Application.Users
+﻿namespace BetonBon.Application.Users
 {
     public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand>
     {
