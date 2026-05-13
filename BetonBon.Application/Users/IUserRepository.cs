@@ -1,6 +1,6 @@
 ﻿using BetonBon.Domain.Users;
 
-namespace BetonBon.Application.RepositoryInterfaces
+namespace BetonBon.Application.Users
 {
     public interface IUserRepository
     {

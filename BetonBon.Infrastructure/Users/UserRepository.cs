@@ -1,4 +1,4 @@
-﻿using BetonBon.Application.RepositoryInterfaces;
+﻿using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
