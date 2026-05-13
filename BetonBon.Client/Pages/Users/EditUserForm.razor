@@ -3,6 +3,7 @@
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
 @inject IBetonBonAPI _api
+@inject IJSRuntime JsRuntime
 
 <div class="form-container">
     <div class="form-header">
@@ -74,10 +75,25 @@
 
     private async Task HandleSubmit()
     {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>(
+        "confirm",
+        $"Er du sikker på, at du vil gemme ændringerne for {originalUsername}?"
+        );
+
+        if (!confirmed) return;
+
         isSubmitting = true;
         try
         {
+            var dto = new UpdateUserDTO(User.Id, User.Username, User.NewPassword, User.Role);
+
+            await _api.UpdateUser(dto);
+
             await OnUserUpdated.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error updating user: {ex.Message}");
         }
         finally
         {

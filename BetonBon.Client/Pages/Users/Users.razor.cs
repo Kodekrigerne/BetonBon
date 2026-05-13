@@ -65,6 +65,10 @@ namespace BetonBon.Client.Pages.Users
         private async Task HandleUserCreated()
         {
             isCreating = false;
+            isEditing = false;
+            selectedUser = null;
+            editModel = null;
+
             await LoadUsers();
         }
 

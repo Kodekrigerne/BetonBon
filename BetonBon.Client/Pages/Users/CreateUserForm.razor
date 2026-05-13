@@ -3,6 +3,7 @@
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
 @inject IBetonBonAPI _api
+@inject IJSRuntime JsRuntime
 
 <div class="form-container">
 
@@ -46,8 +47,6 @@
 
         <div class="form-actions">
 
-            <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
-
             <button type="submit" class="btn-primary" disabled="@(!formIsValid || isSubmitting)">
 
                 @if (isSubmitting)
@@ -60,6 +59,9 @@
                 }
 
             </button>
+
+            <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
+
 
         </div>
     </EditForm>
@@ -91,11 +93,20 @@
 
     private async Task HandleSubmit()
     {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>(
+        "confirm",
+        $"Er du sikker på, at du vil oprette brugeren {createUserModel.Username}?"
+        );
+
+        if (!confirmed) return;
+
         isSubmitting = true;
         try
         {
             var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role);
+
             await _api.CreateUser(newUser);
+
             await OnUserCreated.InvokeAsync();
         }
         catch (Exception ex)
