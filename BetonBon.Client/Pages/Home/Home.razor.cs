@@ -1,5 +1,4 @@
 ﻿using BetonBon.Client.Auth;
-using Microsoft.JSInterop;
 
 namespace BetonBon.Client.Pages.Home
 {
@@ -24,8 +23,8 @@ namespace BetonBon.Client.Pages.Home
 
         public async Task Logout()
         {
-            await jsRuntime.InvokeVoidAsync("storage.remove", "bb_token");
-            await jsRuntime.InvokeVoidAsync("storage.remove", "bb_refresh_token");
+            await localStorage.RemoveAsync("bb_token");
+            await localStorage.RemoveAsync("bb_refresh_token");
 
             var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 

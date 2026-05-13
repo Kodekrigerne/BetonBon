@@ -4,6 +4,7 @@
 @using BetonBon.Client.Pages.Administration
 @using BetonBon.Client.Pages.RegistrationMenu
 @using BetonBon.Client.Pages.Users
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
 @using BetonBon.Client.Shared.Icons
 @using Microsoft.AspNetCore.Authorization
@@ -12,6 +13,7 @@
 @inject NavigationManager _navigation
 @inject IJSRuntime jsRuntime
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LocalStorage localStorage
 
 <div class="home-container">
     @* Header *@
@@ -25,14 +27,20 @@
             </div>
         </div>
         
-        <div style="position: relative;">
+        <div class="settings-dropdown-container">
             <button class="icon-btn" @onclick="@ToggleDropdown">
-                <CogWheelIcon/>
+                <CogWheelIcon />
             </button>
+            
             @if (IsDropdownVisible)
             {
-                <div name="dropdown" style="position: absolute; right: 0; top: 100%;">
-                    <button @onclick="@Logout">Log ud</button>
+                <div class="dropdown-overlay" @onclick="() => IsDropdownVisible = false"></div>
+                
+                <div class="dropdown-menu">
+                    <button class="dropdown-item logout-item" @onclick="@Logout">
+                        <LogoutIcon/>
+                        Log ud
+                    </button>
                 </div>
             }
         </div>
