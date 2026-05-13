@@ -1,5 +1,4 @@
 ﻿using BetonBon.Application;
-using BetonBon.Application.RepositoryInterfaces;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;

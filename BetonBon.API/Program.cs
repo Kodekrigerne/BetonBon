@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
 using System.Security.Authentication;
+using BetonBon.Infrastructure.Users;
+using BetonBon.Infrastructure.Services;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -149,6 +151,24 @@ namespace BetonBon.API
                 return Results.Ok(id);
             })
             .RequireAuthorization(nameof(UserRole.Admin));
+
+            app.MapDelete("/deleteUser/{id}", async (ICommandDispatcher commandDispatcher, Guid id) =>
+            {
+                var command = new DeleteUserCommand(id);
+
+                await commandDispatcher.DispatchAsync(command);
+
+                return Results.NoContent();
+            });
+
+            app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserDTO dto) =>
+            {
+                var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
+
+                await commandDispatcher.DispatchAsync(command);
+
+                return Results.NoContent();
+            });
 
             app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
             {
