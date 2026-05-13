@@ -1,10 +1,12 @@
 ﻿@page "/"
+@using BetonBon.Client.Pages.Administration
 @using BetonBon.Client.Pages.RegistrationMenu
 @using BetonBon.Client.Pages.Users
 @using BetonBon.Client.Shared.Components
 @inject NavigationManager _navigation
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 
-<Users UsersIsVisible="IsVisibleUsers" OnCloseUsers="CloseUsers" />
 
 <div class="home-container">
     @* Header *@
@@ -35,7 +37,13 @@
 
         <TimerCard />
 
-        <UsersCard OpenUsers="OpenUsers"/>
+        <AuthorizeView Roles="Admin">
+
+            <Authorized>
+                <AdminCard OpenAdmin="NavigateToAdministration" />
+            </Authorized>
+
+        </AuthorizeView>
 
     </div>
 </div>

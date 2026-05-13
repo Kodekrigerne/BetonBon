@@ -1,0 +1,87 @@
+﻿@page "/login"
+@using BetonBon.Client.Auth
+@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Shared.Models
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IBetonBonAPI Api;
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthStateProvider;
+
+@attribute [AllowAnonymous]
+@layout LoginLayout
+
+<div class="login-container">
+    <div class="login-header">
+        <div class="login-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+                <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+        </div>
+        <h1>Log ind</h1>
+        <p>Velkommen til BetonBon</p>
+    </div>
+
+    <div class="login-card">
+        <div class="input-group">
+            <label for="username">Brugernavn</label>
+            <input type="text" id="username" class="theme-input" placeholder="Indtast dit brugernavn" @bind="@Username"/>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Adgangskode</label>
+            <input type="password" id="password" class="theme-input" placeholder="Indtast din adgangskode" @bind="@Password"/>
+        </div>
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div style="color: red; font: 0.875rem; font-weight: bold;">
+                @ErrorMessage
+            </div>
+        }
+
+        <div class="btn-group">
+            <button class="btn-primary" @onclick="@SignIn">Log ind</button>
+            <button class="btn-secondary">Annuller</button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public string? Username { get; set; }
+    public string? Password { get; set; }
+
+    public string? ErrorMessage { get; set; }
+
+    public async Task SignIn()
+    {
+        ErrorMessage = null;
+
+        try
+        {
+            var loginCredentials = new UserLoginDto(Username, Password);
+            var response = await Api.LoginUser(loginCredentials);
+
+            if (response != null)
+            {
+                await JSRuntime.InvokeVoidAsync("storage.save", "bb_token", response.Token);
+                await JSRuntime.InvokeVoidAsync("storage.save", "bb_refresh_token", response.RefreshToken);
+
+                var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+
+                customAuthStateProvider.MarkUserAsAuthenticated();
+
+                Thread.Sleep(100);
+
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Ugyldigt brugernavn eller adgangskode.";
+        }
+    }
+}

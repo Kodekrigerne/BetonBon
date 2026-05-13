@@ -87,3 +87,46 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+h1:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.access-denied {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 70vh; 
+    padding: 2rem;
+}
+
+    .access-denied h1 {
+        color: #dc2626;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .access-denied p {
+        color: #4b5563;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 400px;
+    }
+
+    .access-denied .btn-primary {
+        background-color: #2563eb;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .access-denied .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
