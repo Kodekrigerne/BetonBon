@@ -29,6 +29,23 @@ namespace BetonBon.Domain.Users
             return new User(username, hashedPassword, role);
         }
 
+        public void Update(string username, UserRole role)
+        {
+            ValidateUsername(username);
+            Username = username;
+            Role = role;
+        }
+
+        public void SetPassword(string password, IPasswordHasher passwordHasher)
+        {
+            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+            {
+                throw new ArgumentException("Password must be atleast 8 characters long.", nameof(password));
+            }
+
+            HashedPassword = passwordHasher.HashPassword(password);
+        }
+
         private static void ValidateUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))

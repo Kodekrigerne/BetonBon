@@ -5,7 +5,12 @@ namespace BetonBon.Client.Pages.Users
 {
     public partial class Users
     {
+        private UserViewModel? selectedUser;
+        private UpdateUserModel? editModel;
+
         private bool isCreating { get; set; } = false;
+        private bool isEditing = false;
+
         [Parameter] public EventCallback OnCloseUsers { get; set; }
 
 
@@ -21,7 +26,7 @@ namespace BetonBon.Client.Pages.Users
 
         private async Task LoadUsers()
         {
-            var userList = await _api.GetAllUsers();
+            var userList = await Api.GetAllUsers();
             users = userList.Select(u => new UserViewModel(u.Id, u.Username, u.Role)).ToList();
         }
 
@@ -44,15 +49,49 @@ namespace BetonBon.Client.Pages.Users
             isCreating = true;
         }
 
-        private async Task HandleUserCreated()
+        private async Task HandleDeleteUser()
         {
-            isCreating = false;
+            if (selectedUser == null) return;
+
+            bool confirmed = await PopupService.ConfirmAsync(
+                $"Er du sikker på, at du vil slette {selectedUser.Name}?");
+
+            if (!confirmed) return;
+
+
+            await Api.DeleteUser(selectedUser.Id);
+
+            isEditing = false;
+            selectedUser = null;
+            editModel = null;
+
             await LoadUsers();
         }
 
-        private void EditUser(Guid id)
-        {
 
+        private async Task HandleUserCreated()
+        {
+            isCreating = false;
+            isEditing = false;
+            selectedUser = null;
+            editModel = null;
+
+            await LoadUsers();
+        }
+
+        private async Task HandleEditUser(Guid id)
+        {
+            selectedUser = users?.FirstOrDefault(u => u.Id == id);
+            if (selectedUser != null)
+            {
+                editModel = new UpdateUserModel
+                {
+                    Id = selectedUser.Id,
+                    Username = selectedUser.Name,
+                    Role = selectedUser.Role
+                };
+                isEditing = true;
+            }
         }
     }
 }

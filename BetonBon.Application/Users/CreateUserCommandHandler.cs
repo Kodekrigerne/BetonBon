@@ -1,5 +1,4 @@
-﻿using BetonBon.Application.RepositoryInterfaces;
-using BetonBon.Domain.Users;
+﻿using BetonBon.Domain.Users;
 
 namespace BetonBon.Application.Users
 {

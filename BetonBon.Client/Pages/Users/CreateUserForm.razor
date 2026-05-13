@@ -1,8 +1,10 @@
-﻿@using BetonBon.Client.Shared.ViewModels
+﻿@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.ViewModels
 @using BetonBon.Shared.Models
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
-@inject IBetonBonAPI _api
+@inject IBetonBonAPI Api
+@inject PopupService PopupService
 
 <div class="form-container">
 
@@ -46,8 +48,6 @@
 
         <div class="form-actions">
 
-            <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
-
             <button type="submit" class="btn-primary" disabled="@(!formIsValid || isSubmitting)">
 
                 @if (isSubmitting)
@@ -60,6 +60,9 @@
                 }
 
             </button>
+
+            <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
+
 
         </div>
     </EditForm>
@@ -91,11 +94,18 @@
 
     private async Task HandleSubmit()
     {
+        bool confirmed = await PopupService.ConfirmAsync(
+        $"Er du sikker på, at du vil oprette brugeren {createUserModel.Username}?");
+
+        if (!confirmed) return;
+
         isSubmitting = true;
         try
         {
             var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role);
-            await _api.CreateUser(newUser);
+
+            await Api.CreateUser(newUser);
+
             await OnUserCreated.InvokeAsync();
         }
         catch (Exception ex)
