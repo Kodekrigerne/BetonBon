@@ -11,6 +11,9 @@ namespace BetonBon.Client.RefitInterfaces
         [Get("/viewUsers")]
         Task<List<UserDto>> GetAllUsers();
 
+        [Put("/updateUser")]
+        Task UpdateUser(UpdateUserDTO user);
+
         [Delete("/deleteUser/{id}")]
         Task DeleteUser(Guid id);
 
