@@ -1,16 +1,19 @@
+using System.Security.Authentication;
 using System.Text.Json.Serialization;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
+using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
+using BetonBon.Infrastructure.Services;
+using BetonBon.Infrastructure.Users;
+using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Refit;
-using System.Security.Authentication;
-using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -102,9 +105,10 @@ namespace BetonBon.API
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-                dbContext.Database.Migrate();
+                var db = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+                db.Database.Migrate();
             }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -126,7 +130,6 @@ namespace BetonBon.API
             }
             );
 
-            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
             app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
             {
                 var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
@@ -160,7 +163,7 @@ namespace BetonBon.API
                 }
             });
 
-            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
             {
                 var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
 

@@ -232,7 +232,6 @@
     text-align: right;
     background: transparent;
     min-width: 0; /* Sikrer at den ikke bryder flexbox på små skærme */
-    -webkit-appearance: none;
 }
 
     .amount-input::placeholder {

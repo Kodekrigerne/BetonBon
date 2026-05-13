@@ -24,6 +24,8 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         public EventCallback OnChangeActivity { get; set; }
         [Parameter, EditorRequired]
         public EventCallback OnChangeProject { get; set; }
+        
+        public int MyProperty { get; set; }
 
         private DateTime RegistrationDate { get; set; } = DateTime.Today;
         private string Note { get; set; } = "";
@@ -32,11 +34,12 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 
         private double Amount { get; set; }
 
+        private bool ConfirmationIsVisible = false;
         private bool _materialsPickerIsVisible = false;
 
         private bool IsToday()
         {
-            return RegistrationDate == DateTime.Today ? true : false;
+            return RegistrationDate == DateTime.Today;
         }
 
         private async Task CloseMaterialPicker()
@@ -50,7 +53,6 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         {
             SelectedMaterial = material;
             _materialsPickerIsVisible = false;
-            Amount = 0;
         }
 
         private async Task GoBack()
@@ -75,20 +77,30 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
             await OnChangeProject.InvokeAsync();
         }
 
+        private void SaveButtonPressed()
+        {
+                ConfirmationIsVisible = true;
+        }
+
         private async Task SaveRegistration()
         {
             if (SelectedMaterial != null && Amount > 0)
             {
-                string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+            string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
 
-                var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id, Note));
+            var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id, Note));
 
 
-                if (result.IsSuccessStatusCode)
-                {
-                    ReturnToHome();
-                }
+            if (result.IsSuccessStatusCode)
+            {
+                ReturnToHome();
             }
+            }
+        }
+
+        private void CancelConfirm()
+        {
+            ConfirmationIsVisible = false;
         }
 
         private void ReturnToHome()

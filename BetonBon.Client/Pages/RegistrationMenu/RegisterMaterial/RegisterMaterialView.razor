@@ -1,9 +1,9 @@
 ﻿@using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Shared.Components
-@using BetonBon.Shared.Models
 @inject NavigationManager Navigation
 @inject IEconomicApi _economicApi
 
+<ConfirmationPopUp IsVisible="ConfirmationIsVisible" Project="Project" Material="SelectedMaterial" Amount="Amount" RegistrationDate="RegistrationDate" Note="Note" OnCancel="CancelConfirm" OnConfirm="SaveRegistration"></ConfirmationPopUp>
 
 <FullScreenModal IsVisible="ShowMaterialModal" ZIndex="120" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop" Title="Ny Materialeregistrering" OnClose="GoBack">
 
@@ -68,10 +68,9 @@
                     <div class="smc-quantity-row">
                         <label class="smc-quantity-label">Angiv pris / beløb:</label>
                         <div class="amount-input-wrapper">
-                            <input type="tel"
-                                   inputmode="numeric"
+                            <input type="number"
                                    placeholder="0,00"
-                                   value="@Amount"
+                                   @bind="Amount"
                                    class="amount-input"/>
                             <span class="amount-unit-label">kr.</span>
                         </div>
@@ -84,14 +83,13 @@
                 </button>
             }
         </div>
-
        
 
     </div>
 
     @* Bottom Save Button *@
     <div class="bottom-bar">
-        <button @onclick="SaveRegistration" class="save-btn">
+        <button @onclick="SaveButtonPressed" class="save-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             Gem registrering
         </button>
