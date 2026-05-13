@@ -22,17 +22,20 @@ namespace BetonBon.Client
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = backendApiUrl;
-                });
+                })
+                .AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddRefitClient<IBetonBonAPI>()
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = backendApiUrl;
-                });
+                })
+                .AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
             builder.Services.AddScoped<LocalStorage>();
+            builder.Services.AddTransient<AuthHeaderHandler>();
 
             await builder.Build().RunAsync();
         }

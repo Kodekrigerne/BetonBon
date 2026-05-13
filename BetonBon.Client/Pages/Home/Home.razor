@@ -1,29 +1,49 @@
 ﻿@page "/"
+
+@using BetonBon.Client.Auth
 @using BetonBon.Client.Pages.Administration
 @using BetonBon.Client.Pages.RegistrationMenu
 @using BetonBon.Client.Pages.Users
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
-@inject NavigationManager _navigation
+@using BetonBon.Client.Shared.Icons
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
+@inject NavigationManager _navigation
+@inject IJSRuntime jsRuntime
+@inject AuthenticationStateProvider AuthStateProvider
+@inject LocalStorage localStorage
 
 <div class="home-container">
     @* Header *@
     <div class="header">
         <div class="header-profile">
             <div class="avatar">HE</div>
+            
             <div class="header-info">
                 <h1>Holmsgaard Entreprenør</h1>
                 <p>CVR: 1728451 NH</p>
             </div>
         </div>
-        <button class="icon-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-            </svg>
-        </button>
+        
+        <div class="settings-dropdown-container">
+            <button class="icon-btn" @onclick="@ToggleDropdown">
+                <CogWheelIcon />
+            </button>
+            
+            @if (IsDropdownVisible)
+            {
+                <div class="dropdown-overlay" @onclick="() => IsDropdownVisible = false"></div>
+                
+                <div class="dropdown-menu">
+                    <button class="dropdown-item logout-item" @onclick="@Logout">
+                        <LogoutIcon/>
+                        Log ud
+                    </button>
+                </div>
+            }
+        </div>
     </div>
 
     @* Content *@
