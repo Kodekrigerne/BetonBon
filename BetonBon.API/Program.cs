@@ -4,8 +4,6 @@ using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
-using BetonBon.Infrastructure.Services;
-using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using DotNetEnv;
@@ -43,6 +41,9 @@ namespace BetonBon.API
 
             var apiSecret = Environment.GetEnvironmentVariable("API_SECRET");
             var apiGrant = Environment.GetEnvironmentVariable("API_GRANT");
+
+            var adminUsername = Environment.GetEnvironmentVariable("ADMIN_USER");
+            var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
 
             var connectionString =
                 $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Trust Server Certificate=true;";
@@ -120,10 +121,22 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
-            // Auto - migrates new migrations on startup
+            // Auto - migrates new migrations on startup, creates admin user if not present
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+
+                if (!db.Users.Any(u => u.Username == adminUsername))
+                {
+                    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+                    var userFactory = new UserFactory(hasher);
+
+                    var adminUser = userFactory.Create(adminUsername!, adminPassword!, UserRole.Admin);
+
+                    db.Users.Add(adminUser);
+                    db.SaveChanges();
+                }
+
                 db.Database.Migrate();
             }
 
@@ -143,7 +156,7 @@ namespace BetonBon.API
             // Get all projects
             app.MapGet("/api/projects", async (IEconomicProjectsRelayApi economicApi) =>
             {
-          
+
                 var response = await economicApi.GetProjectsAsync();
                 return Results.Ok(response.Projects);
             })

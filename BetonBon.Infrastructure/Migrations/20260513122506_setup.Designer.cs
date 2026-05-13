@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetonBon.Infrastructure.Migrations
 {
     [DbContext(typeof(BetonBonDbContext))]
-    [Migration("20260513085052_AddRefreshTokenToUser")]
-    partial class AddRefreshTokenToUser
+    [Migration("20260513122506_setup")]
+    partial class setup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
