@@ -1,6 +1,8 @@
 ﻿@page "/login"
 @using BetonBon.Client.Auth
 @using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Icons
 @using BetonBon.Shared.Models
 @using Microsoft.AspNetCore.Components.Authorization
 
@@ -8,6 +10,7 @@
 @inject IJSRuntime JSRuntime;
 @inject NavigationManager NavigationManager;
 @inject AuthenticationStateProvider AuthStateProvider;
+@inject LocalStorage localStorage
 
 @attribute [AllowAnonymous]
 @layout LoginLayout
@@ -15,46 +18,53 @@
 <div class="login-container">
     <div class="login-header">
         <div class="login-logo">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            </svg>
+            <LoginIcon/>
         </div>
         <h1>Log ind</h1>
         <p>Velkommen til BetonBon</p>
     </div>
-
-    <div class="login-card">
+    
+    <EditForm Model="UserLogin" OnValidSubmit="@SignIn" class="login-card">
         <div class="input-group">
             <label for="username">Brugernavn</label>
-            <input type="text" id="username" class="theme-input" placeholder="Indtast dit brugernavn" @bind="@Username"/>
+            <InputText id="username" class="theme-input" placeholder="Indtast dit brugernavn" @bind-Value="UserLogin.Username"/>
         </div>
 
         <div class="input-group">
             <label for="password">Adgangskode</label>
-            <input type="password" id="password" class="theme-input" placeholder="Indtast din adgangskode" @bind="@Password"/>
+            <InputText type="password" id="password" class="theme-input" placeholder="Indtast din adgangskode" @bind-Value="@UserLogin.Password"/>
         </div>
 
         @if (!string.IsNullOrEmpty(ErrorMessage))
         {
-            <div style="color: red; font: 0.875rem; font-weight: bold;">
+            <div style="color: red; font-size: 0.875rem; font-weight: bold;">
                 @ErrorMessage
             </div>
         }
 
         <div class="btn-group">
-            <button class="btn-primary" @onclick="@SignIn">Log ind</button>
-            <button class="btn-secondary">Annuller</button>
+            <button type="submit" class="btn-primary">Log ind</button>
+            <button type="button" class="btn-secondary" @onclick="@ClearForm">Annuller</button>
         </div>
-    </div>
+    </EditForm>
 </div>
 
 @code {
 
-    public string? Username { get; set; }
-    public string? Password { get; set; }
+    private LoginFormModel UserLogin = new();
 
     public string? ErrorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
 
     public async Task SignIn()
     {
@@ -62,19 +72,17 @@
 
         try
         {
-            var loginCredentials = new UserLoginDto(Username, Password);
+            var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
             var response = await Api.LoginUser(loginCredentials);
 
             if (response != null)
             {
-                await JSRuntime.InvokeVoidAsync("storage.save", "bb_token", response.Token);
-                await JSRuntime.InvokeVoidAsync("storage.save", "bb_refresh_token", response.RefreshToken);
+                await localStorage.SaveAsync("bb_token", response.Token);
+                await localStorage.SaveAsync("bb_refresh_token", response.RefreshToken);
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 
-                customAuthStateProvider.MarkUserAsAuthenticated();
-
-                Thread.Sleep(100);
+                await customAuthStateProvider.UpdateAuthenticationStatus();
 
                 NavigationManager.NavigateTo("/");
             }
@@ -83,5 +91,17 @@
         {
             ErrorMessage = "Ugyldigt brugernavn eller adgangskode.";
         }
+    }
+
+    public class LoginFormModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public void ClearForm()
+    {
+        UserLogin.Username = string.Empty;
+        UserLogin.Password = string.Empty;
     }
 }

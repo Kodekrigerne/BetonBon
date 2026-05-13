@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.JSInterop;
+﻿using BetonBon.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -7,21 +7,23 @@ namespace BetonBon.Client.Auth
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private readonly IJSRuntime _jsRuntime;
+        private readonly LocalStorage _localStorage;
 
-        public CustomAuthStateProvider(IJSRuntime jsRuntime)
+        public CustomAuthStateProvider(LocalStorage localStorage)
         {
-            _jsRuntime = jsRuntime;
+            _localStorage = localStorage;
         }
 
-        public void MarkUserAsAuthenticated()
+        public async Task UpdateAuthenticationStatus()
         {
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+            var authState = await GetAuthenticationStateAsync();
+
+            NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _jsRuntime.InvokeAsync<string?>("storage.load", "bb_token");
+            var token = await _localStorage.LoadAsync("bb_token");
 
             if (string.IsNullOrWhiteSpace(token))
             {
