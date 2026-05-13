@@ -2,7 +2,6 @@ using BetonBon.Client.Auth;
 using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
@@ -26,7 +25,7 @@ namespace BetonBon.Client
                 })
                 .AddHttpMessageHandler<AuthHeaderHandler>();
 
-            builder.Services.AddRefitClient<IBetonBonAPI>()
+            builder.Services.AddRefitClient<IBetonBonApi>()
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = backendApiUrl;
