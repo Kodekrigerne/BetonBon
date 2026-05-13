@@ -192,13 +192,14 @@
                     <span class="detail-label">Dato</span>
                     <span class="detail-value">@RegistrationDate.ToString("dd. MMM yyyy")</span>
                 </div>
-                @if (!string.IsNullOrWhiteSpace(Note))
+                @if (!string.IsNullOrWhiteSpace(Note) || Note.Length > 1)
                 {
                     <div class="detail-row">
                         <span class="detail-label">Note</span>
-                        <span class="detail-value" style="font-weight: normal; color: #4b5563;">@Note</span>
+                        <span class="detail-value" style="font-weight: normal; color: #4b5563;"> @Note.ToString() </span>
                     </div>
                 }
+                
                 <div class="detail-row" style="border-bottom: none; padding-top: 0.5rem;">
                     <span class="detail-label" style="align-self: center; font-size: 1rem;">Samlet pris</span>
                     <span class="detail-value highlight">@Amount kr.</span>
@@ -231,7 +232,7 @@
     public DateTime RegistrationDate { get; set; }
 
     [Parameter, EditorRequired]
-    public string Note { get; set; } = "";
+    public string Note { get; set; }
 
     /// <summary>
     /// Kaldes når brugeren trykker "Godkend og Gem".

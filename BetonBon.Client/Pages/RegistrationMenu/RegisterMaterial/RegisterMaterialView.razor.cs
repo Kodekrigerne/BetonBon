@@ -79,7 +79,10 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 
         private void SaveButtonPressed()
         {
+            if (SelectedMaterial != null && Amount > 0)
+            {
                 ConfirmationIsVisible = true;
+            }
         }
 
         private async Task SaveRegistration()
