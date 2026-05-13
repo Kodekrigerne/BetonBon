@@ -2,10 +2,14 @@
 @using BetonBon.Shared.Models
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IBetonBonAPI _api
 @inject IJSRuntime JsRuntime
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="form-container">
+
     <div class="form-header">
         <h2>Rediger @originalUsername</h2>
     </div>
@@ -14,44 +18,56 @@
         <DataAnnotationsValidator />
 
         <div class="form-group">
+
             <label>Brugernavn</label>
             <InputText @bind-Value="User.Username" class="form-input" />
             <ValidationMessage For="@(() => User.Username)" class="validation-error" />
+
         </div>
 
         <div class="form-group">
+
             <label>Nyt Password (valgfrit)</label>
             <InputText type="password" @bind-Value="User.NewPassword" class="form-input" />
             <ValidationMessage For="@(() => User.NewPassword)" class="validation-error" />
+
         </div>
 
         <div class="form-group">
+
             <label>Rolle</label>
-            <InputSelect @bind-Value="User.Role" class="form-input">
+            <InputSelect @bind-Value="User.Role" class="form-input" disabled="@isEditingSelf">
                 @foreach (var role in Enum.GetValues<UserRole>())
                 {
                     <option value="@role">@role.ToString()</option>
                 }
             </InputSelect>
+
         </div>
 
         <div class="form-actions">
+
             <button type="submit" class="btn-primary" disabled="@(!formIsValid || isSubmitting)">
                 @(isSubmitting ? "Gemmer..." : "Gem ændringer")
             </button>
+
             <button type="button" class="btn-secondary" @onclick="OnCancel">Annuller</button>
+
         </div>
 
         <div class="danger-zone">
+
             <button type="button" class="btn-delete" @onclick="OnDelete">
                 Slet Medarbejder
             </button>
+
         </div>
     </EditForm>
 </div>
 
 @code {
     [Parameter] public UpdateUserModel User { get; set; } = null!;
+
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public EventCallback OnUserUpdated { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }
@@ -62,8 +78,9 @@
 
     private bool isSubmitting = false;
     private bool formIsValid = true;
+    private bool isEditingSelf = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (User == null) return;
 
@@ -71,6 +88,8 @@
 
         editContext = new EditContext(User);
         editContext.OnFieldChanged += HandleFieldChanged;
+
+        await CheckIfEditingSelf();
     }
 
     private async Task HandleSubmit()
@@ -109,6 +128,20 @@
             
             StateHasChanged();
         }
+    }
+
+    private async Task CheckIfEditingSelf()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier) ?? user.FindFirst("sub");
+
+        if (userIdClaim != null)
+        {
+            isEditingSelf = string.Equals(userIdClaim.Value, User.Id.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
+
     }
 
 }
