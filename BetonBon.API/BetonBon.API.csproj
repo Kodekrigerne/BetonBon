@@ -16,6 +16,7 @@
     </PackageReference>
     <PackageReference Include="Refit" Version="10.1.6" />
     <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
   </ItemGroup>
 
   <ItemGroup>

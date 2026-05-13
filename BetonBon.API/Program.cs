@@ -1,15 +1,16 @@
+using System.Text.Json.Serialization;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
-using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
-using BetonBon.Infrastructure.Services;
-using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Refit;
+using System.Security.Authentication;
+using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -19,8 +20,11 @@ namespace BetonBon.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             Env.TraversePath().Load();
+
+            builder.Configuration.AddEnvironmentVariables();
+            builder.Services.Configure<JwtSettings>(
+                builder.Configuration.GetSection(JwtSettings.SectionName));
 
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
@@ -67,7 +71,17 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
-            
+
+            builder.Services.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
+            builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
+            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            builder.Services.AddScoped<JsonWebTokenHandler>();
+
+
+            builder.Services.ConfigureHttpJsonOptions(options =>
+                {
+                    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -81,21 +95,9 @@ namespace BetonBon.API
                     policy.AllowAnyHeader();
                 }));
 
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
-
-            app.UseCors("AllowAll");
-
-
-            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
-            {
-                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
-
-                return Results.Ok(users);
-            });
-
 
             // Auto - migrates new migrations on startup
             using (var scope = app.Services.CreateScope())
@@ -109,7 +111,6 @@ namespace BetonBon.API
             {
                 app.MapOpenApi();
             }
-
 
             app.UseHttpsRedirection();
             app.UseCors("CustomPolicy");
@@ -126,6 +127,40 @@ namespace BetonBon.API
             );
 
             app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
+            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
+            {
+                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+
+                return Results.Ok(users);
+            });
+
+            app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+            {
+                var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
+
+                var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
+
+                return Results.Ok(id);
+            });
+
+            app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
+            {
+                try
+                {
+                    var query = new LoginQuery(userLogin.Username, userLogin.Password);
+
+                    var response = await queryDispatcher.DispatchAsync<LoginQuery, LoginResponse>(query);
+
+                    return Results.Ok(response);
+                }
+
+                catch (AuthenticationException)
+                {
+                    return Results.Unauthorized();
+                }
+            });
+
+            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicRelayApi economicApi, int projectNumber) =>
             {
                 var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
 

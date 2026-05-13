@@ -1,14 +1,13 @@
 ﻿
-using BetonBon.Shared.Models;
-
 namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
-        public bool IsVisibleUsers = false;
 
-        public void OpenUsers() => IsVisibleUsers = true;
-        public void CloseUsers() => IsVisibleUsers = false;
+        public void NavigateToAdministration()
+        {
+            _navigation.NavigateTo("/administration");
+        }
 
         public void OpenRegistrations()
         {

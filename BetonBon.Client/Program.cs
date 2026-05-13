@@ -1,4 +1,7 @@
+using BetonBon.Client.Auth;
 using BetonBon.Client.RefitInterfaces;
+using Microsoft.AspNetCore.Components.Authorization;
+using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
@@ -10,7 +13,6 @@ namespace BetonBon.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -22,11 +24,15 @@ namespace BetonBon.Client
                     c.BaseAddress = backendApiUrl;
                 });
 
-            builder.Services.AddRefitClient<IBetonBonApi>()
+            builder.Services.AddRefitClient<IBetonBonAPI>()
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = backendApiUrl;
                 });
+
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            builder.Services.AddScoped<LocalStorage>();
 
             await builder.Build().RunAsync();
         }

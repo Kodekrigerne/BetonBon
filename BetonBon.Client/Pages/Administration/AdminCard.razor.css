@@ -1,0 +1,44 @@
+﻿.admin-card {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.1s;
+}
+
+    .admin-card:active {
+        transform: scale(0.98);
+    }
+
+.card-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.icon-wrapper {
+    background-color: #f3e8ff; 
+    color: #7e22ce; 
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+}
+
+.text-wrapper h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #111827;
+}
+
+.text-wrapper p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.arrow {
+    color: #d1d5db;
+}
