@@ -139,6 +139,15 @@ namespace BetonBon.API
                 return Results.NoContent();
             });
 
+            app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserDTO dto) =>
+            {
+                var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
+
+                await commandDispatcher.DispatchAsync(command);
+
+                return Results.NoContent();
+            });
+
             app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
             {
                 try
