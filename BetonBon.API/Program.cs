@@ -1,11 +1,8 @@
-using System.Text.Json.Serialization;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Infrastructure;
-using BetonBon.Infrastructure.Services;
-using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using DotNetEnv;
@@ -29,25 +26,11 @@ namespace BetonBon.API
             Env.TraversePath().Load();
 
             builder.Configuration.AddEnvironmentVariables();
+
             builder.Services.Configure<JwtSettings>(
                 builder.Configuration.GetSection(JwtSettings.SectionName));
 
             var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
-
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtSettings!.Issuer,
-                        ValidAudience = jwtSettings.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
-                    };
-                });
 
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
@@ -82,19 +65,28 @@ namespace BetonBon.API
                 .AddApplicationServices()
                 .AddInfrastructureServices();
 
-
-            builder.Services.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
-            builder.Services.AddScoped<ICommandHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
-            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<JsonWebTokenHandler>();
-
 
             builder.Services.ConfigureHttpJsonOptions(options =>
                 {
                     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            // Add services to the container.
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings!.Issuer,
+                        ValidAudience = jwtSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                    };
+                });
+
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));

@@ -1,6 +1,8 @@
 ﻿@page "/login"
 @using BetonBon.Client.Auth
 @using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Icons
 @using BetonBon.Shared.Models
 @using Microsoft.AspNetCore.Components.Authorization
 
@@ -8,6 +10,7 @@
 @inject IJSRuntime JSRuntime;
 @inject NavigationManager NavigationManager;
 @inject AuthenticationStateProvider AuthStateProvider;
+@inject LocalStorage localStorage
 
 @attribute [AllowAnonymous]
 @layout LoginLayout
@@ -15,10 +18,7 @@
 <div class="login-container">
     <div class="login-header">
         <div class="login-logo">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            </svg>
+            <LoginIcon/>
         </div>
         <h1>Log ind</h1>
         <p>Velkommen til BetonBon</p>
@@ -77,8 +77,8 @@
 
             if (response != null)
             {
-                await JSRuntime.InvokeVoidAsync("storage.save", "bb_token", response.Token);
-                await JSRuntime.InvokeVoidAsync("storage.save", "bb_refresh_token", response.RefreshToken);
+                await localStorage.SaveAsync("bb_token", response.Token);
+                await localStorage.SaveAsync("bb_refresh_token", response.RefreshToken);
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 
