@@ -1,39 +1,64 @@
-﻿@page "/users"
+﻿@page "/administration/users"
 
 @using BetonBon.Client.Pages.Home
 @using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
 
-@inject IBetonBonApi _api
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
 
+@inject IBetonBonAPI Api
+@inject PopupService PopupService
 
-<FullScreenModal IsVisible="UsersIsVisible" OnClose="CloseUsers" Title="Medarbejdere">
-
-    <div class="content">
-
-        @* Opret Bruger Knap *@
-
-        <button class="create-btn" @onclick="HandleCreateUser">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7v14"/></svg>
-            Opret Bruger
-        </button>
-
-        @* Oversigt over brugere *@
-
-        <div class="user-list">
-
-            @if (users == null)
-            {
-                <p>Henter brugere...</p>
-            }
-            else
-            {
-                @foreach (var user in users)
-{
-                <SingleUserCard User="@user" OnEditRequested="EditUser" />
-}
-            }
-        </div>
+<div class="users-page-container">
+    <div class="users-header">
+        <h1>@(isCreating ? "Ny bruger" : isEditing ? "Rediger medarbejder" : "Medarbejdere")</h1>
+        @if (!isCreating && !isEditing)
+        {
+            <button class="create-btn" @onclick="HandleCreateUser">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Opret Bruger</span>
+            </button>
+        }
     </div>
 
-</FullScreenModal>
+    @if (isCreating)
+    {
+        <div class="form-container">
+            <CreateUserForm OnCancel="() => isCreating = false" OnUserCreated="HandleUserCreated" />
+        </div>
+    }
+    else if (isEditing && selectedUser != null)
+    {
+        <div class="form-container">
+
+            <EditUserForm User="editModel"
+                          OnCancel="() => isEditing = false"
+                          OnUserUpdated="HandleUserCreated"
+                          OnDelete="HandleDeleteUser" />
+
+        </div>
+    }
+    else
+    {
+        <div class="content">
+            <div class="user-list">
+                @if (users == null)
+                {
+                    <div class="loader">Henter brugere...</div>
+                }
+                else
+                {
+                    @foreach (var user in users)
+                    {
+                        <SingleUserCard User="@user" OnEditRequested="HandleEditUser" />
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>

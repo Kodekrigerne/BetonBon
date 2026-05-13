@@ -1,15 +1,19 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
+using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace BetonBon.Client.Pages.Home
 {
     public partial class TimerCard : IAsyncDisposable
     {
         [Inject]
-        private IJSRuntime JS { get; set; } = default!;
+        private NavigationManager NavigationManager { get; set; } = null!;
 
+        [Inject]
+        private LocalStorage LocalStorage { get; set; } = null!;
+
+        private bool _initialized = false;
         private enum TimerState { NotStarted, Paused, Running }
         private TimerState _timerState = TimerState.NotStarted;
         private Stopwatch? _stopwatch = null;
@@ -23,11 +27,13 @@ namespace BetonBon.Client.Pages.Home
         {
             if (firstRender)
             {
-                var json = await JS.InvokeAsync<string?>("storage.load", "bb_timer");
+                var json = await LocalStorage.LoadAsync("bb_timer");
                 if (json != null)
                 {
                     var session = JsonSerializer.Deserialize<StopwatchSession>(json)
                         ?? throw new InvalidOperationException("Invalid stopwatch session data.");
+
+                    if (session.StopTime != null) session.ResetStopTime();
 
                     _session = session;
 
@@ -41,6 +47,8 @@ namespace BetonBon.Client.Pages.Home
 
                     _offset = session.GetOffset(DateTime.UtcNow);
                 }
+                _initialized = true;
+                StateHasChanged();
             }
         }
 
@@ -49,8 +57,8 @@ namespace BetonBon.Client.Pages.Home
             _timerState = TimerState.Running;
             _stopwatch = new();
             _stopwatch.Start();
-            _offset = TimeSpan.Zero;
-            _session ??= new(DateTime.UtcNow);
+            _session ??= new(DateTime.UtcNow.AddHours(-7).AddMinutes(-30));
+            _offset = _session.GetOffset(DateTime.UtcNow);
             await SaveSession();
             _ = StartTicking();
         }
@@ -61,12 +69,21 @@ namespace BetonBon.Client.Pages.Home
         /// </summary>
         private async Task StopTimer()
         {
-            _timerState = TimerState.NotStarted;
-            _stopwatch?.Stop();
-            _session?.SetStopTime(DateTime.UtcNow);
-            _session = null;
+            if (_stopwatch == null) throw new InvalidOperationException("Invalid state: Stopwatch null when stopping.");
+            if (_session == null) throw new InvalidOperationException("Invalid state: Session null when stopping stopwatch.");
+            //TODO: Bekræft stop
+
+            _timerState = TimerState.Paused;
+            _stopwatch.Stop();
+            _session.SetStopTime(DateTime.UtcNow);
             StopTicking();
-            await JS.InvokeVoidAsync("storage.remove", "bb_timer");
+            await SaveSession();
+            _session = null;
+
+            NavigationManager.NavigateTo($"/stopwatch-registration");
+
+            //TODO: Flyt dette til efter timer er registrerede
+            //await JS.InvokeVoidAsync("storage.remove", "bb_timer");
         }
 
         private async Task PauseTimer()
@@ -118,7 +135,7 @@ namespace BetonBon.Client.Pages.Home
         private async Task SaveSession()
         {
             var json = JsonSerializer.Serialize(_session);
-            await JS.InvokeVoidAsync("storage.save", "bb_timer", json);
+            await LocalStorage.SaveAsync("bb_timer", json);
         }
 
         public async ValueTask DisposeAsync()

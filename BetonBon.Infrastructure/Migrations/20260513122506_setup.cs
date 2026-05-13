@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BetonBon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Setup : Migration
+    public partial class setup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,9 @@ namespace BetonBon.Infrastructure.Migrations
                     Username = table.Column<string>(type: "text", nullable: false),
                     HashedPassword_Hash = table.Column<string>(type: "text", nullable: false),
                     HashedPassword_Salt = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false)
+                    Role = table.Column<string>(type: "text", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

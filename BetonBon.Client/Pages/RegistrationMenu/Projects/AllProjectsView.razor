@@ -1,0 +1,24 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Shared
+@using BetonBon.Client.Shared.Components
+@using BetonBon.Client.Shared.Icons
+@using BetonBon.Shared.Models
+@inject IEconomicApi _economicApi
+
+<FullScreenModal IsVisible="IsVisible" OnClose="CloseProjects" Title="Vælg Projekt">
+
+    <div class="projects-container">
+
+        
+        <SearchComponent @bind-SearchTerm="@Search" @bind-SearchTerm:after="OnSearch"/>
+
+
+        <div class="project-list">
+            @foreach (var project in _filteredProjects)
+            {
+                <ProjectCard ProjectSelected="@ClickProject" Project="@project"></ProjectCard>
+            }
+        </div>
+    </div>
+
+</FullScreenModal>

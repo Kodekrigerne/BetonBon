@@ -1,5 +1,5 @@
 ﻿using BetonBon.Application;
-using BetonBon.Application.RepositoryInterfaces;
+using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure.Services;
@@ -21,6 +21,9 @@ namespace BetonBon.Infrastructure
                 collection.AddScoped<ICommandDispatcher, CommandDispatcher>();
 
                 collection.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
+                collection.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
+
+                collection.AddScoped<IJwtTokenService, JwtTokenService>();
 
                 return collection;
             }

@@ -1,0 +1,107 @@
+﻿@page "/login"
+@using BetonBon.Client.Auth
+@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Icons
+@using BetonBon.Shared.Models
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IBetonBonAPI Api;
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthStateProvider;
+@inject LocalStorage localStorage
+
+@attribute [AllowAnonymous]
+@layout LoginLayout
+
+<div class="login-container">
+    <div class="login-header">
+        <div class="login-logo">
+            <LoginIcon/>
+        </div>
+        <h1>Log ind</h1>
+        <p>Velkommen til BetonBon</p>
+    </div>
+    
+    <EditForm Model="UserLogin" OnValidSubmit="@SignIn" class="login-card">
+        <div class="input-group">
+            <label for="username">Brugernavn</label>
+            <InputText id="username" class="theme-input" placeholder="Indtast dit brugernavn" @bind-Value="UserLogin.Username"/>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Adgangskode</label>
+            <InputText type="password" id="password" class="theme-input" placeholder="Indtast din adgangskode" @bind-Value="@UserLogin.Password"/>
+        </div>
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div style="color: red; font-size: 0.875rem; font-weight: bold;">
+                @ErrorMessage
+            </div>
+        }
+
+        <div class="btn-group">
+            <button type="submit" class="btn-primary">Log ind</button>
+            <button type="button" class="btn-secondary" @onclick="@ClearForm">Annuller</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+
+    private LoginFormModel UserLogin = new();
+
+    public string? ErrorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    public async Task SignIn()
+    {
+        ErrorMessage = null;
+
+        try
+        {
+            var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
+            var response = await Api.LoginUser(loginCredentials);
+
+            if (response != null)
+            {
+                await localStorage.SaveAsync("bb_token", response.Token);
+                await localStorage.SaveAsync("bb_refresh_token", response.RefreshToken);
+
+                var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+
+                await customAuthStateProvider.UpdateAuthenticationStatus();
+
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Ugyldigt brugernavn eller adgangskode.";
+        }
+    }
+
+    public class LoginFormModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public void ClearForm()
+    {
+        UserLogin.Username = string.Empty;
+        UserLogin.Password = string.Empty;
+    }
+}

@@ -1,24 +1,34 @@
-﻿using BetonBon.Client.Pages.Projects;
+﻿using BetonBon.Client.Auth;
 
 namespace BetonBon.Client.Pages.Home
 {
     public partial class Home
     {
-        public bool IsVisibleProjects = false;
-        public bool IsVisibleUsers = false;
 
-        public void CloseProjects()
+        public bool IsDropdownVisible = false;
+        public void NavigateToAdministration()
         {
-            IsVisibleProjects = false;
+            _navigation.NavigateTo("/administration");
         }
 
-        public void Openprojects()
+        public void OpenRegistrations()
         {
-            IsVisibleProjects = true;
+            _navigation.NavigateTo("/registration");
         }
 
-        public void OpenUsers() => IsVisibleUsers = true;
-        public void CloseUsers() => IsVisibleUsers = false;
+        public void ToggleDropdown()
+        {
+            IsDropdownVisible = !IsDropdownVisible;
+        }
 
+        public async Task Logout()
+        {
+            await localStorage.RemoveAsync("bb_token");
+            await localStorage.RemoveAsync("bb_refresh_token");
+
+            var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+
+            await customAuthStateProvider.UpdateAuthenticationStatus();
+        }
     }
 }
