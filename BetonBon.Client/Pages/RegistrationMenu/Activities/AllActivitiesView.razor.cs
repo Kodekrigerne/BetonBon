@@ -44,7 +44,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Activities
 
         protected override async Task OnParametersSetAsync()
         {
-            if (SelectedProject!= null && IsVisible == true) _activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
+            if (SelectedProject != null && IsVisible == true && (_activities == null || _activities.Count == 0)) _activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
             _filteredActivities = _activities;
         }
 

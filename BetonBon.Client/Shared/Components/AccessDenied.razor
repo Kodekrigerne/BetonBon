@@ -1,0 +1,9 @@
+﻿@inject NavigationManager _navigation
+
+<div class="access-denied">
+    <h1>Adgang nægtet</h1>
+    <p>Du har ikke rettigheder til at se denne side.</p>
+    <button class="btn-primary" @onclick='() => _navigation.NavigateTo("/")'>
+        Gå til forsiden
+    </button>
+</div>

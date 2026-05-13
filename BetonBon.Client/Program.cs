@@ -1,6 +1,7 @@
 using BetonBon.Client.Auth;
 using BetonBon.Client.RefitInterfaces;
 using Microsoft.AspNetCore.Components.Authorization;
+using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
@@ -33,6 +34,7 @@ namespace BetonBon.Client
 
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            builder.Services.AddScoped<LocalStorage>();
             builder.Services.AddTransient<AuthHeaderHandler>();
 
             await builder.Build().RunAsync();
