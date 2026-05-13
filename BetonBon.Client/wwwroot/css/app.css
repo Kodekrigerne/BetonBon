@@ -99,7 +99,7 @@ h1:focus {
     align-items: center;
     justify-content: center;
     text-align: center;
-    height: 70vh; 
+    height: 70vh;
     padding: 2rem;
 }
 
@@ -117,6 +117,7 @@ h1:focus {
     }
 
     .access-denied .btn-primary {
+        flex:none;
         background-color: #2563eb;
         color: white;
         padding: 0.75rem 1.5rem;
