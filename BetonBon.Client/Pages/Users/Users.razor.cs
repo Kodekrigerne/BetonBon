@@ -26,7 +26,7 @@ namespace BetonBon.Client.Pages.Users
 
         private async Task LoadUsers()
         {
-            var userList = await _api.GetAllUsers();
+            var userList = await Api.GetAllUsers();
             users = userList.Select(u => new UserViewModel(u.Id, u.Username, u.Role)).ToList();
         }
 
@@ -53,10 +53,17 @@ namespace BetonBon.Client.Pages.Users
         {
             if (selectedUser == null) return;
 
-            await _api.DeleteUser(selectedUser.Id);
+            bool confirmed = await PopupService.ConfirmAsync(
+                $"Er du sikker på, at du vil slette {selectedUser.Name}?");
+
+            if (!confirmed) return;
+
+
+            await Api.DeleteUser(selectedUser.Id);
 
             isEditing = false;
             selectedUser = null;
+            editModel = null;
 
             await LoadUsers();
         }

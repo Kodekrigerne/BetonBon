@@ -2,12 +2,14 @@
 
 @using BetonBon.Client.Pages.Home
 @using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
 
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Admin")]
 
-@inject IBetonBonAPI _api
+@inject IBetonBonAPI Api
+@inject PopupService PopupService
 
 <div class="users-page-container">
     <div class="users-header">
