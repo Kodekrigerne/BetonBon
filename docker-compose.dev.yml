@@ -8,10 +8,8 @@ services:
     image: postgres:18-alpine
     container_name: betonbon-postgres
     restart: always
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+    env_file:
+      - .env
     ports:
       - "5433:5432"
     volumes:
