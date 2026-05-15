@@ -16,6 +16,9 @@ namespace BetonBon.Client.Services
             return await _js.InvokeAsync<bool>("confirm", message);
         }
 
-
+        public async Task AlertAsync(string message)
+        {
+            await _js.InvokeVoidAsync("alert", message);
+        }
     }
 }
