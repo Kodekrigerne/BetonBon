@@ -134,7 +134,7 @@ namespace BetonBon.API
                     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
                     var userFactory = new UserFactory(hasher);
 
-                    var adminUser = userFactory.Create(adminUsername!, adminPassword!, UserRole.Admin);
+                    var adminUser = userFactory.Create(adminUsername!, adminPassword!, UserRole.Admin, 1);
 
                     db.Users.Add(adminUser);
                     db.SaveChanges();
@@ -173,7 +173,7 @@ namespace BetonBon.API
 
             app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
             {
-                var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
+                var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role, userToCreate.EmployeeNumber);
 
                 var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 

@@ -11,7 +11,7 @@ namespace BetonBon.Domain.Users
             _passwordHasher = passwordHasher;
         }
 
-        public User Create(string username, string password, UserRole role)
+        public User Create(string username, string password, UserRole role, int employeeNumber)
         {
             if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
             {
@@ -20,7 +20,7 @@ namespace BetonBon.Domain.Users
 
             var hashedPassword = _passwordHasher.HashPassword(password);
 
-            return User.CreateUser(username, hashedPassword, role);
+            return User.CreateUser(username, hashedPassword, role, employeeNumber);
         }
     }
 }
