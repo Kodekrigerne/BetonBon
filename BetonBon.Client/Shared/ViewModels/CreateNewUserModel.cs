@@ -15,5 +15,8 @@ namespace BetonBon.Client.Shared.ViewModels
 
         [Required(ErrorMessage = "Vælg venligst en rolle")]
         public UserRole Role { get; set; } = UserRole.User;
+
+        [Range(1, int.MaxValue, ErrorMessage = "Vælg venligst en medarbejder")]
+        public int EmployeeNumber { get; set; }
     }
 }
