@@ -269,9 +269,18 @@ namespace BetonBon.API
 
             app.MapGet("/api/employees", async (IEconomicProjectsRelayApi economicApi) =>
             {
-                var response = await economicApi.GetEmployeesAsync();
-
-                return Results.Ok(response);
+                try
+                {
+                    var response = await economicApi.GetEmployeesAsync();
+                    return Results.Ok(response);
+                }
+                catch (ApiException ex)
+                {
+                    return Results.Problem(
+                    detail: ex.Content,
+                    statusCode: (int)ex.StatusCode
+                    );
+                }
             });
 
             app.Run();

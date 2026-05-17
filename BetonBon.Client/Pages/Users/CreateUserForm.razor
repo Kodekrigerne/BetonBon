@@ -51,7 +51,10 @@
         <div class="form-group">
 
             <label>Medarbejder (e-conomic)</label>
-            <InputSelect @bind-Value="createUserModel.EmployeeNumber" class="form-input">
+            <InputSelect Value="createUserModel.EmployeeNumber"
+            ValueChanged="(int v) => OnEmployeeChanged(v)"
+            ValueExpression="() => createUserModel.EmployeeNumber"
+            class="form-input">
                 <option value="0">Vælg medarbejder...</option>
                 @foreach (var employee in _employees)
                 {
@@ -133,6 +136,17 @@
         finally
         {
             isSubmitting = false;
+        }
+    }
+
+    private void OnEmployeeChanged(int employeeNumber)
+    {
+        createUserModel.EmployeeNumber = employeeNumber;
+
+        if (string.IsNullOrWhiteSpace(createUserModel.Username))
+        {
+            createUserModel.Username = _employees
+                .FirstOrDefault(e => e.Number == employeeNumber)?.Name ?? "";
         }
     }
 
