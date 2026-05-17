@@ -1,3 +1,6 @@
+using System.Security.Authentication;
+using System.Text;
+using System.Text.Json.Serialization;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Application.Users;
@@ -6,15 +9,13 @@ using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.TimeEntries;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
-using System.Security.Authentication;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -250,6 +251,21 @@ namespace BetonBon.API
 
             });
 
+            app.MapPost("/api/newTimeEntry", async (TimeEntry timeEntry, IEconomicProjectsRelayApi economicApi, CancellationToken ct) =>
+            {
+                try
+                {
+                    var result = await economicApi.CreateTimeEntryAsync(timeEntry, ct);
+                    return Results.Ok(result); //TODO: Results.Created(GET, result);
+                }
+                catch (ApiException ex)
+                {
+                    return Results.Problem(
+                    detail: ex.Content,
+                    statusCode: (int)ex.StatusCode
+                    );
+                }
+            });
 
             app.Run();
         }
