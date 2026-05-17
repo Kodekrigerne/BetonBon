@@ -267,6 +267,13 @@ namespace BetonBon.API
                 }
             });
 
+            app.MapGet("/api/employees", async (IEconomicProjectsRelayApi economicApi) =>
+            {
+                var response = await economicApi.GetEmployeesAsync();
+
+                return Results.Ok(response);
+            });
+
             app.Run();
         }
     }
