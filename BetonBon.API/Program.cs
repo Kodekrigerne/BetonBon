@@ -132,7 +132,7 @@ namespace BetonBon.API
                 if (!db.Users.Any(u => u.Username == adminUsername))
                 {
                     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-                    var userFactory = new UserFactory(hasher);
+                    var userFactory = new UserFactory(hasher, scope.ServiceProvider.GetRequiredService<IEmployeeNumberUniqueValidator>());
 
                     var adminUser = userFactory.Create(adminUsername!, adminPassword!, UserRole.Admin, 1);
 

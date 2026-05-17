@@ -23,6 +23,8 @@ namespace BetonBon.Infrastructure
                 collection.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
                 collection.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
 
+                collection.AddScoped<IEmployeeNumberUniqueValidator, EmployeeNumberUniqueValidator>();
+
                 collection.AddScoped<IJwtTokenService, JwtTokenService>();
 
                 return collection;

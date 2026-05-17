@@ -5,10 +5,12 @@ namespace BetonBon.Domain.Users
     public class UserFactory
     {
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IEmployeeNumberUniqueValidator _employeeNumberUniqueValidator;
 
-        public UserFactory(IPasswordHasher passwordHasher)
+        public UserFactory(IPasswordHasher passwordHasher, IEmployeeNumberUniqueValidator employeeNumberUniqueValidator)
         {
             _passwordHasher = passwordHasher;
+            _employeeNumberUniqueValidator = employeeNumberUniqueValidator;
         }
 
         public User Create(string username, string password, UserRole role, int employeeNumber)
@@ -17,6 +19,9 @@ namespace BetonBon.Domain.Users
             {
                 throw new ArgumentException("Password must be atleast 8 characters long.", nameof(password));
             }
+
+            if (_employeeNumberUniqueValidator.ValidateUniqueEmployeeNumber(employeeNumber))
+                throw new ArgumentException("Employee Number must be unique", nameof(employeeNumber));
 
             var hashedPassword = _passwordHasher.HashPassword(password);
 
