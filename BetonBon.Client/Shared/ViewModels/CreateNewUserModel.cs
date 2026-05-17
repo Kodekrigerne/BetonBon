@@ -3,6 +3,7 @@ using BetonBon.Shared.Enums;
 
 namespace BetonBon.Client.Shared.ViewModels
 {
+    //TODO: Det her er da vidst ikke en viewmodel?
     public class CreateNewUserModel
     {
         [Required(ErrorMessage = "Navn skal udfyldes")]
