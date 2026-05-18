@@ -101,7 +101,7 @@ namespace BetonBon.API
 
             builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
             {
-                policy.AllowAnyOrigins();
+                policy.AllowAnyOrigin();
                 policy.AllowAnyMethod();
                 policy.AllowAnyHeader();
             }));
