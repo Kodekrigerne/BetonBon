@@ -3,6 +3,7 @@ using BetonBon.Shared.Enums;
 
 namespace BetonBon.Client.Shared.ViewModels
 {
+    //TODO: Det her er da vidst ikke en viewmodel?
     public class CreateNewUserModel
     {
         [Required(ErrorMessage = "Navn skal udfyldes")]
@@ -15,5 +16,8 @@ namespace BetonBon.Client.Shared.ViewModels
 
         [Required(ErrorMessage = "Vælg venligst en rolle")]
         public UserRole Role { get; set; } = UserRole.User;
+
+        [Range(1, int.MaxValue, ErrorMessage = "Vælg venligst en medarbejder")]
+        public int EmployeeNumber { get; set; }
     }
 }
