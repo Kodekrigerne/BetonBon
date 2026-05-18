@@ -37,11 +37,8 @@ namespace BetonBon.Client
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
             builder.Services.AddScoped<LocalStorage>();
             builder.Services.AddTransient<AuthHeaderHandler>();
-
-            builder.Services.AddScoped<LocalStorage>();
             builder.Services.AddScoped<PopupService>();
             builder.Services.AddScoped<TimeEntryService>();
-
 
             await builder.Build().RunAsync();
         }
