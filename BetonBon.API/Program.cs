@@ -1,5 +1,3 @@
-using System.Text;
-using System.Text.Json.Serialization;
 using BetonBon.API.Endpoints;
 using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
@@ -11,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -28,6 +28,7 @@ namespace BetonBon.API
                 builder.Configuration.GetSection(JwtSettings.SectionName));
 
             var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
+
 
             var apiSecret = Environment.GetEnvironmentVariable("API_SECRET");
             var apiGrant = Environment.GetEnvironmentVariable("API_GRANT");

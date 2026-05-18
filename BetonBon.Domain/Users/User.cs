@@ -43,11 +43,7 @@ namespace BetonBon.Domain.Users
 
         public void SetPassword(string password, IPasswordHasher passwordHasher)
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
-            {
-                throw new ArgumentException("Password must be atleast 8 characters long.", nameof(password));
-            }
-
+            ValidatePassword(password);
             HashedPassword = passwordHasher.HashPassword(password);
         }
 
@@ -61,6 +57,18 @@ namespace BetonBon.Domain.Users
             if (username.Length > 50)
             {
                 throw new ArgumentException("Username cannot be longer than 20 characters.", nameof(username));
+            }
+        }
+
+        private static void ValidatePassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException("Password cannot be empty.", nameof(password));
+            }
+            if (password.Length < 8)
+            {
+                throw new ArgumentException("Password must be at least 8 characters long.", nameof(password));
             }
         }
 
