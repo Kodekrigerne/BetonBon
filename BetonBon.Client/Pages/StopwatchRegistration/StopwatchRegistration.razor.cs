@@ -133,19 +133,19 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             _projectsIsVisible = true;
         }
 
-        private void OnProjectSelected(ProjectDTO project)
+        private void HandleProjectSelected(ProjectDTO project)
         {
             _selectedProject = project;
             _projectsIsVisible = false;
             _activitiesIsVisible = true;
         }
 
-        private void OnProjectsClosed()
+        private void HandleProjectsClosed()
         {
             _projectsIsVisible = false;
         }
 
-        private void OnActivitySelected(ActivityDTO activity)
+        private void HandleActivitySelected(ActivityDTO activity)
         {
             var draft = _allocationDrafts.Single(x => x.Id == _selectingForDraftId);
             draft.ProjectDTO = _selectedProject;
@@ -153,7 +153,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             _activitiesIsVisible = false;
         }
 
-        private void OnActivitiesClosed()
+        private void HandleActivitiesClosed()
         {
             _activitiesIsVisible = false;
             _selectedProject = null;
