@@ -265,7 +265,7 @@ namespace BetonBon.API
                     statusCode: (int)ex.StatusCode
                     );
                 }
-            });
+            }).RequireAuthorization();
 
             app.MapGet("/api/employees", async (IEconomicProjectsRelayApi economicApi) =>
             {
@@ -281,7 +281,7 @@ namespace BetonBon.API
                     statusCode: (int)ex.StatusCode
                     );
                 }
-            });
+            }).RequireAuthorization(nameof(UserRole.Admin));
 
             app.Run();
         }
