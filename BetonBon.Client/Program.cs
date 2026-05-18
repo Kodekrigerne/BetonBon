@@ -1,4 +1,5 @@
 using BetonBon.Client.Auth;
+using BetonBon.Client.Pages.StopwatchRegistration;
 using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -37,6 +38,7 @@ namespace BetonBon.Client
             builder.Services.AddScoped<LocalStorage>();
             builder.Services.AddTransient<AuthHeaderHandler>();
             builder.Services.AddScoped<PopupService>();
+            builder.Services.AddScoped<TimeEntryService>();
 
             await builder.Build().RunAsync();
         }

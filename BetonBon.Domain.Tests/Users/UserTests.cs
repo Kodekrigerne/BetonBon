@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BetonBon.Domain.Users;
+﻿using BetonBon.Domain.Users;
 using BetonBon.Shared.Enums;
 
 namespace BetonBon.Domain.Tests.Users
@@ -16,9 +13,10 @@ namespace BetonBon.Domain.Tests.Users
             var username = "TestUser";
             var role = UserRole.User;
             var hashedPassword = new PasswordHash("password", "salt");
+            var employeeNumber = 1;
 
             // Act
-            var user = User.CreateUser(username, hashedPassword, role);
+            var user = User.CreateUser(username, hashedPassword, role, employeeNumber);
 
             // Assert 
             Assert.Multiple(() =>

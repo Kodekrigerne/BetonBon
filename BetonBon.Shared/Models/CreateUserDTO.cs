@@ -2,5 +2,5 @@
 
 namespace BetonBon.Shared.Models
 {
-    public record CreateUserDTO(string Username, string Password, UserRole Role);
+    public record CreateUserDTO(string Username, string Password, UserRole Role, int EmployeeNumber);
 }

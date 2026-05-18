@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json.Serialization;
 using BetonBon.API.Endpoints;
 using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
@@ -9,8 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -73,9 +73,9 @@ namespace BetonBon.API
             builder.Services.AddScoped<JsonWebTokenHandler>();
 
             builder.Services.ConfigureHttpJsonOptions(options =>
-                {
-                    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -92,19 +92,17 @@ namespace BetonBon.API
                     };
                 });
 
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-            });
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
             var clientUrl = builder.Configuration["ClientUrl"];
 
             builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
-                {
-                    policy.WithOrigins(clientUrl!);
-                    policy.AllowAnyMethod();
-                    policy.AllowAnyHeader();
-                }));
+            {
+                policy.WithOrigins(clientUrl!);
+                policy.AllowAnyMethod();
+                policy.AllowAnyHeader();
+            }));
 
             builder.Services.AddOpenApi();
 

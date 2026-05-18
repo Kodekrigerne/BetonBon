@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BetonBon.Application;
+﻿using BetonBon.Application;
 using BetonBon.Application.Users.UserQueries;
-using BetonBon.Domain.Users;
 using BetonBon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +12,7 @@ namespace BetonBon.Infrastructure.Users
     /// </summary>
     /// <remarks>This handler is used in query processing pipelines to fetch user information. 
     /// The returned list contains user details without tracking changes in the database context.</remarks>
-    
+
     public class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, List<UserDto>>
     {
         private readonly BetonBonDbContext _db;
@@ -31,7 +27,7 @@ namespace BetonBon.Infrastructure.Users
         {
             return await _db.Users
                 .AsNoTracking()
-                .Select(u => new UserDto(u.Id, u.Username, u.Role))
+                .Select(u => new UserDto(u.Id, u.Username, u.Role, u.EmployeeNumber))
                 .ToListAsync();
         }
     }
