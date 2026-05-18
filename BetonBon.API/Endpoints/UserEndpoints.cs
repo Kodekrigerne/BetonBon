@@ -1,9 +1,9 @@
-﻿using BetonBon.Application;
+﻿using System.Security.Authentication;
+using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
-using System.Security.Authentication;
 
 namespace BetonBon.API.Endpoints
 {
@@ -15,7 +15,7 @@ namespace BetonBon.API.Endpoints
             {
                 app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
                 {
-                    var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
+                    var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role, userToCreate.EmployeeNumber);
 
                     var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
