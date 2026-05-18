@@ -1,5 +1,8 @@
 ﻿using BetonBon.API.RefitInterfaces;
+using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.TimeEntries;
+using Refit;
 
 namespace BetonBon.API.Endpoints
 {
@@ -55,6 +58,40 @@ namespace BetonBon.API.Endpoints
                     return Results.Ok(response.StatusCode);
 
                 });
+
+
+                app.MapPost("/api/newTimeEntry", async (TimeEntry timeEntry, IEconomicProjectsRelayApi economicApi, CancellationToken ct) =>
+                {
+                    try
+                    {
+                        var result = await economicApi.CreateTimeEntryAsync(timeEntry, ct);
+                        return Results.Ok(result); //TODO: Results.Created(GET, result);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
+                }).RequireAuthorization();
+
+
+                app.MapGet("/api/employees", async (IEconomicProjectsRelayApi economicApi) =>
+                {
+                    try
+                    {
+                        var response = await economicApi.GetEmployeesAsync();
+                        return Results.Ok(response);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
+                }).RequireAuthorization(nameof(UserRole.Admin));
             }
         }
     }

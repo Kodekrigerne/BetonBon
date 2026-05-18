@@ -5,8 +5,6 @@ using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Infrastructure;
-using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models.TimeEntries;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -75,9 +73,9 @@ namespace BetonBon.API
             builder.Services.AddScoped<JsonWebTokenHandler>();
 
             builder.Services.ConfigureHttpJsonOptions(options =>
-                {
-                    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -100,18 +98,18 @@ namespace BetonBon.API
             var clientUrl = builder.Configuration["ClientUrl"];
 
             builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
-                {
-                    policy.WithOrigins(clientUrl!);
-                    policy.AllowAnyMethod();
-                    policy.AllowAnyHeader();
-                }));
+            {
+                policy.WithOrigins(clientUrl!);
+                policy.AllowAnyMethod();
+                policy.AllowAnyHeader();
+            }));
 
             builder.Services.AddOpenApi();
 
 
             var app = builder.Build();
 
-
+            app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -123,42 +121,10 @@ namespace BetonBon.API
             app.UseCors("CustomPolicy");
 
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapUserEndpoints();
             app.MapEconomicEndpoints();
-
-            app.MapPost("/api/newTimeEntry", async (TimeEntry timeEntry, IEconomicProjectsRelayApi economicApi, CancellationToken ct) =>
-            {
-                try
-                {
-                    var result = await economicApi.CreateTimeEntryAsync(timeEntry, ct);
-                    return Results.Ok(result); //TODO: Results.Created(GET, result);
-                }
-                catch (ApiException ex)
-                {
-                    return Results.Problem(
-                    detail: ex.Content,
-                    statusCode: (int)ex.StatusCode
-                    );
-                }
-            }).RequireAuthorization();
-
-            app.MapGet("/api/employees", async (IEconomicProjectsRelayApi economicApi) =>
-            {
-                try
-                {
-                    var response = await economicApi.GetEmployeesAsync();
-                    return Results.Ok(response);
-                }
-                catch (ApiException ex)
-                {
-                    return Results.Problem(
-                    detail: ex.Content,
-                    statusCode: (int)ex.StatusCode
-                    );
-                }
-            }).RequireAuthorization(nameof(UserRole.Admin));
-
-
 
             app.Run();
         }
