@@ -57,13 +57,20 @@
         </div>
 
         <div class="danger-zone">
-
-            <button type="button" class="btn-delete" @onclick="OnDelete">
+            @if (isEditingSelf)
+            {
+                <p class="info-text danger">Du kan ikke slette din egen administratorkonto.</p>
+            }
+            <button type="button"
+                    class="btn-delete"
+                    @onclick="OnDelete"
+                    disabled="@isEditingSelf">
                 Slet Medarbejder
             </button>
-
         </div>
+
     </EditForm>
+
 </div>
 
 @code {

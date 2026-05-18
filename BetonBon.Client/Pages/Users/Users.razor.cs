@@ -1,5 +1,6 @@
 ﻿using BetonBon.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BetonBon.Client.Pages.Users
 {
@@ -7,14 +8,16 @@ namespace BetonBon.Client.Pages.Users
     {
         private UserViewModel? selectedUser;
         private UpdateUserModel? editModel;
+        private List<UserViewModel>? users;
 
         private bool isCreating { get; set; } = false;
         private bool isEditing = false;
 
         [Parameter] public EventCallback OnCloseUsers { get; set; }
 
+        [Inject]
+        private AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
 
-        private List<UserViewModel>? users;
 
         protected override async Task OnParametersSetAsync()
         {
@@ -53,19 +56,38 @@ namespace BetonBon.Client.Pages.Users
         {
             if (selectedUser == null) return;
 
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
+            var currentUserIdStr = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                           ?? authState.User.FindFirst("sub")?.Value;
+
+            if (string.Equals(currentUserIdStr, selectedUser.Id.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                await PopupService.AlertAsync("Du kan ikke slette din egen brugerkonto.");
+                return;
+            }
+
             bool confirmed = await PopupService.ConfirmAsync(
                 $"Er du sikker på, at du vil slette {selectedUser.Name}?");
 
             if (!confirmed) return;
 
 
-            await Api.DeleteUser(selectedUser.Id);
+            try
+            {
+                await Api.DeleteUser(selectedUser.Id);
 
-            isEditing = false;
-            selectedUser = null;
-            editModel = null;
+                isEditing = false;
+                selectedUser = null;
+                editModel = null;
 
-            await LoadUsers();
+                await LoadUsers();
+            }
+            catch (Exception ex)
+            {
+
+                //Snackbar
+            }
         }
 
 
