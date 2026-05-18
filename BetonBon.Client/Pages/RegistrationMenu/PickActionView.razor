@@ -5,7 +5,11 @@
 
 @if (SelectedProject != null && SelectedActivity != null)
 {
-        <FullScreenModal IsVisible="IsVisible" Title="Hvad vil du?" OnClose="@OnClosed" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop" ZIndex="102">
+        <FullScreenModal IsVisible="IsVisible"
+                         Title="Hvad vil du?"
+                         OnClose="@OnClosed"
+                         SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop"
+                         ZIndex="102">
 
             @* Content *@
             <div class="content">

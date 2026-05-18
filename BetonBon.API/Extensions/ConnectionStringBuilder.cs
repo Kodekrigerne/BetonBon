@@ -2,7 +2,7 @@
 {
     public static class ConnectionStringBuilder
     {
-        extension(IConfiguration config)
+        extension(ConfigurationManager config)
         {
             public string GetConnectionString()
             {

@@ -5,7 +5,7 @@
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
 @inject IBetonBonApi Api
-@inject IEconomicApi EconomicApi
+@inject IEconomicRelayApi EconomicApi
 @inject PopupService PopupService
 
 <div class="form-container">
@@ -52,14 +52,14 @@
 
             <label>Medarbejder (e-conomic)</label>
             <InputSelect Value="createUserModel.EmployeeNumber"
-            ValueChanged="(int v) => OnEmployeeChanged(v)"
-            ValueExpression="() => createUserModel.EmployeeNumber"
-            class="form-input">
-                <option value="0">Vælg medarbejder...</option>
-                @foreach (var employee in _employees)
-                {
-                    <option value="@employee.Number">@employee.Number - @employee.Name</option>
-                }
+                ValueChanged="(int v) => OnEmployeeChanged(v)"
+                ValueExpression="() => createUserModel.EmployeeNumber"
+                class="form-input">
+                    <option value="0">Vælg medarbejder...</option>
+                    @foreach (var employee in _employees)
+                    {
+                        <option value="@employee.Number">@employee.Number - @employee.Name</option>
+                    }
             </InputSelect>
             <ValidationMessage For="@(() => createUserModel.EmployeeNumber)" class="validation-error" />
 

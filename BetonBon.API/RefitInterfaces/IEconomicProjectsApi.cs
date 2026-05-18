@@ -4,7 +4,7 @@ using Refit;
 
 namespace BetonBon.API.RefitInterfaces
 {
-    public interface IEconomicProjectsRelayApi
+    public interface IEconomicProjectsApi
     {
         [Get("/Projects?cursor=0")]
         Task<AllProjectsResponse> GetProjectsAsync();
