@@ -1,6 +1,7 @@
 ﻿using BetonBon.Client.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace BetonBon.Client.Pages.Users
 {
@@ -58,7 +59,7 @@ namespace BetonBon.Client.Pages.Users
 
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
 
-            var currentUserIdStr = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            var currentUserIdStr = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                            ?? authState.User.FindFirst("sub")?.Value;
 
             if (string.Equals(currentUserIdStr, selectedUser.Id.ToString(), StringComparison.OrdinalIgnoreCase))

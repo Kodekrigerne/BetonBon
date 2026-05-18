@@ -7,9 +7,9 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
 {
     public class TimeEntryService
     {
-        private readonly IEconomicApi _economicApi;
+        private readonly IEconomicRelayApi _economicApi;
 
-        public TimeEntryService(IEconomicApi economicApi)
+        public TimeEntryService(IEconomicRelayApi economicApi)
         {
             ArgumentNullException.ThrowIfNull(economicApi);
             _economicApi = economicApi;

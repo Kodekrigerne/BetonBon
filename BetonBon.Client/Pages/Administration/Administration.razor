@@ -1,6 +1,7 @@
 ﻿@page "/administration"
 @using BetonBon.Client.Pages.Home
-@attribute [Authorize(Roles = "Admin")]
+@using BetonBon.Shared.Enums
+@attribute [Authorize(Roles = nameof(UserRole.Admin))]
 @inject NavigationManager _nav
 
 <div class="admin-container">
@@ -8,7 +9,6 @@
     <p>Vælg et modul for at fortsætte</p>
 
     <div class="admin-grid">
-        @* Her flytter vi din oprindelige Brugere-knap hen *@
        <UsersCard OpenUsers="NavigateToUsers" />
 
     </div>

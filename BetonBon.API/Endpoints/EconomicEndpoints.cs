@@ -13,7 +13,7 @@ namespace BetonBon.API.Endpoints
             public void MapEconomicEndpoints()
             {
                 // Get all projects
-                app.MapGet("/api/projects", async (IEconomicProjectsRelayApi economicApi) =>
+                app.MapGet("/api/projects", async (IEconomicProjectsApi economicApi) =>
                 {
 
                     var response = await economicApi.GetProjectsAsync();
@@ -22,7 +22,7 @@ namespace BetonBon.API.Endpoints
                 .RequireAuthorization();
 
 
-                app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
+                app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsApi economicApi, int projectNumber) =>
                 {
                     var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
 
@@ -40,7 +40,7 @@ namespace BetonBon.API.Endpoints
                 .RequireAuthorization();
 
 
-                app.MapGet("/api/materials", async (IEconomicProjectsRelayApi economicApi) =>
+                app.MapGet("/api/materials", async (IEconomicProjectsApi economicApi) =>
                 {
                     var response = await economicApi.GetAllMaterialsAsync();
 
@@ -48,7 +48,7 @@ namespace BetonBon.API.Endpoints
                 });
 
 
-                app.MapPost("/api/newDraftEntry", async (IEconomicJournalsRelayApi economicApi, NewDraftEntryDTO entry) =>
+                app.MapPost("/api/newDraftEntry", async (IEconomicJournalsApi economicApi, NewDraftEntryDTO entry) =>
                 {
                     var creationResponse = await economicApi.PostNewEntryAsync(entry);
 
@@ -60,7 +60,7 @@ namespace BetonBon.API.Endpoints
                 });
 
 
-                app.MapPost("/api/newTimeEntry", async (TimeEntry timeEntry, IEconomicProjectsRelayApi economicApi, CancellationToken ct) =>
+                app.MapPost("/api/newTimeEntry", async (TimeEntry timeEntry, IEconomicProjectsApi economicApi, CancellationToken ct) =>
                 {
                     try
                     {
@@ -77,7 +77,7 @@ namespace BetonBon.API.Endpoints
                 }).RequireAuthorization();
 
 
-                app.MapGet("/api/employees", async (IEconomicProjectsRelayApi economicApi) =>
+                app.MapGet("/api/employees", async (IEconomicProjectsApi economicApi) =>
                 {
                     try
                     {

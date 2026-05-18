@@ -192,11 +192,11 @@
                     <span class="detail-label">Dato</span>
                     <span class="detail-value">@RegistrationDate.ToString("dd. MMM yyyy")</span>
                 </div>
-                @if (!string.IsNullOrWhiteSpace(Note) || Note.Length > 1)
+                @if (!string.IsNullOrWhiteSpace(Note) && Note.Length > 1)
                 {
                     <div class="detail-row">
                         <span class="detail-label">Note</span>
-                        <span class="detail-value" style="font-weight: normal; color: #4b5563;"> @Note.ToString() </span>
+                        <span class="detail-value" style="font-weight: normal; color: #4b5563;"> @Note </span>
                     </div>
                 }
                 

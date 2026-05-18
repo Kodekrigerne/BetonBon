@@ -3,6 +3,7 @@ using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
 using BetonBon.Infrastructure;
+using BetonBon.Shared.Enums;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ namespace BetonBon.API
             );
 
             builder.Services
-                    .AddRefitClient<IEconomicProjectsRelayApi>()
+                    .AddRefitClient<IEconomicProjectsApi>()
                     .ConfigureHttpClient(c =>
                     {
                         c.BaseAddress = new Uri("https://apis.e-conomic.com/projectsapi/v1.1.0/");
@@ -55,7 +56,7 @@ namespace BetonBon.API
                     );
 
             builder.Services
-                    .AddRefitClient<IEconomicJournalsRelayApi>()
+                    .AddRefitClient<IEconomicJournalsApi>()
                     .ConfigureHttpClient(c =>
                     {
                         c.BaseAddress = new Uri("https://apis.e-conomic.com/journalsapi/v14.0.1/");
@@ -94,7 +95,7 @@ namespace BetonBon.API
                 });
 
             builder.Services.AddAuthorizationBuilder()
-                .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                .AddPolicy(nameof(UserRole.Admin), policy => policy.RequireRole(nameof(UserRole.Admin)));
 
             var clientUrl = builder.Configuration["ClientUrl"];
 
