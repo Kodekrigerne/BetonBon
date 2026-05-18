@@ -1,9 +1,11 @@
 ﻿@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.ViewModels
 @using BetonBon.Shared.Models
+@using BetonBon.Shared.Models.TimeEntries
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
 @inject IBetonBonApi Api
+@inject IEconomicRelayApi EconomicApi
 @inject PopupService PopupService
 
 <div class="form-container">
@@ -46,6 +48,23 @@
             <ValidationMessage For="@(() => createUserModel.Role)" class="validation-error" />
         </div>
 
+        <div class="form-group">
+
+            <label>Medarbejder (e-conomic)</label>
+            <InputSelect Value="createUserModel.EmployeeNumber"
+                ValueChanged="(int v) => OnEmployeeChanged(v)"
+                ValueExpression="() => createUserModel.EmployeeNumber"
+                class="form-input">
+                    <option value="0">Vælg medarbejder...</option>
+                    @foreach (var employee in _employees)
+                    {
+                        <option value="@employee.Number">@employee.Number - @employee.Name</option>
+                    }
+            </InputSelect>
+            <ValidationMessage For="@(() => createUserModel.EmployeeNumber)" class="validation-error" />
+
+        </div>
+
         <div class="form-actions">
 
             <button type="submit" class="btn-primary" disabled="@(!formIsValid || isSubmitting)">
@@ -73,18 +92,20 @@
     [Parameter] public EventCallback OnUserCreated { get; set; }
 
     private CreateNewUserModel createUserModel = new();
+    private List<Employee> _employees = new();
 
     private EditContext? editContext;
     private bool isSubmitting = false;
     private bool formIsValid = false;
 
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
+    protected override async Task OnInitializedAsync()
+    {
         editContext = new EditContext(createUserModel);
         editContext.OnFieldChanged += HandleFieldChanged;
 
-	}
+        var result = await EconomicApi.GetEmployeesAsync();
+        _employees = result.Items?.ToList() ?? new();
+    }
 
     private void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
     {
@@ -102,7 +123,7 @@
         isSubmitting = true;
         try
         {
-            var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role);
+            var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
 
             await Api.CreateUser(newUser);
 
@@ -118,11 +139,20 @@
         }
     }
 
+    private void OnEmployeeChanged(int employeeNumber)
+    {
+        createUserModel.EmployeeNumber = employeeNumber;
+
+        if (string.IsNullOrWhiteSpace(createUserModel.Username))
+        {
+            createUserModel.Username = _employees
+                .FirstOrDefault(e => e.Number == employeeNumber)?.Name ?? "";
+        }
+    }
+
     public void Dispose()
     {
         if (editContext != null)
             editContext.OnFieldChanged -= HandleFieldChanged;
     }
-
-
 }

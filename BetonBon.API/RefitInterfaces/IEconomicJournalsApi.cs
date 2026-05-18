@@ -3,7 +3,7 @@ using Refit;
 
 namespace BetonBon.API.RefitInterfaces
 {
-    public interface IEconomicJournalsRelayApi
+    public interface IEconomicJournalsApi
     {
 
         [Post("/draft-entries")]

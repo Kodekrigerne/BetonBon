@@ -5,8 +5,8 @@
 
 @if (_initialized)
 {
-    <AllProjectsView IsVisible="_projectsIsVisible" SelectProject="OnProjectSelected" OnCloseProjects="OnProjectsClosed" />
-    <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="OnActivitiesClosed" ActivitySelected="OnActivitySelected" />
+    <AllProjectsView IsVisible="_projectsIsVisible" SelectProject="HandleProjectSelected" OnCloseProjects="HandleProjectsClosed" />
+    <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="HandleActivitiesClosed" ActivitySelected="HandleActivitySelected" />
 
     <div class="allocate-page">
         @* Header *@

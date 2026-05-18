@@ -1,11 +1,7 @@
 ﻿@page "/"
 
-@using BetonBon.Client.Auth
 @using BetonBon.Client.Pages.Administration
-@using BetonBon.Client.Pages.RegistrationMenu
-@using BetonBon.Client.Pages.Users
 @using BetonBon.Client.Services
-@using BetonBon.Client.Shared.Components
 @using BetonBon.Client.Shared.Icons
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -18,14 +14,9 @@
 <div class="home-container">
     @* Header *@
     <div class="header">
-        <div class="header-profile">
-            <div class="avatar">HE</div>
+            <img src="/BbLogoUdenNavn.png" class="avatar"/>
             
-            <div class="header-info">
-                <h1>Holmsgaard Entreprenør</h1>
-                <p>CVR: 1728451 NH</p>
-            </div>
-        </div>
+            <img src="/HolmsgaardsLogo.png" class="header-info"/>
         
         <div class="settings-dropdown-container">
             <button class="icon-btn" @onclick="@ToggleDropdown">

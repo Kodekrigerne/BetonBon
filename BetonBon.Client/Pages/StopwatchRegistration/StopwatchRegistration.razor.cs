@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using BetonBon.Client.Pages.Home;
+using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
 using BetonBon.Shared.Models;
 using Microsoft.AspNetCore.Components;
@@ -17,6 +18,12 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
 
         [Inject]
         public LocalStorage LocalStorage { get; set; } = null!;
+
+        [Inject]
+        public IEconomicRelayApi EconomicApi { get; set; } = null!;
+
+        [Inject]
+        public TimeEntryService TimeEntryService { get; set; } = null!;
 
         private bool _projectsIsVisible;
         private bool _activitiesIsVisible;
@@ -91,7 +98,15 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             SelectProjectForAllocation(newId);
         }
 
-        private void SaveAllocations() { }
+        private async Task SaveAllocations()
+        {
+            if (_allocationDrafts.Any(d => d.ProjectDTO == null || d.ActivityDTO == null)) return; //TODO: Popup, snack bar?
+
+            var responses = await TimeEntryService.CreateTimeEntries(_session, _allocationDrafts);
+            //TODO: Handle fails
+
+            NavigationManager.NavigateTo("/");
+        }
 
         private string FormatSessionElapsed()
         {
@@ -118,19 +133,19 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             _projectsIsVisible = true;
         }
 
-        private void OnProjectSelected(ProjectDTO project)
+        private void HandleProjectSelected(ProjectDTO project)
         {
             _selectedProject = project;
             _projectsIsVisible = false;
             _activitiesIsVisible = true;
         }
 
-        private void OnProjectsClosed()
+        private void HandleProjectsClosed()
         {
             _projectsIsVisible = false;
         }
 
-        private void OnActivitySelected(ActivityDTO activity)
+        private void HandleActivitySelected(ActivityDTO activity)
         {
             var draft = _allocationDrafts.Single(x => x.Id == _selectingForDraftId);
             draft.ProjectDTO = _selectedProject;
@@ -138,19 +153,11 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             _activitiesIsVisible = false;
         }
 
-        private void OnActivitiesClosed()
+        private void HandleActivitiesClosed()
         {
             _activitiesIsVisible = false;
             _selectedProject = null;
             _selectingForDraftId = null;
-        }
-
-        private class AllocationDraft
-        {
-            public Guid Id { get; set; }
-            public ProjectDTO? ProjectDTO { get; set; }
-            public ActivityDTO? ActivityDTO { get; set; }
-            public int Minutes { get; set; }
         }
     }
 }

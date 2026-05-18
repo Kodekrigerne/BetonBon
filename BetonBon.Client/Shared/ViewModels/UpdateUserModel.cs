@@ -1,8 +1,9 @@
-﻿using BetonBon.Shared.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using BetonBon.Shared.Enums;
 
 namespace BetonBon.Client.Shared.ViewModels
 {
+    //TODO: Det her er da vidst ikke en view model?
     public class UpdateUserModel
     {
         public Guid Id { get; set; }

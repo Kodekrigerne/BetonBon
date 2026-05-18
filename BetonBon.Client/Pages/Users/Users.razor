@@ -1,12 +1,10 @@
 ﻿@page "/administration/users"
 
-@using BetonBon.Client.Pages.Home
 @using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
-@using BetonBon.Client.Shared.Components
-
+@using BetonBon.Shared.Enums
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = nameof(UserRole.Admin))]
 
 @inject IBetonBonApi Api
 @inject PopupService PopupService

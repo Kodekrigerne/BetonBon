@@ -44,8 +44,8 @@
 .loading-progress {
     position: absolute;
     display: block;
-    width: 8rem;
-    height: 8rem;
+    width: 12rem;
+    height: 12rem;
     inset: 20vh 0 auto 0;
     margin: 0 auto 0 auto;
 }
@@ -67,13 +67,15 @@
 .loading-progress-text {
     position: absolute;
     text-align: center;
-    font-weight: bold;
-    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+    font-size: 30px;
+    inset: calc(20vh + 3.25rem + 150px) 0 auto 0.2rem;
+    text-transform: uppercase;
+    margin: 0;
+    color: #FC5C01;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: 1200;
+    letter-spacing: 0.1em;
 }
-
-    .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
-    }
 
 code {
     color: #c02d76;
@@ -182,6 +184,26 @@ h1:focus {
     margin-top: 2rem;
 }
 
+.validation-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.danger-zone {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.info-text.danger {
+    color: #dc2626;
+    margin-bottom: 0.5rem;
+    font-size:0.875rem;
+    text-align:center;
+}
+
 /* Knapper */
 .btn-primary {
     flex: 2;
@@ -212,19 +234,6 @@ h1:focus {
     cursor: pointer;
 }
 
-.validation-error {
-    color: #dc2626;
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-    font-weight: 500;
-}
-
-.danger-zone {
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #f3f4f6;
-}
-
 .btn-delete {
     width: 100%;
     background-color: #dc2626;
@@ -240,3 +249,13 @@ h1:focus {
     .btn-delete:hover {
         background-color: #ad4242;
     }
+
+    .btn-delete:disabled {
+        background-color: #dc26267c;
+        opacity: 0.1;
+        color: white;
+        border-color: #fee2e2;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+

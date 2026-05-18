@@ -1,9 +1,13 @@
 ﻿@using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Shared.Components
 @using BetonBon.Shared.Models
-@inject IEconomicApi _economicApi
+@inject IEconomicRelayApi _economicApi
 
-<FullScreenModal SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" ZIndex="130" IsVisible="IsVisible" Title="Vælg materiale" OnClose="OnClose">
+<FullScreenModal SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft"
+                 ZIndex="130"
+                 IsVisible="IsVisible"
+                 Title="Vælg materiale"
+                 OnClose="OnClose">
 
     <div style="flex:1; overflow-y:auto; background-color:#f9fafb;">
         @if (_materials != null)

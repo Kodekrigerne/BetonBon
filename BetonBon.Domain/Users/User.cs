@@ -8,25 +8,30 @@ namespace BetonBon.Domain.Users
         public string Username { get; private set; }
         public PasswordHash HashedPassword { get; private set; }
         public UserRole Role { get; private set; }
+        public int EmployeeNumber { get; private set; }
         public string? RefreshToken { get; private set; }
         public DateTime? RefreshTokenExpiryTime { get; private set; }
 
         // Parameterless constructor for EF purposes
+#pragma warning disable CS8618
         private User() { }
+#pragma warning restore CS8618
 
-        private User(string username, PasswordHash hashedPassword, UserRole role)
+        private User(string username, PasswordHash hashedPassword, UserRole role, int employeeNumber)
         {
             ValidateUsername(username);
+            if (employeeNumber <= 0) throw new ArgumentException("Employee number must be higher than zero.", nameof(employeeNumber));
 
             Id = Guid.NewGuid();
             Username = username;
             HashedPassword = hashedPassword;
             Role = role;
+            EmployeeNumber = employeeNumber;
         }
 
-        internal static User CreateUser(string username, PasswordHash hashedPassword, UserRole role)
+        internal static User CreateUser(string username, PasswordHash hashedPassword, UserRole role, int employeeNumber)
         {
-            return new User(username, hashedPassword, role);
+            return new User(username, hashedPassword, role, employeeNumber);
         }
 
         public void Update(string username, UserRole role)
@@ -38,11 +43,7 @@ namespace BetonBon.Domain.Users
 
         public void SetPassword(string password, IPasswordHasher passwordHasher)
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
-            {
-                throw new ArgumentException("Password must be atleast 8 characters long.", nameof(password));
-            }
-
+            ValidatePassword(password);
             HashedPassword = passwordHasher.HashPassword(password);
         }
 
@@ -56,6 +57,18 @@ namespace BetonBon.Domain.Users
             if (username.Length > 50)
             {
                 throw new ArgumentException("Username cannot be longer than 20 characters.", nameof(username));
+            }
+        }
+
+        private static void ValidatePassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException("Password cannot be empty.", nameof(password));
+            }
+            if (password.Length < 8)
+            {
+                throw new ArgumentException("Password must be at least 8 characters long.", nameof(password));
             }
         }
 
