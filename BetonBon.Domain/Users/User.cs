@@ -8,25 +8,30 @@ namespace BetonBon.Domain.Users
         public string Username { get; private set; }
         public PasswordHash HashedPassword { get; private set; }
         public UserRole Role { get; private set; }
+        public int EmployeeNumber { get; private set; }
         public string? RefreshToken { get; private set; }
         public DateTime? RefreshTokenExpiryTime { get; private set; }
 
         // Parameterless constructor for EF purposes
+#pragma warning disable CS8618
         private User() { }
+#pragma warning restore CS8618
 
-        private User(string username, PasswordHash hashedPassword, UserRole role)
+        private User(string username, PasswordHash hashedPassword, UserRole role, int employeeNumber)
         {
             ValidateUsername(username);
+            if (employeeNumber <= 0) throw new ArgumentException("Employee number must be higher than zero.", nameof(employeeNumber));
 
             Id = Guid.NewGuid();
             Username = username;
             HashedPassword = hashedPassword;
             Role = role;
+            EmployeeNumber = employeeNumber;
         }
 
-        internal static User CreateUser(string username, PasswordHash hashedPassword, UserRole role)
+        internal static User CreateUser(string username, PasswordHash hashedPassword, UserRole role, int employeeNumber)
         {
-            return new User(username, hashedPassword, role);
+            return new User(username, hashedPassword, role, employeeNumber);
         }
 
         public void Update(string username, UserRole role)

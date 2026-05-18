@@ -30,7 +30,7 @@ namespace BetonBon.Client.Pages.Users
         private async Task LoadUsers()
         {
             var userList = await Api.GetAllUsers();
-            users = userList.Select(u => new UserViewModel(u.Id, u.Username, u.Role)).ToList();
+            users = userList.Select(u => new UserViewModel(u.Id, u.Username, u.Role, u.EmployeeNumber)).ToList();
         }
 
         public async Task CloseUsers()
