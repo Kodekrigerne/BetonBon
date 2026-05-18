@@ -1,18 +1,14 @@
+using BetonBon.API.Endpoints;
+using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
 using BetonBon.Application;
-using BetonBon.Application.Users;
-using BetonBon.Application.Users.UserQueries;
-using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
-using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
-using System.Security.Authentication;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -33,21 +29,17 @@ namespace BetonBon.API
 
             var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
 
-            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-            var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
-            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-            var dbUser = Environment.GetEnvironmentVariable("DB_USER");
-            var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
-
             var apiSecret = Environment.GetEnvironmentVariable("API_SECRET");
             var apiGrant = Environment.GetEnvironmentVariable("API_GRANT");
 
             var adminUsername = Environment.GetEnvironmentVariable("ADMIN_USER");
             var adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
 
-            var connectionString =
-                $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Trust Server Certificate=true;";
+            var connectionString = builder.Configuration.GetConnectionString();
 
+            builder.Services.AddDbContext<BetonBonDbContext>(options =>
+                options.UseNpgsql(connectionString)
+            );
 
             builder.Services
                     .AddRefitClient<IEconomicProjectsRelayApi>()
@@ -73,9 +65,6 @@ namespace BetonBon.API
                     }
                     );
 
-            builder.Services.AddDbContext<BetonBonDbContext>(options =>
-                options.UseNpgsql(connectionString)
-            );
 
             builder.Services
                 .AddApplicationServices()
@@ -119,27 +108,10 @@ namespace BetonBon.API
 
             builder.Services.AddOpenApi();
 
+
             var app = builder.Build();
 
-            // Auto - migrates new migrations on startup, creates admin user if not present
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-
-                db.Database.Migrate();
-
-                if (!db.Users.Any(u => u.Username == adminUsername))
-                {
-                    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-                    var userFactory = new UserFactory(hasher);
-
-                    var adminUser = userFactory.Create(adminUsername!, adminPassword!, UserRole.Admin);
-
-                    db.Users.Add(adminUser);
-                    db.SaveChanges();
-                }
-            }
-
+            app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -153,103 +125,8 @@ namespace BetonBon.API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Get all projects
-            app.MapGet("/api/projects", async (IEconomicProjectsRelayApi economicApi) =>
-            {
-
-                var response = await economicApi.GetProjectsAsync();
-                return Results.Ok(response.Projects);
-            })
-            .RequireAuthorization();
-
-            app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
-            {
-                var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
-
-                return Results.Ok(users);
-            })
-            .RequireAuthorization();
-
-            app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
-            {
-                var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role);
-
-                var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
-
-                return Results.Ok(id);
-            })
-            .RequireAuthorization(nameof(UserRole.Admin));
-
-            app.MapDelete("/deleteUser/{id}", async (ICommandDispatcher commandDispatcher, Guid id) =>
-            {
-                var command = new DeleteUserCommand(id);
-
-                await commandDispatcher.DispatchAsync(command);
-
-                return Results.NoContent();
-            });
-
-            app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserDTO dto) =>
-            {
-                var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
-
-                await commandDispatcher.DispatchAsync(command);
-
-                return Results.NoContent();
-            });
-
-            app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
-            {
-                try
-                {
-                    var query = new LoginQuery(userLogin.Username, userLogin.Password);
-
-                    var response = await queryDispatcher.DispatchAsync<LoginQuery, LoginResponse>(query);
-
-                    return Results.Ok(response);
-                }
-
-                catch (AuthenticationException)
-                {
-                    return Results.Unauthorized();
-                }
-            });
-
-            app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsRelayApi economicApi, int projectNumber) =>
-            {
-                var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
-
-                var projectActivities = initialResponse.ProjectActivities;
-
-                List<ActivityDTO> activities = [];
-
-                foreach (var activity in projectActivities)
-                {
-                    activities.Add(economicApi.GetActivityByNumberAsync(activity.ActivityNumber).Result);
-                }
-
-                return Results.Ok(activities);
-            })
-            .RequireAuthorization();
-
-            app.MapGet("/api/materials", async (IEconomicProjectsRelayApi economicApi) =>
-            {
-                var response = await economicApi.GetAllMaterialsAsync();
-
-                return Results.Ok(response.Materials);
-            });
-
-            app.MapPost("/api/newDraftEntry", async (IEconomicJournalsRelayApi economicApi, NewDraftEntryDTO entry) =>
-            {
-                var creationResponse = await economicApi.PostNewEntryAsync(entry);
-
-                BookEntryNumberDTO entryNumber = new([creationResponse.CreatedEntryNumber]);
-
-                var response = await economicApi.BookDraftEntryAsync(entryNumber);
-                return Results.Ok(response.StatusCode);
-
-            });
-
+            app.MapUserEndpoints();
+            app.MapEconomicEndpoints();
 
             app.Run();
         }
