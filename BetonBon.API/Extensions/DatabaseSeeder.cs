@@ -21,7 +21,8 @@ namespace BetonBon.API.Extensions
                     if (!db.Users.Any(u => u.Username == adminUsername))
                     {
                         var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-                        var userFactory = new UserFactory(hasher, scope.ServiceProvider.GetRequiredService<IEmployeeNumberUniqueValidator>());
+                        var employeeNumberValidator = scope.ServiceProvider.GetRequiredService<IEmployeeNumberUniqueValidator>();
+                        var userFactory = new UserFactory(hasher, employeeNumberValidator);
 
                         var adminUser = await userFactory.CreateAsync(adminUsername!, adminPassword!, UserRole.Admin, 1);
 
