@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json.Serialization;
 using BetonBon.API.Endpoints;
 using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
@@ -9,14 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -110,7 +110,7 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
-            app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
+            await app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

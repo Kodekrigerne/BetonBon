@@ -9,8 +9,8 @@
 @inject NavigationManager Navigation
 
 
-<AllProjectsView IsVisible="ProjectsIsVisible" OnCloseProjects="OnCloseProjects" SelectProject="SelectProject"/>
-<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" ActivitySelected="OpenRegistrationMenu"/>
+<AllProjectsView IsVisible="ProjectsIsVisible" OnClose="OnCloseProjects" OnProjectSelected="SelectProject"/>
+<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" OnActivitySelected="OpenRegistrationMenu"/>
 
 <PickActionView SelectedProject="SelectedProject" SelectedActivity="SelectedActivity"OnClose="ClosePickActionMenu" IsVisible="RegistrationMenuIsVisible"
     OnViewMaterialHistory="OpenMaterialRegistrationHistory" OnViewTimeHistory="OpenTimeRegistrationHistory" OnOpenTimeRegistration="OpenTimeRegistration"

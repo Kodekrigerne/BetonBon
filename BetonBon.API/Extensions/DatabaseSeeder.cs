@@ -9,7 +9,7 @@ namespace BetonBon.API.Extensions
     {
         extension(WebApplication app)
         {
-            public void ApplyMigrationsAndSeedAdmin(string adminUsername, string adminPassword)
+            public async Task ApplyMigrationsAndSeedAdmin(string adminUsername, string adminPassword)
             {
                 // Auto - migrates new migrations on startup, creates admin user if not present
                 using (var scope = app.Services.CreateScope())
@@ -23,7 +23,7 @@ namespace BetonBon.API.Extensions
                         var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
                         var userFactory = new UserFactory(hasher, scope.ServiceProvider.GetRequiredService<IEmployeeNumberUniqueValidator>());
 
-                        var adminUser = userFactory.Create(adminUsername!, adminPassword!, UserRole.Admin, 1);
+                        var adminUser = await userFactory.CreateAsync(adminUsername!, adminPassword!, UserRole.Admin, 1);
 
                         db.Users.Add(adminUser);
                         db.SaveChanges();

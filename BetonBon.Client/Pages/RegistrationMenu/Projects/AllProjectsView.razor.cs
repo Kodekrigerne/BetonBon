@@ -10,10 +10,10 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
         public bool IsVisible { get; set; }
 
         [Parameter, EditorRequired]
-        public EventCallback<ProjectDTO> SelectProject { get; set; }
+        public EventCallback<ProjectDTO> OnProjectSelected { get; set; }
 
         [Parameter, EditorRequired]
-        public EventCallback OnCloseProjects { get; set; }
+        public EventCallback OnClose { get; set; }
 
         public ProjectDTO? SelectedProject;
 
@@ -36,7 +36,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
         }
 
 
-        private async Task ClickProject(ProjectDTO selectedProject) => await SelectProject.InvokeAsync(selectedProject);
+        private async Task ClickProject(ProjectDTO selectedProject) => await OnProjectSelected.InvokeAsync(selectedProject);
 
         protected override async Task OnInitializedAsync()
         {
@@ -50,6 +50,6 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
             _filteredProjects = _projects;
         }
 
-        private async Task CloseProjects() => await OnCloseProjects.InvokeAsync();
+        private async Task CloseProjects() => await OnClose.InvokeAsync();
     }
 }
