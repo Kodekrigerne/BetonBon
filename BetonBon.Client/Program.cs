@@ -19,6 +19,11 @@ namespace BetonBon.Client
 
             var backendApiUrl = new Uri(builder.Configuration["BackendApiUrl"]!);
 
+            builder.Services.AddHttpClient("RefreshClient", c =>
+            {
+                c.BaseAddress = backendApiUrl;
+            });
+
             builder.Services.AddRefitClient<IEconomicRelayApi>()
                 .ConfigureHttpClient(c =>
                 {

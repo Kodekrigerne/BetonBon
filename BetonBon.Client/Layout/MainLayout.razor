@@ -1,74 +1,42 @@
-﻿@inherits LayoutComponentBase
+﻿@using BetonBon.Client.Auth
+@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Icons
+@using Microsoft.AspNetCore.Components.Authorization
+@inherits LayoutComponentBase
 
-<style>
-    .layout-container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        min-height: 100dvh;
-        font-family: sans-serif;
-        background-color: #f9fafb;
-    }
-    
-    .main-content {
-        flex: 1;
-        overflow-y: auto;
-        background-color: #f9fafb;
-    }
-
-    .content-wrapper {
-        max-width: 430px;
-        margin: 0 auto;
-        width: 100%;
-        min-height: 100%;
-    }
-    
-    .bottom-nav {
-        background-color: white;
-        border-top: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: space-around;
-        padding: 0.75rem;
-        padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
-        box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
-        flex-shrink: 0;
-        position: relative;
-        z-index: 20;
-        max-width: 430px;
-        margin: 0 auto;
-        width: 100%;
-    }
-    
-    .nav-link {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0.5rem;
-        width: 5rem;
-        transition: color 0.2s ease-in-out;
-        text-decoration: none;
-    }
-    
-        .nav-link.active {
-            color: #2563eb;
-        }
-    
-        .nav-link.inactive {
-            color: #9ca3af;
-        }
-    
-            .nav-link.inactive:active {
-                color: #4b5563;
-            }
-    
-    .nav-text {
-        font-size: 0.75rem;
-        margin-top: 0.375rem;
-        font-weight: bold;
-    }
-</style>
+@inject IJSRuntime jsRuntime
+@inject AuthenticationStateProvider AuthStateProvider
+@inject LocalStorage localStorage
 
 <div class="layout-container">
+
+    @* Header *@
+    <div class="header-wrapper">
+    <div class="header">
+            <img src="/BbLogoUdenNavn.png" class="avatar"/>
+            
+            <img src="/HolmsgaardsLogo.png" class="header-info"/>
+        
+        <div class="settings-dropdown-container">
+            <button class="icon-btn" @onclick="@ToggleDropdown">
+                <CogWheelIcon />
+            </button>
+            
+            @if (IsDropdownVisible)
+            {
+                <div class="dropdown-overlay" @onclick="() => IsDropdownVisible = false"></div>
+                
+                <div class="dropdown-menu">
+                    <button class="dropdown-item logout-item" @onclick="@Logout">
+                        <LogoutIcon/>
+                        Log ud
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+    </div>
+
     @* Main Content Area *@
     <div class="main-content">
         <div class="content-wrapper">
@@ -96,3 +64,24 @@
         </a>
     </div>
 </div>
+
+
+@code{
+
+    public bool IsDropdownVisible = false;
+
+    public void ToggleDropdown()
+    {
+        IsDropdownVisible = !IsDropdownVisible;
+    }
+
+    public async Task Logout()
+    {
+        await localStorage.RemoveAsync("bb_token");
+        await localStorage.RemoveAsync("bb_refresh_token");
+
+        var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+
+        await customAuthStateProvider.UpdateAuthenticationStatus();
+    }
+}

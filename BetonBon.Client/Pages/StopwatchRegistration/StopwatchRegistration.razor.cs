@@ -5,6 +5,7 @@ using BetonBon.Client.Services;
 using BetonBon.Shared.Models;
 using BetonBon.Shared.Models.Activities;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
 namespace BetonBon.Client.Pages.StopwatchRegistration
@@ -28,6 +29,9 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
 
         [Inject]
         public PopupService PopupService { get; set; } = null!;
+
+        [CascadingParameter]
+        private Task<AuthenticationState> AuthStateTask { get; set; } = null!;
 
         private bool _projectsIsVisible;
         private bool _activitiesIsVisible;
@@ -112,6 +116,15 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             if (RemainingMinutes != 0)
             {
                 await PopupService.AlertAsync("Fordel venligst al tid.");
+                return;
+            }
+
+            var authState = await AuthStateTask;
+            var employeeNumber = authState.User.FindFirst("employee_number")?.Value;
+
+            if (employeeNumber == null)
+            {
+                await PopupService.AlertAsync("Medarbejdernummer ikke fundet.");
                 return;
             }
 

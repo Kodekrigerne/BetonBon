@@ -1,8 +1,9 @@
 ﻿@using BetonBon.Client.Services
-@using BetonBon.Client.Shared.ViewModels
+@using BetonBon.Client.Shared.UserModels
 @using BetonBon.Shared.Models
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
+@using BetonBon.Shared.Models.UserModels
 @inject IBetonBonApi Api
 @inject IEconomicRelayApi EconomicApi
 @inject PopupService PopupService
@@ -122,15 +123,15 @@
         isSubmitting = true;
         try
         {
-            var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
+            var newUser = new CreateUserRequest(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
 
             await Api.CreateUser(newUser);
 
             await OnUserCreated.InvokeAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            //Snackbar ?
+            await PopupService.AlertAsync("Brugeren blev ikke oprettet");
         }
         finally
         {

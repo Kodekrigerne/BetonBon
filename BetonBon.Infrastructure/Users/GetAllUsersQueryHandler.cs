@@ -1,6 +1,6 @@
 ﻿using BetonBon.Application;
 using BetonBon.Application.Users.UserQueries;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure.Users

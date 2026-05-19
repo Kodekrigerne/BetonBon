@@ -1,9 +1,10 @@
 ﻿@using BetonBon.Client.Services
-@using BetonBon.Client.Shared.ViewModels
+@using BetonBon.Client.Shared.UserModels
 @using BetonBon.Shared.Models
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
 @using System.Security.Claims
+@using BetonBon.Shared.Models.UserModels
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IBetonBonApi Api
 @inject PopupService PopupService
@@ -110,7 +111,7 @@
         isSubmitting = true;
         try
         {
-            var dto = new UpdateUserDTO(User.Id, User.Username, User.NewPassword, User.Role);
+            var dto = new UpdateUserRequest(User.Id, User.Username, User.NewPassword, User.Role);
 
             await Api.UpdateUser(dto);
 
