@@ -14,7 +14,7 @@ namespace BetonBon.API.Endpoints
         {
             public void MapUserEndpoints()
             {
-                app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+                app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserRequest userToCreate) =>
                 {
                     try
                     {
@@ -76,7 +76,7 @@ namespace BetonBon.API.Endpoints
                 .RequireAuthorization(nameof(UserRole.Admin));
 
 
-                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserDTO dto) =>
+                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserRequest dto) =>
                 {
                     try
                     {

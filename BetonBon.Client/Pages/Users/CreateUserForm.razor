@@ -124,7 +124,7 @@
         isSubmitting = true;
         try
         {
-            var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
+            var newUser = new CreateUserRequest(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
 
             await Api.CreateUser(newUser);
 

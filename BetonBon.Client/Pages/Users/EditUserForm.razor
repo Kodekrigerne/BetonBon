@@ -111,7 +111,7 @@
         isSubmitting = true;
         try
         {
-            var dto = new UpdateUserDTO(User.Id, User.Username, User.NewPassword, User.Role);
+            var dto = new UpdateUserRequest(User.Id, User.Username, User.NewPassword, User.Role);
 
             await Api.UpdateUser(dto);
 
