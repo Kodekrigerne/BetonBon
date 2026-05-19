@@ -66,6 +66,11 @@ jobs:
           JWT__Audience: "dummy-audience"
           JWT__ExpiryMinutes: "10"
           CLIENT_URL: "dummy-client-url"
+          DB_HOST: "localhost"
+          DB_PORT: "5433"
+          POSTGRES_DB: "db"
+          POSTGRES_USER: "user"
+          POSTGRES_PASSWORD: "password"
           
       - name: Publish Test Results
         uses: dorny/test-reporter@v3
