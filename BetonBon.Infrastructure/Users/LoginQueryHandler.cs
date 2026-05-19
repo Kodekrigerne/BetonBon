@@ -1,7 +1,7 @@
 ﻿using BetonBon.Application;
 using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Authentication;
 

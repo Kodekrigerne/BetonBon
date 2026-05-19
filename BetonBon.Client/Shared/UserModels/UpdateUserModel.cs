@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BetonBon.Shared.Enums;
 
-namespace BetonBon.Client.Shared.ViewModels
+namespace BetonBon.Client.Shared.UserModels
 {
     //TODO: Det her er da vidst ikke en view model?
     public class UpdateUserModel

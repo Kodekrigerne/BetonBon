@@ -4,7 +4,7 @@ using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetonBon.Infrastructure
