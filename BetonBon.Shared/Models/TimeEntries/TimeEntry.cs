@@ -6,7 +6,7 @@
         public required int ActivityNumber { get; init; }
         public required int EmployeeNumber { get; init; }
         public required DateTimeOffset Date { get; init; }
-        public required string Text { get; init; }
+        public string? Text { get; init; }
         public required double NumberOfHours { get; init; }
     }
 }

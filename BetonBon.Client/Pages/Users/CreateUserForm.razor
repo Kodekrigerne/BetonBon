@@ -20,6 +20,23 @@
 
         <div class="form-group">
 
+            <label>Medarbejder (e-conomic)</label>
+            <InputSelect Value="createUserModel.EmployeeNumber"
+                         ValueChanged="(int v) => OnEmployeeChanged(v)"
+                         ValueExpression="() => createUserModel.EmployeeNumber"
+                         class="form-input">
+                <option value="0">Vælg medarbejder...</option>
+                @foreach (var employee in _employees)
+                {
+                    <option value="@employee.Number">@employee.Number - @employee.Name</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => createUserModel.EmployeeNumber)" class="validation-error" />
+        
+        </div>
+
+        <div class="form-group">
+
             <label>Brugernavn</label>
             <InputText @bind-Value="createUserModel.Username" class="form-input" placeholder="Indtast navn..." />
             <ValidationMessage For="@(() => createUserModel.Username)" class="validation-error" />
@@ -45,23 +62,6 @@
                 }
             </InputSelect>
             <ValidationMessage For="@(() => createUserModel.Role)" class="validation-error" />
-        </div>
-
-        <div class="form-group">
-
-            <label>Medarbejder (e-conomic)</label>
-            <InputSelect Value="createUserModel.EmployeeNumber"
-                ValueChanged="(int v) => OnEmployeeChanged(v)"
-                ValueExpression="() => createUserModel.EmployeeNumber"
-                class="form-input">
-                    <option value="0">Vælg medarbejder...</option>
-                    @foreach (var employee in _employees)
-                    {
-                        <option value="@employee.Number">@employee.Number - @employee.Name</option>
-                    }
-            </InputSelect>
-            <ValidationMessage For="@(() => createUserModel.EmployeeNumber)" class="validation-error" />
-
         </div>
 
         <div class="form-actions">

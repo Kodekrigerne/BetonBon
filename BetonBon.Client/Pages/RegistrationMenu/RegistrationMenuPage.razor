@@ -8,12 +8,12 @@
 
 
 <AllProjectsView IsVisible="ProjectsIsVisible"
-                 OnCloseProjects="OnCloseProjects"
-                 SelectProject="SelectProject"/>
+                 OnClose="OnCloseProjects"
+                 OnProjectSelected="SelectProject"/>
 <AllActivitiesView IsVisible="ActivitiesIsVisible"
                    OnClose="ReturnToProjects"
                    SelectedProject="SelectedProject"
-                   ActivitySelected="OpenRegistrationMenu"/>
+                   OnActivitySelected="OpenRegistrationMenu"/>
 
 <PickActionView SelectedProject="SelectedProject"
                 SelectedActivity="SelectedActivity"
