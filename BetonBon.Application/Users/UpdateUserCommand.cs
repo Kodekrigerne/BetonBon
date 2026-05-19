@@ -2,5 +2,5 @@
 
 namespace BetonBon.Application.Users
 {
-    public record UpdateUserCommand(Guid Id, string Username, string? Password, UserRole Role) : ICommand;
+    public record UpdateUserCommand(Guid Id, string Username, string? Password, UserRole Role, byte[] RowVersion) : ICommand;
 }

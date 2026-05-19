@@ -1,5 +1,4 @@
-﻿using BetonBon.Shared.Models;
-using BetonBon.Shared.Models.Authentication;
+﻿using BetonBon.Shared.Models.Authentication;
 using BetonBon.Shared.Models.UserModels;
 using Refit;
 
@@ -11,7 +10,7 @@ namespace BetonBon.Client.RefitInterfaces
         Task<Guid> CreateUser(CreateUserRequest userToCreate);
 
         [Get("/viewUsers")]
-        Task<List<UserDto>> GetAllUsers();
+        Task<List<UserResponse>> GetAllUsers();
 
         [Put("/updateUser")]
         Task UpdateUser(UpdateUserRequest user);
