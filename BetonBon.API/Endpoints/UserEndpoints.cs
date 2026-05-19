@@ -2,10 +2,10 @@
 using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
+using BetonBon.Shared;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models.Authentication;
 using BetonBon.Shared.Models.UserModels;
-using Refit;
 using System.Security.Authentication;
 
 namespace BetonBon.API.Endpoints
@@ -26,12 +26,9 @@ namespace BetonBon.API.Endpoints
 
                         return Results.Ok(id);
                     }
-                    catch (ApiException ex)
+                    catch (Exception ex)
                     {
-                        return Results.Problem(
-                        detail: ex.Content,
-                        statusCode: (int)ex.StatusCode
-                        );
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
                     }
 
                 })
@@ -48,12 +45,9 @@ namespace BetonBon.API.Endpoints
 
                         return Results.NoContent();
                     }
-                    catch (ApiException ex)
+                    catch (Exception ex)
                     {
-                        return Results.Problem(
-                        detail: ex.Content,
-                        statusCode: (int)ex.StatusCode
-                        );
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
                     }
                 })
                 .RequireAuthorization(nameof(UserRole.Admin));
@@ -63,37 +57,35 @@ namespace BetonBon.API.Endpoints
                 {
                     try
                     {
-                        var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+                        var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserResponse>>(new GetAllUsersQuery());
 
                         return Results.Ok(users);
                     }
-                    catch (ApiException ex)
+                    catch (Exception ex)
                     {
-                        return Results.Problem(
-                        detail: ex.Content,
-                        statusCode: (int)ex.StatusCode
-                        );
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
                     }
                 })
                 .RequireAuthorization(nameof(UserRole.Admin));
 
 
-                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserRequest dto) =>
+                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserRequest request) =>
                 {
                     try
                     {
-                        var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
+                        var command = new UpdateUserCommand(request.Id, request.Username, request.Password, request.Role, request.RowVersion);
 
                         await commandDispatcher.DispatchAsync(command);
 
                         return Results.NoContent();
                     }
-                    catch (ApiException ex)
+                    catch (ConcurrencyException ex)
                     {
-                        return Results.Problem(
-                        detail: ex.Content,
-                        statusCode: (int)ex.StatusCode
-                        );
+                        return Results.Conflict(new { message = ex.Message });
+                    }
+                    catch (Exception ex)
+                    {
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
                     }
                 })
                 .RequireAuthorization(nameof(UserRole.Admin));
