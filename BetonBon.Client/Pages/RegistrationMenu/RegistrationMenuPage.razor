@@ -3,6 +3,7 @@
 @using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 @using BetonBon.Client.Pages.RegistrationMenu.ViewProjectRegistrations
 @using BetonBon.Shared.Models
+@using BetonBon.Shared.Models.Activities
 
 @page "/registration"
 @inject NavigationManager Navigation
@@ -85,8 +86,6 @@
     private void ClosePickActionMenu()
     {
         RegistrationMenuIsVisible = false;
-        // ActivitiesIsVisible = true;
-        // ProjectsIsVisible = true;
         SelectedActivity = null;
     }
 

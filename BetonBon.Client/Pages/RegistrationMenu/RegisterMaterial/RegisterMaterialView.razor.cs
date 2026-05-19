@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
+using BetonBon.Shared.Models.DraftEntries;
 using Microsoft.AspNetCore.Components;
 
 namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BetonBon.Shared.Models
+namespace BetonBon.Shared.Models.Activities
 {
     public sealed record ActivityDTO
     {

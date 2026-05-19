@@ -1,4 +1,6 @@
 ﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
+using BetonBon.Shared.Models.DraftEntries;
 using BetonBon.Shared.Models.TimeEntries;
 using Refit;
 

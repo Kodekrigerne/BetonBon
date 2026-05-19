@@ -1,4 +1,4 @@
-﻿using BetonBon.Shared.Models;
+﻿using BetonBon.Shared.Models.DraftEntries;
 using Refit;
 
 namespace BetonBon.API.RefitInterfaces

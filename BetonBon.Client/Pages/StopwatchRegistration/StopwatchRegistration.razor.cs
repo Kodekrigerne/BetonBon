@@ -3,6 +3,7 @@ using BetonBon.Client.Pages.Home;
 using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 

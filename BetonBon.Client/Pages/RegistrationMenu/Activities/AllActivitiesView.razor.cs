@@ -1,4 +1,5 @@
 ﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
 using Microsoft.AspNetCore.Components;
 
 namespace BetonBon.Client.Pages.RegistrationMenu.Activities

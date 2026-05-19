@@ -1,7 +1,8 @@
 ﻿@using BetonBon.Client.Shared.Icons
 @using BetonBon.Shared.Models
- <button @onclick="SelectActivity" class="activity-item">
-                    <div>
+@using BetonBon.Shared.Models.Activities
+<button @onclick="SelectActivity" class="activity-item">
+	<div>
                         <div class="activity-name">@SelectedActivity.Name</div>
                         <div class="activity-id">Nr. @SelectedActivity.Number</div>
                     </div>

@@ -1,6 +1,7 @@
 ﻿using BetonBon.API.RefitInterfaces;
 using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
+using BetonBon.Shared.Models.DraftEntries;
 using BetonBon.Shared.Models.TimeEntries;
 using Refit;
 
@@ -142,7 +143,7 @@ namespace BetonBon.API.Endpoints
                 {
                     try
                     {
-                        var response = await economicApi.GetTimeEntriesAsync(projectNumber, activityNumber, employeeNumber);
+                        var response = await economicApi.GetTimeEntriesAsync(projectNumber, activityNumber, employeeNumber, ct);
                         return Results.Ok(response.Items);
                     }
                     catch (ApiException ex)

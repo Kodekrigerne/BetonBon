@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace BetonBon.Shared.Models
+namespace BetonBon.Shared.Models.DraftEntries
 {
     public sealed record NewDraftEntryDTO
     {

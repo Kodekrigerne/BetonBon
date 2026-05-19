@@ -1,5 +1,4 @@
-﻿
-namespace BetonBon.Shared.Models
+﻿namespace BetonBon.Shared.Models.Activities
 {
     public record ProjectActivityDTO
     {
