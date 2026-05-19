@@ -1,4 +1,5 @@
-﻿using BetonBon.Shared.Enums;
+﻿using BetonBon.Shared;
+using BetonBon.Shared.Enums;
 
 namespace BetonBon.Domain.Users
 {
@@ -20,7 +21,7 @@ namespace BetonBon.Domain.Users
         private User(string username, PasswordHash hashedPassword, UserRole role, int employeeNumber)
         {
             ValidateUsername(username);
-            if (employeeNumber <= 0) throw new ArgumentException("Employee number must be higher than zero.", nameof(employeeNumber));
+            if (employeeNumber <= 0) throw new DomainException("Employee number must be higher than zero.", nameof(employeeNumber));
 
             Id = Guid.NewGuid();
             Username = username;
@@ -51,12 +52,12 @@ namespace BetonBon.Domain.Users
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                throw new ArgumentException("Username cannot be empty.", nameof(username));
+                throw new DomainException("Username cannot be empty.", nameof(username));
             }
 
             if (username.Length > 50)
             {
-                throw new ArgumentException("Username cannot be longer than 20 characters.", nameof(username));
+                throw new DomainException("Username cannot be longer than 20 characters.", nameof(username));
             }
         }
 
@@ -64,11 +65,11 @@ namespace BetonBon.Domain.Users
         {
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentException("Password cannot be empty.", nameof(password));
+                throw new DomainException("Password cannot be empty.", nameof(password));
             }
             if (password.Length < 8)
             {
-                throw new ArgumentException("Password must be at least 8 characters long.", nameof(password));
+                throw new DomainException("Password must be at least 8 characters long.", nameof(password));
             }
         }
 
