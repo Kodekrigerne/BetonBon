@@ -55,8 +55,8 @@ namespace BetonBon.API.Tests
         public async Task Login_WithValidUser_ReturnsCorrectUser()
         {
             // Arrange
-            var username = "admin";
-            var password = "secretpassword";
+            var username = "admin2";
+            var password = "secretpassword2";
 
             using var scope = _factory.Services.CreateScope();
 
@@ -65,7 +65,7 @@ namespace BetonBon.API.Tests
 
             dbContext.Database.EnsureCreated();
 
-            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 5);
+            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 6);
 
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
