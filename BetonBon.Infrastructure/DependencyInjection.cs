@@ -8,6 +8,7 @@ using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
 using BetonBon.Shared.Models.Authentication;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetonBon.Infrastructure

@@ -1,11 +1,11 @@
-﻿using System.Security.Authentication;
-using BetonBon.Application;
+﻿using BetonBon.Application;
 using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models;
-using BetonBon.Shared.Models.Authentication;
+using BetonBon.Shared.Models.UserModels;
+using Refit;
+using System.Security.Authentication;
 
 namespace BetonBon.API.Endpoints
 {
@@ -15,44 +15,87 @@ namespace BetonBon.API.Endpoints
         {
             public void MapUserEndpoints()
             {
-                app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+                app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserRequest userToCreate) =>
                 {
-                    var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role, userToCreate.EmployeeNumber);
+                    try
+                    {
+                        var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role, userToCreate.EmployeeNumber);
 
-                    var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
+                        var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
-                    return Results.Ok(id);
+                        return Results.Ok(id);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
+
                 })
                 .RequireAuthorization(nameof(UserRole.Admin));
 
 
                 app.MapDelete("/deleteUser/{id}", async (ICommandDispatcher commandDispatcher, Guid id) =>
                 {
-                    var command = new DeleteUserCommand(id);
+                    try
+                    {
+                        var command = new DeleteUserCommand(id);
 
-                    await commandDispatcher.DispatchAsync(command);
+                        await commandDispatcher.DispatchAsync(command);
 
-                    return Results.NoContent();
-                });
+                        return Results.NoContent();
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
+                })
+                .RequireAuthorization(nameof(UserRole.Admin));
 
 
                 app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
                 {
-                    var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+                    try
+                    {
+                        var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
 
-                    return Results.Ok(users);
+                        return Results.Ok(users);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
                 })
-                .RequireAuthorization();
+                .RequireAuthorization(nameof(UserRole.Admin));
 
 
-                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserDTO dto) =>
+                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserRequest dto) =>
                 {
-                    var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
+                    try
+                    {
+                        var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
 
-                    await commandDispatcher.DispatchAsync(command);
+                        await commandDispatcher.DispatchAsync(command);
 
-                    return Results.NoContent();
-                });
+                        return Results.NoContent();
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
+                })
+                .RequireAuthorization(nameof(UserRole.Admin));
 
 
                 app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>

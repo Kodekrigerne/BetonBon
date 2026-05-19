@@ -3,6 +3,7 @@ using BetonBon.Application;
 using BetonBon.Application.Authentication;
 using BetonBon.Domain.Users;
 using BetonBon.Shared.Models.Authentication;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure.Authentication

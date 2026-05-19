@@ -7,35 +7,9 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 @inject NavigationManager _navigation
-@inject IJSRuntime jsRuntime
-@inject AuthenticationStateProvider AuthStateProvider
-@inject LocalStorage localStorage
 
 <div class="home-container">
-    @* Header *@
-    <div class="header">
-            <img src="/BbLogoUdenNavn.png" class="avatar"/>
-            
-            <img src="/HolmsgaardsLogo.png" class="header-info"/>
-        
-        <div class="settings-dropdown-container">
-            <button class="icon-btn" @onclick="@ToggleDropdown">
-                <CogWheelIcon />
-            </button>
-            
-            @if (IsDropdownVisible)
-            {
-                <div class="dropdown-overlay" @onclick="() => IsDropdownVisible = false"></div>
-                
-                <div class="dropdown-menu">
-                    <button class="dropdown-item logout-item" @onclick="@Logout">
-                        <LogoutIcon/>
-                        Log ud
-                    </button>
-                </div>
-            }
-        </div>
-    </div>
+    
 
     @* Content *@
     <div class="content">

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BetonBon.Shared.Enums;
+﻿using BetonBon.Shared.Enums;
+using System.ComponentModel.DataAnnotations;
 
-namespace BetonBon.Client.Shared.ViewModels
+namespace BetonBon.Client.Shared.UserModels
 {
     //TODO: Det her er da vidst ikke en viewmodel?
     public class CreateNewUserModel
