@@ -10,13 +10,13 @@ namespace BetonBon.API.RefitInterfaces
         Task<AllProjectsResponse> GetProjectsAsync();
 
         [Get("/project-activities?filter=projectNumber$eq:{projectnumber}")]
-        Task<AllProjectActivitiesResponse> GetProjectActivitiesAsync(int projectnumber);
+        Task<AllProjectActivitiesResponse> GetProjectActivitiesAsync(int projectnumber, CancellationToken cancellationToken = default);
 
         [Get("/Activities/{number}")]
-        Task<ActivityDTO> GetActivityByNumberAsync(int number);
+        Task<ActivityDTO> GetActivityByNumberAsync(int number, CancellationToken cancellationToken = default);
 
         [Get("/CostTypes?filter=isBarred$eq:false")]
-        Task<AllMaterialResponse> GetAllMaterialsAsync();
+        Task<AllMaterialResponse> GetAllMaterialsAsync(CancellationToken cancellationToken = default);
 
         [Post("/TimeEntries")]
         Task<CreatedTimeEntryResult> CreateTimeEntryAsync(TimeEntry timeEntry, CancellationToken cancellationToken = default);

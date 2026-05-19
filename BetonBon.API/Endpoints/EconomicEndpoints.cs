@@ -13,7 +13,7 @@ namespace BetonBon.API.Endpoints
             public void MapEconomicEndpoints()
             {
                 // Get all projects
-                app.MapGet("/api/projects", async (IEconomicProjectsApi economicApi) =>
+                app.MapGet("/api/projects", async (IEconomicProjectsApi economicApi, CancellationToken ct) =>
                 {
 
                     var response = await economicApi.GetProjectsAsync();
