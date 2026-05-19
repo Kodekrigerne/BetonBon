@@ -25,6 +25,9 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
         [Inject]
         public TimeEntryService TimeEntryService { get; set; } = null!;
 
+        [Inject]
+        public PopupService PopupService { get; set; } = null!;
+
         private bool _projectsIsVisible;
         private bool _activitiesIsVisible;
         private Guid? _selectingForDraftId;
@@ -100,11 +103,22 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
 
         private async Task SaveAllocations()
         {
-            if (_allocationDrafts.Any(d => d.ProjectDTO == null || d.ActivityDTO == null)) return; //TODO: Popup, snack bar?
+            if (_allocationDrafts.Any(d => d.ProjectDTO == null || d.ActivityDTO == null))
+            {
+                await PopupService.AlertAsync("Fjern venligst drafts uden valgt projekt og aktivitet.");
+                return;
+            }
+            if (RemainingMinutes != 0)
+            {
+                await PopupService.AlertAsync("Fordel venligst al tid.");
+                return;
+            }
 
             var responses = await TimeEntryService.CreateTimeEntries(_session, _allocationDrafts);
-            //TODO: Handle fails
 
+            if (responses.All(r => !r.IsSuccessful)) return;
+
+            await LocalStorage.RemoveAsync("bb_timer");
             NavigationManager.NavigateTo("/");
         }
 
