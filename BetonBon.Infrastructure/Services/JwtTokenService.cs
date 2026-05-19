@@ -30,7 +30,8 @@ namespace BetonBon.Infrastructure.Services
                 {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.Role, user.Role.ToString())
+                        new Claim(ClaimTypes.Role, user.Role.ToString()),
+                        new Claim("employee_number", user.EmployeeNumber.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
                 Issuer = _jwtSettings.Issuer,
