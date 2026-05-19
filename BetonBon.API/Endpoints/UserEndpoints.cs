@@ -1,9 +1,11 @@
 ﻿using System.Security.Authentication;
 using BetonBon.Application;
+using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
 
 namespace BetonBon.API.Endpoints
 {

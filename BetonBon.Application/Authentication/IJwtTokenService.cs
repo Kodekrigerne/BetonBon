@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using BetonBon.Domain.Users;
 
-namespace BetonBon.Application
+namespace BetonBon.Application.Authentication
 {
     public interface IJwtTokenService
     {

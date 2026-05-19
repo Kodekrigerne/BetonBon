@@ -1,10 +1,10 @@
 ﻿using System.Security.Authentication;
 using BetonBon.Application;
-using BetonBon.Application.Users;
-using BetonBon.Shared.Models;
+using BetonBon.Application.Authentication;
+using BetonBon.Shared.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 
-namespace BetonBon.Infrastructure.Users
+namespace BetonBon.Infrastructure.Authentication
 {
     public class RefreshTokenQueryHandler : IQueryHandler<RefreshTokenQuery, LoginResponse>
     {

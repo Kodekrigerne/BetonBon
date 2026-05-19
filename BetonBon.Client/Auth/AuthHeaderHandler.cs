@@ -2,72 +2,75 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using BetonBon.Client.Services;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
 
-public class AuthHeaderHandler : DelegatingHandler
+namespace BetonBon.Client.Auth
 {
-    private readonly LocalStorage _localStorage;
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public AuthHeaderHandler(LocalStorage localStorage, IHttpClientFactory httpClientFactory)
+    public class AuthHeaderHandler : DelegatingHandler
     {
-        _localStorage = localStorage;
-        _httpClientFactory = httpClientFactory;
-    }
+        private readonly LocalStorage _localStorage;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-    protected override async Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        var token = await _localStorage.LoadAsync("bb_token");
-
-        if (!string.IsNullOrWhiteSpace(token))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        var response = await base.SendAsync(request, cancellationToken);
-
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        public AuthHeaderHandler(LocalStorage localStorage, IHttpClientFactory httpClientFactory)
         {
-            var refreshed = await TryRefreshTokenAsync();
-            if (refreshed)
-            {
-                // Clone the request with the new token
-                var newToken = await _localStorage.LoadAsync("bb_token");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
-                response = await base.SendAsync(request, cancellationToken);
-            }
+            _localStorage = localStorage;
+            _httpClientFactory = httpClientFactory;
         }
 
-        return response;
-    }
-
-    private async Task<bool> TryRefreshTokenAsync()
-    {
-        var token = await _localStorage.LoadAsync("bb_token");
-        var refreshToken = await _localStorage.LoadAsync("bb_refresh_token");
-
-        if (string.IsNullOrWhiteSpace(refreshToken))
-            return false;
-
-        try
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var client = _httpClientFactory.CreateClient("RefreshClient");
+            var token = await _localStorage.LoadAsync("bb_token");
 
-            var refreshRequest = new RefreshTokenRequest(token!, refreshToken);
-            var response = await client.PostAsJsonAsync("/refresh", refreshRequest);
+            if (!string.IsNullOrWhiteSpace(token))
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            if (!response.IsSuccessStatusCode)
+            var response = await base.SendAsync(request, cancellationToken);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                var refreshed = await TryRefreshTokenAsync();
+                if (refreshed)
+                {
+                    // Clone the request with the new token
+                    var newToken = await _localStorage.LoadAsync("bb_token");
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
+                    response = await base.SendAsync(request, cancellationToken);
+                }
+            }
+
+            return response;
+        }
+
+        private async Task<bool> TryRefreshTokenAsync()
+        {
+            var token = await _localStorage.LoadAsync("bb_token");
+            var refreshToken = await _localStorage.LoadAsync("bb_refresh_token");
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
                 return false;
 
-            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            try
+            {
+                var client = _httpClientFactory.CreateClient("RefreshClient");
 
-            await _localStorage.SaveAsync("bb_token", loginResponse!.Token);
-            await _localStorage.SaveAsync("bb_refresh_token", loginResponse.RefreshToken);
+                var refreshRequest = new RefreshTokenRequest(token!, refreshToken);
+                var response = await client.PostAsJsonAsync("/refresh", refreshRequest);
 
-            return true;
-        }
-        catch
-        {
-            return false;
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                await _localStorage.SaveAsync("bb_token", loginResponse!.Token);
+                await _localStorage.SaveAsync("bb_refresh_token", loginResponse.RefreshToken);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

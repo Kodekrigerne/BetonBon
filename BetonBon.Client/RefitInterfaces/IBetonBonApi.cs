@@ -1,4 +1,5 @@
 ﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
 using Refit;
 
 namespace BetonBon.Client.RefitInterfaces

@@ -1,10 +1,13 @@
 ﻿using BetonBon.Application;
+using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
+using BetonBon.Infrastructure.Authentication;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetonBon.Infrastructure
