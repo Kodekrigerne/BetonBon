@@ -73,12 +73,14 @@
         try
         {
             var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
-            var response = await Api.LoginUser(loginCredentials);
+            var apiResponse = await Api.LoginUser(loginCredentials);
 
-            if (response != null)
+            if (apiResponse != null && apiResponse.Content != null)
             {
-                await localStorage.SaveAsync("bb_token", response.Token);
-                await localStorage.SaveAsync("bb_refresh_token", response.RefreshToken);
+                var loginResponse = apiResponse.Content;
+                
+                await localStorage.SaveAsync("bb_token", loginResponse.Token);
+                await localStorage.SaveAsync("bb_refresh_token", loginResponse.RefreshToken);
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 

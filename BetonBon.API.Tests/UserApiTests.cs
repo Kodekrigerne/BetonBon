@@ -5,6 +5,7 @@ using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
+using System.Net;
 
 namespace BetonBon.API.Tests
 {
@@ -22,7 +23,7 @@ namespace BetonBon.API.Tests
         }
 
         [Fact]
-        public async Task Login_WithValidUser_ReturnsToken()
+        public async Task Login_WithValidUser_ReturnsStatus200()
         {
             // Arrange
             var username = "admin";
@@ -47,7 +48,38 @@ namespace BetonBon.API.Tests
 
             // Assert
             Assert.NotNull(response);
-            Assert.Equal(username, response.Username);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Login_WithValidUser_ReturnsCorrectUser()
+        {
+            // Arrange
+            var username = "admin";
+            var password = "secretpassword";
+
+            using var scope = _factory.Services.CreateScope();
+
+            var userFactory = scope.ServiceProvider.GetRequiredService<UserFactory>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
+
+            dbContext.Database.EnsureCreated();
+
+            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 5);
+
+            dbContext.Users.Add(user);
+            await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+            var loginRequest = new UserLoginDto(username, password);
+
+            // Act
+            var response = await _api.LoginUser(loginRequest);
+
+            // Assert
+            Assert.NotNull(response);
+            Assert.NotNull(response.Content);
+            Assert.Equal(user.Username, response.Content.Username);
+            Assert.Equal(user.Role, response.Content.Role);
         }
     }
 }
