@@ -1,6 +1,5 @@
 ﻿using BetonBon.Shared;
 using BetonBon.Shared.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace BetonBon.Domain.Users
 {
@@ -14,8 +13,7 @@ namespace BetonBon.Domain.Users
         public string? RefreshToken { get; private set; }
         public DateTime? RefreshTokenExpiryTime { get; private set; }
 
-        [Timestamp]
-        public byte[] RowVersion { get; private set; }
+        public byte[] RowVersion { get; private set; } = [];
 
         // Parameterless constructor for EF purposes
 #pragma warning disable CS8618

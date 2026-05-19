@@ -25,6 +25,9 @@ namespace BetonBon.Infrastructure
 
                 user.Property(u => u.Role)
                     .HasConversion<string>();
+
+                user.Property(u => u.RowVersion)
+                    .IsRowVersion();
             });
 
 
