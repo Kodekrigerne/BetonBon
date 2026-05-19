@@ -103,8 +103,10 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             if (_allocationDrafts.Any(d => d.ProjectDTO == null || d.ActivityDTO == null)) return; //TODO: Popup, snack bar?
 
             var responses = await TimeEntryService.CreateTimeEntries(_session, _allocationDrafts);
-            //TODO: Handle fails
 
+            if (responses.All(r => !r.IsSuccessful)) return;
+
+            await LocalStorage.RemoveAsync("bb_timer");
             NavigationManager.NavigateTo("/");
         }
 
