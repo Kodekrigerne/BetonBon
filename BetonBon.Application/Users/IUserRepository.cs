@@ -8,6 +8,7 @@ namespace BetonBon.Application.Users
         void Delete(User user);
         Task<User> GetByIdAsync(Guid id);
         Task<bool> UsernameExistsAsync(string username);
+        void Update(User user, byte[] rowVersion);
         Task SaveChangesAsync();
     }
 }
