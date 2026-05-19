@@ -1,4 +1,5 @@
-﻿using BetonBon.Client.Shared.ViewModels;
+﻿using BetonBon.Client.Shared.UserModels;
+using BetonBon.Client.Shared.UserModels.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
@@ -84,10 +85,9 @@ namespace BetonBon.Client.Pages.Users
 
                 await LoadUsers();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                //Snackbar
+                await PopupService.AlertAsync("Fejl: Brugeren blev ikke slettet.");
             }
         }
 
