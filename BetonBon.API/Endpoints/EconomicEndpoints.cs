@@ -28,7 +28,8 @@ namespace BetonBon.API.Endpoints
                         statusCode: (int)ex.StatusCode
                         );
                     }
-                });
+                })
+                    .RequireAuthorization();
 
 
                 app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsApi economicApi, int projectNumber, CancellationToken ct) =>

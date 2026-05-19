@@ -37,7 +37,7 @@
 <AllProjectTimeRegistrationsView Activity="SelectedActivity"
 								 Project="SelectedProject"
 								 IsVisible="ProjectTimeRegistrationHistoryIsVisible"
-								 OnClose="OpenTimeRegistrationHistory"/>
+								 OnClose="CloseTimeRegistrationHistory"/>
 
 @code {
 
@@ -97,6 +97,11 @@
     private void OpenTimeRegistration()
     {
 
+    }
+
+    private void CloseTimeRegistrationHistory()
+    {
+        ProjectTimeRegistrationHistoryIsVisible = false;
     }
 
     private void OpenMaterialRegistration()
