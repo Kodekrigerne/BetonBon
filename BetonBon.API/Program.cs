@@ -97,7 +97,7 @@ namespace BetonBon.API
             builder.Services.AddAuthorizationBuilder()
                 .AddPolicy(nameof(UserRole.Admin), policy => policy.RequireRole(nameof(UserRole.Admin)));
 
-            var clientUrl = builder.Configuration["ClientUrl"];
+            var clientUrl = builder.Configuration["CLIENT_URL"];
 
             builder.Services.AddCors(options => options.AddPolicy("CustomPolicy", policy =>
             {
