@@ -1,8 +1,6 @@
 ﻿@using BetonBon.Client.Pages.RegistrationMenu.Activities
 @using BetonBon.Client.Pages.RegistrationMenu.Projects
 @using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
-@using BetonBon.Client.Shared.Components
-@using BetonBon.Client.Shared.Icons
 @using BetonBon.Shared.Models
 
 @page "/registration"
@@ -21,7 +19,6 @@
                 SelectedActivity="SelectedActivity"
                 OnClose="ClosePickActionMenu"
                 IsVisible="RegistrationMenuIsVisible"
-                OnViewMaterialHistory="OpenMaterialRegistrationHistory"
                 OnViewTimeHistory="OpenTimeRegistrationHistory"
                 OnOpenTimeRegistration="OpenTimeRegistration"
                 OnOpenMaterialRegistration="OpenMaterialRegistration"
@@ -96,11 +93,6 @@
     private void OpenTimeRegistrationHistory()
     {
         // TODO: Create Time Registration Module
-    }
-
-    private void OpenMaterialRegistrationHistory()
-    {
-
     }
 
     private void OpenTimeRegistration()

@@ -45,7 +45,8 @@ namespace BetonBon.API.Endpoints
                     var response = await economicApi.GetAllMaterialsAsync();
 
                     return Results.Ok(response.Materials);
-                });
+                }).RequireAuthorization();
+
 
 
                 app.MapPost("/api/newDraftEntry", async (IEconomicJournalsApi economicApi, NewDraftEntryDTO entry) =>
@@ -57,7 +58,8 @@ namespace BetonBon.API.Endpoints
                     var response = await economicApi.BookDraftEntryAsync(entryNumber);
                     return Results.Ok(response.StatusCode);
 
-                });
+                })
+                .RequireAuthorization();
 
 
                 app.MapPost("/api/newTimeEntry", async (TimeEntry timeEntry, IEconomicProjectsApi economicApi, CancellationToken ct) =>
@@ -74,7 +76,8 @@ namespace BetonBon.API.Endpoints
                         statusCode: (int)ex.StatusCode
                         );
                     }
-                }).RequireAuthorization();
+                })
+                .RequireAuthorization();
 
 
                 app.MapGet("/api/employees", async (IEconomicProjectsApi economicApi) =>

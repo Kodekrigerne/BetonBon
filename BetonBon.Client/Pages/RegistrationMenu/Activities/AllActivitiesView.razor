@@ -1,9 +1,8 @@
 ﻿@using BetonBon.Client.RefitInterfaces
-@using BetonBon.Client.Shared
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
-@using BetonBon.Client.Shared.Icons
-@using BetonBon.Shared.Models
 @inject IEconomicRelayApi _economicApi
+@inject PopupService _popUpService
 
 <FullScreenModal IsVisible="IsVisible" Title="Vælg Aktivitet" OnClose="@Close" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" ZIndex="101">
 

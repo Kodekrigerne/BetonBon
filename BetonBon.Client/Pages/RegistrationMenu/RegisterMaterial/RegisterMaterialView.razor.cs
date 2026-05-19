@@ -89,15 +89,25 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         {
             if (SelectedMaterial != null && Amount > 0)
             {
-            string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+                try
+                {
+                    string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
 
-            var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id, Note));
+                    var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id, Note));
 
-
-            if (result.IsSuccessStatusCode)
-            {
-                ReturnToHome();
-            }
+                    if (result.IsSuccessStatusCode)
+                    {
+                        ReturnToHome();
+                    }
+                    else
+                    {
+                        await _popUp.AlertAsync($"Der var et problem med at oprette materialeregistreringen. Prøv at logge af og på igen. \n\nFejl: {result.ReasonPhrase}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _popUp.AlertAsync($"Der var et problem med at oprette materialeregistreringen. Prøv at lukke af og på igen.\n\nFejlbesked: {ex.Message}");
+                }
             }
         }
 

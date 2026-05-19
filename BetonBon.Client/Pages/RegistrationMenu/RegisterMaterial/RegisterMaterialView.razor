@@ -1,7 +1,9 @@
 ﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
 @inject NavigationManager Navigation
 @inject IEconomicRelayApi _economicApi
+@inject PopupService _popUp
 
 <ConfirmationPopUp IsVisible="ConfirmationIsVisible"
                    Project="Project"

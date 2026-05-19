@@ -1,5 +1,4 @@
-﻿@using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
-@using BetonBon.Client.Shared.Components
+﻿@using BetonBon.Client.Shared.Components
 @using BetonBon.Shared.Models
 
 
@@ -74,16 +73,8 @@
                         <div class="history-text">Se tidsregistreringer</div>
 
                     </div>
-
-                    <div @onclick="ViewMaterialHistory" class="history-item">
-                        <div class="context-icon" style="background-color:#f3f4f6; color:#6b7280;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h7"/><path d="M11 16h7"/><path d="M11 8h7"/><path d="M3 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
-                        </div>
-                        <div class="history-text">Se materialeregistreringer</div>
-                    </div>
-                </div>
-
             </div>
+        </div>
         </FullScreenModal>
 }
 @code {
@@ -98,9 +89,6 @@
 
     [Parameter, EditorRequired]
     public bool IsVisible { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnViewMaterialHistory { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback OnViewTimeHistory { get; set; }
@@ -120,11 +108,6 @@
     private async Task OnClosed()
     {
         await OnClose.InvokeAsync();
-    }
-
-    private async Task ViewMaterialHistory()
-    {
-        await OnViewMaterialHistory.InvokeAsync();
     }
 
     private async Task ViewTimeHistory()
