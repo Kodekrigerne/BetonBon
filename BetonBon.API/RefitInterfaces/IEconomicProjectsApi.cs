@@ -7,7 +7,7 @@ namespace BetonBon.API.RefitInterfaces
     public interface IEconomicProjectsApi
     {
         [Get("/Projects?cursor=0")]
-        Task<AllProjectsResponse> GetProjectsAsync();
+        Task<AllProjectsResponse> GetProjectsAsync(CancellationToken cancellation = default);
 
         [Get("/project-activities?filter=projectNumber$eq:{projectnumber}")]
         Task<AllProjectActivitiesResponse> GetProjectActivitiesAsync(int projectnumber, CancellationToken cancellationToken = default);

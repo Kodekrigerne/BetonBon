@@ -7,7 +7,7 @@ namespace BetonBon.Client.RefitInterfaces
     public interface IEconomicRelayApi
     {
         [Get("/api/projects")]
-        Task<List<ProjectDTO>> GetAllProjectsAsync();
+        Task<List<ProjectDTO>> GetAllProjectsAsync(CancellationToken cancellation = default);
 
         [Get("/api/activitiesByProjectNumber")]
         Task<List<ActivityDTO>> GetAllActivitiesByProjectAsync(int projectNumber);

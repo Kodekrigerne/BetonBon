@@ -15,9 +15,18 @@ namespace BetonBon.API.Endpoints
                 // Get all projects
                 app.MapGet("/api/projects", async (IEconomicProjectsApi economicApi, CancellationToken ct) =>
                 {
-
-                    var response = await economicApi.GetProjectsAsync();
-                    return Results.Ok(response.Projects);
+                    try
+                    {
+                        var response = await economicApi.GetProjectsAsync(ct);
+                        return Results.Ok(response.Projects);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                        detail: ex.Content,
+                        statusCode: (int)ex.StatusCode
+                        );
+                    }
                 });
 
 
