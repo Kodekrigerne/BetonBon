@@ -1,7 +1,7 @@
-﻿using BetonBon.Client.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Json;
+using BetonBon.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BetonBon.Client.Auth
 {
