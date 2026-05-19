@@ -1,13 +1,16 @@
 name: Pull Request Tests
 
 on:
+  push:
+    branches:
+      - 'tests/api-tests'
   pull_request:
     branches:
       - '**'
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -27,6 +30,9 @@ jobs:
       - name: Restore dependencies (Infrastructure)
         run: dotnet restore BetonBon.Infrastructure.Tests
 
+      - name: Restore dependencies (API)
+        run: dotnet restore BetonBon.API.Tests
+
       - name: Build (Domain)
         run: dotnet build BetonBon.Domain.Tests --no-restore --configuration Release
 
@@ -35,6 +41,9 @@ jobs:
 
       - name: Build (Infrastructure)
         run: dotnet build BetonBon.Infrastructure.Tests --no-restore --configuration Release
+
+      - name: Build (API)
+        run: dotnet build BetonBon.API.Tests --no-restore --configuration Release
 
       - name: Run tests (Domain)
         run: dotnet test BetonBon.Domain.Tests --no-build --configuration Release --logger trx --results-directory TestResults
@@ -45,7 +54,19 @@ jobs:
       - name: Run tests (Infrastructure)
         run: dotnet test BetonBon.Infrastructure.Tests --no-build --configuration Release --logger trx --results-directory TestResults
 
-
+      - name: Run tests (API)
+        run: dotnet test BetonBon.API.Tests --no-build --configuration Release --logger trx --results-directory TestResults
+        env:
+          API_SECRET: "dummy-secret"
+          API_GRANT: "dummy-grant"
+          ADMIN_USER: "testadmin"
+          ADMIN_PASSWORD: "testpassword123!"
+          JWT__Secret: "dummyjwtsecretjustforgithub1234"
+          JWT__Issuer: "dummy-issuer"
+          JWT__Audience: "dummy-audience"
+          JWT__ExpiryMinutes: "10"
+          CLIENT_URL: "dummy-client-url"
+          
       - name: Publish Test Results
         uses: dorny/test-reporter@v3
         if: always()
