@@ -61,7 +61,7 @@ jobs:
           API_GRANT: "dummy-grant"
           ADMIN_USER: "testadmin"
           ADMIN_PASSWORD: "testpassword123!"
-          JWT__Secret: "dummyjwtsecretjustforgithub1234"
+          JWT__Secret: "dummyjwtsecretjustforgithub12345"
           JWT__Issuer: "dummy-issuer"
           JWT__Audience: "dummy-audience"
           JWT__ExpiryMinutes: "10"
