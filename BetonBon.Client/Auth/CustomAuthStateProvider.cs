@@ -1,7 +1,7 @@
-﻿using BetonBon.Client.Services;
+﻿using System.Security.Claims;
+using BetonBon.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
-using System.Text.Json;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace BetonBon.Client.Auth
 {
@@ -39,22 +39,10 @@ namespace BetonBon.Client.Auth
 
         private static IEnumerable<Claim> ParseClaimsFromJwtToken(string jwt)
         {
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            var handler = new JsonWebTokenHandler();
+            var token = handler.ReadJsonWebToken(jwt);
 
-            return keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
-        }
-
-        private static byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-
-            return Convert.FromBase64String(base64);
+            return token.Claims;
         }
     }
 }

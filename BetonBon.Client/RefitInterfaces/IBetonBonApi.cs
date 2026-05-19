@@ -1,4 +1,6 @@
-﻿using BetonBon.Shared.Models.UserModels;
+﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
+using BetonBon.Shared.Models.UserModels;
 using Refit;
 
 namespace BetonBon.Client.RefitInterfaces

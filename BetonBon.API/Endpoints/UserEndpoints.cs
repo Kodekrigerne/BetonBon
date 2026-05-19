@@ -1,7 +1,9 @@
 ﻿using BetonBon.Application;
+using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Shared.Enums;
+using BetonBon.Shared.Models.Authentication;
 using BetonBon.Shared.Models.UserModels;
 using Refit;
 using System.Security.Authentication;
@@ -108,6 +110,20 @@ namespace BetonBon.API.Endpoints
                         return Results.Ok(response);
                     }
 
+                    catch (AuthenticationException)
+                    {
+                        return Results.Unauthorized();
+                    }
+                });
+
+                app.MapPost("/refresh", async (IQueryDispatcher queryDispatcher, RefreshTokenRequest request) =>
+                {
+                    try
+                    {
+                        var query = new RefreshTokenQuery(request.Token, request.RefreshToken);
+                        var response = await queryDispatcher.DispatchAsync<RefreshTokenQuery, LoginResponse>(query);
+                        return Results.Ok(response);
+                    }
                     catch (AuthenticationException)
                     {
                         return Results.Unauthorized();

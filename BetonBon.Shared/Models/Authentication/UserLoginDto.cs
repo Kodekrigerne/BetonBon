@@ -1,4 +1,4 @@
-﻿namespace BetonBon.Shared.Models.UserModels
+namespace BetonBon.Shared.Models.Authentication
 {
     public record UserLoginDto(string Username, string Password);
 }

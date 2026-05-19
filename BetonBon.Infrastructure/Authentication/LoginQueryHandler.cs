@@ -1,11 +1,11 @@
-﻿using BetonBon.Application;
-using BetonBon.Application.Users;
+﻿using System.Security.Authentication;
+using BetonBon.Application;
+using BetonBon.Application.Authentication;
 using BetonBon.Domain.Users;
-using BetonBon.Shared.Models.UserModels;
+using BetonBon.Shared.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Authentication;
 
-namespace BetonBon.Infrastructure.Users
+namespace BetonBon.Infrastructure.Authentication
 {
     public class LoginQueryHandler : IQueryHandler<LoginQuery, LoginResponse>
     {

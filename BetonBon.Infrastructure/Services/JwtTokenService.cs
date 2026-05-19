@@ -1,11 +1,12 @@
-﻿using BetonBon.Application;
+﻿using System.Security.Authentication;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using BetonBon.Application.Authentication;
 using BetonBon.Domain.Users;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace BetonBon.Infrastructure.Services
 {
@@ -50,6 +51,29 @@ namespace BetonBon.Infrastructure.Services
             RandomNumberGenerator.Fill(refreshBytes);
 
             return Convert.ToBase64String(refreshBytes);
+        }
+
+        async Task<ClaimsPrincipal> IJwtTokenService.GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
+                ValidateLifetime = false
+            };
+
+            var handler = new JsonWebTokenHandler();
+            var result = await handler.ValidateTokenAsync(token, tokenValidationParameters);
+
+            if (!result.IsValid)
+                throw new AuthenticationException("Invalid token");
+
+            return new ClaimsPrincipal(result.ClaimsIdentity);
         }
     }
 }
