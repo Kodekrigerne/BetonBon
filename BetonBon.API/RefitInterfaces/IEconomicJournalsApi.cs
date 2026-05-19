@@ -7,9 +7,9 @@ namespace BetonBon.API.RefitInterfaces
     {
 
         [Post("/draft-entries")]
-        Task<EntryNumberResponseDTO> PostNewEntryAsync(NewDraftEntryDTO newDraftEntry);
+        Task<EntryNumberResponseDTO> PostNewEntryAsync(NewDraftEntryDTO newDraftEntry, CancellationToken cancellationToken = default);
 
         [Post("/journals/1/bookdraftentries")]
-        Task<HttpResponseMessage> BookDraftEntryAsync(BookEntryNumberDTO entryNumberDTO);
+        Task<HttpResponseMessage> BookDraftEntryAsync(BookEntryNumberDTO entryNumberDTO, CancellationToken cancellationToken = default);
     }
 }

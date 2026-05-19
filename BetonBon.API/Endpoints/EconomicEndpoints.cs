@@ -18,7 +18,7 @@ namespace BetonBon.API.Endpoints
                     try
                     {
                         var response = await economicApi.GetProjectsAsync(ct);
-                        return Results.Ok(response.Projects);
+                        return Results.Ok(response.Items);
                     }
                     catch (ApiException ex)
                     {
@@ -30,41 +30,75 @@ namespace BetonBon.API.Endpoints
                 });
 
 
-                app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsApi economicApi, int projectNumber) =>
+                app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsApi economicApi, int projectNumber, CancellationToken ct) =>
                 {
-                    var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber);
 
-                    var projectActivities = initialResponse.ProjectActivities;
-
-                    List<ActivityDTO> activities = [];
-
-                    foreach (var activity in projectActivities)
+                    try
                     {
-                        activities.Add(economicApi.GetActivityByNumberAsync(activity.ActivityNumber).Result);
-                    }
+                        var initialResponse = await economicApi.GetProjectActivitiesAsync(projectNumber, ct);
 
-                    return Results.Ok(activities);
+                        var projectActivities = initialResponse.Items ?? [];
+
+                        List<ActivityDTO> activities = [];
+
+                        foreach (var activity in projectActivities)
+                        {
+                            activities.Add(economicApi.GetActivityByNumberAsync(activity.ActivityNumber, ct).Result);
+                        }
+
+                        return Results.Ok(activities);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                            detail: ex.Content,
+                            statusCode: (int)ex.StatusCode
+                            );
+                    }
                 })
                 .RequireAuthorization();
 
 
-                app.MapGet("/api/materials", async (IEconomicProjectsApi economicApi) =>
+                app.MapGet("/api/materials", async (IEconomicProjectsApi economicApi, CancellationToken ct) =>
                 {
-                    var response = await economicApi.GetAllMaterialsAsync();
+                    try
+                    {
+                        var response = await economicApi.GetAllMaterialsAsync(ct);
 
-                    return Results.Ok(response.Materials);
+                        return Results.Ok(response.Items);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                           detail: ex.Content,
+                           statusCode: (int)ex.StatusCode
+                           );
+                    }
                 }).RequireAuthorization();
 
 
 
-                app.MapPost("/api/newDraftEntry", async (IEconomicJournalsApi economicApi, NewDraftEntryDTO entry) =>
+                app.MapPost("/api/newDraftEntry", async (IEconomicJournalsApi economicApi, NewDraftEntryDTO entry, CancellationToken ct) =>
                 {
-                    var creationResponse = await economicApi.PostNewEntryAsync(entry);
+                    try
+                    {
+                        var creationResponse = await economicApi.PostNewEntryAsync(entry, ct);
 
-                    BookEntryNumberDTO entryNumber = new([creationResponse.CreatedEntryNumber]);
+                        BookEntryNumberDTO entryNumber = new()
+                        {
+                            EntryNumbers = [creationResponse.EntryNumber]
+                        };
 
-                    var response = await economicApi.BookDraftEntryAsync(entryNumber);
-                    return Results.Ok(response.StatusCode);
+                        var response = await economicApi.BookDraftEntryAsync(entryNumber, ct);
+                        return Results.Ok(response.StatusCode);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                            detail: ex.Content,
+                            statusCode: (int)ex.StatusCode
+                            );
+                    }
 
                 })
                 .RequireAuthorization();
@@ -104,12 +138,12 @@ namespace BetonBon.API.Endpoints
                     }
                 }).RequireAuthorization(nameof(UserRole.Admin));
 
-                app.MapGet("api/timeEntries", async (int projectId, int activityId, int employeeId, IEconomicProjectsApi economicApi) =>
+                app.MapGet("api/timeEntries", async (int projectNumber, int activityNumber, int employeeNumber, IEconomicProjectsApi economicApi, CancellationToken ct) =>
                 {
                     try
                     {
-                        var response = await economicApi.GetTimeEntriesAsync(projectId, activityId, employeeId);
-                        return Results.Ok(response);
+                        var response = await economicApi.GetTimeEntriesAsync(projectNumber, activityNumber, employeeNumber);
+                        return Results.Ok(response.Items);
                     }
                     catch (ApiException ex)
                     {

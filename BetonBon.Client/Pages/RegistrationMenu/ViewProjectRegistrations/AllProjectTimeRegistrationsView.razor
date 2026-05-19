@@ -81,7 +81,8 @@
         {
             try
             {
-                Registrations = await _economicApi.GetTimeEntriesAsync(Project.Number, Activity.Number, 1);
+                var result = await _economicApi.GetTimeEntriesAsync(Project.Number, Activity.Number, 1);
+                Registrations = result;
             }
             catch (Exception ex)
             {

@@ -5,9 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace BetonBon.Shared.Models
 {
-    public class BookEntryNumberDTO(int[] entryNumbers)
+    public sealed record BookEntryNumberDTO
     {
-        [JsonPropertyName("entryNumbers")]
-        public int[] EntryNumbers { get; set; } = entryNumbers;
+        public required int[] EntryNumbers { get; init; }
     }
 }

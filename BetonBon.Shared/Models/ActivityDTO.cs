@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Text.Json.Serialization;
 
 namespace BetonBon.Shared.Models
 {
-    public class ActivityDTO(int number, string name)
+    public sealed record ActivityDTO
     {
-        [JsonPropertyName("number")]
-        public int Number { get; set; } = number;
+        public required int Number { get; init; }
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = name;
+        public required string Name { get; init; }
     }
 }

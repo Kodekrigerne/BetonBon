@@ -93,7 +93,16 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
                 {
                     string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
 
-                    var result = await _economicApi.CreateNewDraftEntry(new NewDraftEntryDTO(date, Amount, Project.Number, SelectedMaterial.Id, Note));
+                    var timeEntry = new NewDraftEntryDTO()
+                    {
+                        Date = date,
+                        Amount = Amount,
+                        ProjectNumber = Project.Number,
+                        CostTypeNumber = SelectedMaterial.Number,
+                        Text = Note
+                    };
+
+                    var result = await _economicApi.CreateNewDraftEntry(timeEntry);
 
                     if (result.IsSuccessStatusCode)
                     {

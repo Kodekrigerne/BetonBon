@@ -5,25 +5,16 @@ using System.Text.Json.Serialization;
 
 namespace BetonBon.Shared.Models
 {
-    public class NewDraftEntryDTO(string date, double amount, int projectNumber, int costTypeNumber, string note)
+    public sealed record NewDraftEntryDTO
     {
-        [JsonPropertyName("date")]
-        public string Date { get; set; } = date;
-        [JsonPropertyName("entryTypeNumber")]
-        public int EntryTypeNumber { get; set; } = 5;
-        [JsonPropertyName("journalNumber")]
-        public int JournalNumber { get; set; } = 1;
-        [JsonPropertyName("amount")]
-        public double Amount { get; set; } = amount;
-        [JsonPropertyName("projectNumber")]
-        public int ProjectNumber { get; set; } = projectNumber;
-        [JsonPropertyName("costTypeNumber")]
-        public int CostTypeNumber { get; set; } = costTypeNumber;
-        [JsonPropertyName("accountNumber")]
-        public int AccountNumber { get; set; } = 1025;
-        [JsonPropertyName("currency")]
-        public string Currency { get; set; } = "DKK";
-        [JsonPropertyName("text")]
-        public string Note { get; set; } = note;
+        public required string Date { get; init; }
+        public int EntryTypeNumber { get; init; } = 5;
+        public int JournalNumber { get; init; } = 1; 
+        public required double Amount { get; init; } 
+        public required int ProjectNumber { get; init; }
+        public required int CostTypeNumber { get; init; }
+        public int AccountNumber { get; init; } = 1025;
+        public string Currency { get; init; } = "DKK";
+        public string? Text { get; init; } 
     }
 }

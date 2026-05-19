@@ -5,12 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace BetonBon.Shared.Models
 {
-    public class MaterialDTO(int id, string name, string unit)
+    public sealed record MaterialDTO
     {
-        [JsonPropertyName("number")]
-        public int Id { get; set; } = id;
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = name;
-        public string Unit { get; set; } = unit;
+        public required int Number { get; init; }
+        public required string Name { get; init; }
     }
 }
