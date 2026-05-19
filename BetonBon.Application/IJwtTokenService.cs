@@ -1,4 +1,5 @@
-﻿using BetonBon.Domain.Users;
+﻿using System.Security.Claims;
+using BetonBon.Domain.Users;
 
 namespace BetonBon.Application
 {
@@ -6,5 +7,6 @@ namespace BetonBon.Application
     {
         string GenerateJwtToken(User user);
         string GenerateRefreshToken();
+        Task<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token);
     }
 }
