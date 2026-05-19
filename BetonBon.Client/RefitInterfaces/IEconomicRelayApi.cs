@@ -23,5 +23,8 @@ namespace BetonBon.Client.RefitInterfaces
 
         [Get("/api/employees")]
         Task<CursorResults<Employee>> GetEmployeesAsync([Query] string? cursor = null, CancellationToken cancellationToken = default);
+
+        [Get("/api/timeEntries")]
+        Task<List<TimeEntry>> GetTimeEntriesAsync([Query] int projectNumber, int activityNumber, int employeeNumber, CancellationToken cancellation = default);
     }
 }

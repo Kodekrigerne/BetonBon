@@ -1,6 +1,7 @@
 ﻿@using BetonBon.Client.Pages.RegistrationMenu.Activities
 @using BetonBon.Client.Pages.RegistrationMenu.Projects
 @using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
+@using BetonBon.Client.Pages.RegistrationMenu.ViewProjectRegistrations
 @using BetonBon.Shared.Models
 
 @page "/registration"
@@ -32,6 +33,11 @@
                       OnChangeActivity="ReturnToActivities"
                       OnChangeProject="ReturnToProjects"></RegisterMaterialView>
 
+<AllProjectTimeRegistrationsView Activity="SelectedActivity"
+								 Project="SelectedProject"
+								 IsVisible="ProjectTimeRegistrationHistoryIsVisible"
+								 OnClose="OpenTimeRegistrationHistory"/>
+
 @code {
 
     private ProjectDTO? SelectedProject;
@@ -43,6 +49,7 @@
     private bool ProjectsIsVisible = true;
     private bool ActivitiesIsVisible = false;
     private bool RegistrationMenuIsVisible = false;
+    private bool ProjectTimeRegistrationHistoryIsVisible = false;
 
     private void SelectProject(ProjectDTO project)
     {
@@ -68,16 +75,9 @@
         Navigation.NavigateTo("/");
     }
 
-    private void ViewHistory()
-    {
-
-    }
-
     private void OpenRegistrationMenu(ActivityDTO activity)
     {
         SelectedActivity = activity;
-        // ActivitiesIsVisible = false;
-        // ProjectsIsVisible = false;
         RegistrationMenuIsVisible = true;
         StateHasChanged();
     }
@@ -92,7 +92,7 @@
 
     private void OpenTimeRegistrationHistory()
     {
-        // TODO: Create Time Registration Module
+        ProjectTimeRegistrationHistoryIsVisible = true;
     }
 
     private void OpenTimeRegistration()

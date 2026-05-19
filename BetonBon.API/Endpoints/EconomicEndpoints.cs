@@ -18,8 +18,7 @@ namespace BetonBon.API.Endpoints
 
                     var response = await economicApi.GetProjectsAsync();
                     return Results.Ok(response.Projects);
-                })
-                .RequireAuthorization();
+                });
 
 
                 app.MapGet("/api/activitiesByProjectNumber", async (IEconomicProjectsApi economicApi, int projectNumber) =>
@@ -95,6 +94,23 @@ namespace BetonBon.API.Endpoints
                         );
                     }
                 }).RequireAuthorization(nameof(UserRole.Admin));
+
+                app.MapGet("api/timeEntries", async (int projectId, int activityId, int employeeId, IEconomicProjectsApi economicApi) =>
+                {
+                    try
+                    {
+                        var response = await economicApi.GetTimeEntriesAsync(projectId, activityId, employeeId);
+                        return Results.Ok(response);
+                    }
+                    catch (ApiException ex)
+                    {
+                        return Results.Problem(
+                            detail: ex.Content,
+                            statusCode: (int)ex.StatusCode
+                            );
+                    }
+
+                }).RequireAuthorization();
             }
         }
     }
