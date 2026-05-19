@@ -1,4 +1,5 @@
 ﻿using BetonBon.Domain.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure.Users
 {
@@ -11,9 +12,9 @@ namespace BetonBon.Infrastructure.Users
             _db = db;
         }
 
-        public bool ValidateUniqueEmployeeNumber(int employeeNumber)
+        public async Task<bool> ValidateUniqueEmployeeNumberAsync(int employeeNumber)
         {
-            return _db.Users.Any(u => u.EmployeeNumber == employeeNumber);
+            return await _db.Users.AsNoTracking().AnyAsync(u => u.EmployeeNumber == employeeNumber);
         }
     }
 }
