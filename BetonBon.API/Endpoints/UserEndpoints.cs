@@ -3,6 +3,7 @@ using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Shared.Enums;
+using BetonBon.Shared.Models.Authentication;
 using BetonBon.Shared.Models.UserModels;
 using Refit;
 using System.Security.Authentication;
