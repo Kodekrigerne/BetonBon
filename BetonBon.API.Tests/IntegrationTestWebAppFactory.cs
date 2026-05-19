@@ -23,6 +23,7 @@ namespace BetonBon.API.Tests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.UseEnvironment("Testing");
             builder.ConfigureTestServices(services =>
             {
                 var descriptor = services.SingleOrDefault(
