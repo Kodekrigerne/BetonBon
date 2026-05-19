@@ -5,8 +5,8 @@
 
 @if (_initialized)
 {
-    <AllProjectsView IsVisible="_projectsIsVisible" SelectProject="HandleProjectSelected" OnCloseProjects="HandleProjectsClosed" />
-    <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="HandleActivitiesClosed" ActivitySelected="HandleActivitySelected" />
+    <AllProjectsView IsVisible="_projectsIsVisible" OnProjectSelected="HandleProjectSelected" OnClose="HandleProjectsClosed" />
+    <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="HandleActivitiesClosed" OnActivitySelected="HandleActivitySelected" />
 
     <div class="allocate-page">
         @* Header *@
@@ -43,11 +43,6 @@
             <div class="allocations-section">
                 <div class="allocations-intro">
                     <h2>Hvor skal tiden registreres?</h2>
-                    <p>
-                        Dette er din primære registrering. Du kan tilføje flere
-                        projekter/aktiviteter nedenfor, hvis tiden skal fordeles
-                        på andet arbejde.
-                    </p>
                 </div>
 
                 @foreach (var draft in _allocationDrafts)
@@ -66,9 +61,7 @@
                             {
                                 <div class="project-selected">
                                     <div class="project-label">
-                                        @(d == _allocationDrafts[0]
-                                            ? "Primært Projekt & Aktivitet"
-                                            : "Projekt & Aktivitet")
+                                        "Projekt & Aktivitet"
                                     </div>
                                     <div class="project-name">@d.ProjectDTO.Name</div>
                                     <div class="activity-name">@d.ActivityDTO.Name</div>

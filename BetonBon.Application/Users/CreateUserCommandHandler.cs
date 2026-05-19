@@ -21,7 +21,7 @@ namespace BetonBon.Application.Users
                 throw new DomainException("Username already exists.", nameof(command.Username));
             }
 
-            var user = _userFactory.Create(command.Username, command.Password, command.Role, command.EmployeeNumber);
+            var user = await _userFactory.CreateAsync(command.Username, command.Password, command.Role, command.EmployeeNumber);
 
             await _userRepository.AddUserAsync(user);
             await _userRepository.SaveChangesAsync();

@@ -19,7 +19,7 @@ namespace BetonBon.API.RefitInterfaces
         Task<AllMaterialResponse> GetAllMaterialsAsync();
 
         [Post("/TimeEntries")]
-        Task<CreatedTimeEntryResult> CreateTimeEntryAsync([Body] TimeEntry timeEntry, CancellationToken cancellationToken = default);
+        Task<CreatedTimeEntryResult> CreateTimeEntryAsync(TimeEntry timeEntry, CancellationToken cancellationToken = default);
 
         [Get("/Employees")]
         Task<CursorResults<Employee>> GetEmployeesAsync([Query] string? cursor = null, CancellationToken cancellationToken = default);
