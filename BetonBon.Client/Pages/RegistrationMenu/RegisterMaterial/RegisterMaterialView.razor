@@ -1,11 +1,22 @@
 ﻿@using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Shared.Components
 @inject NavigationManager Navigation
-@inject IEconomicApi _economicApi
+@inject IEconomicRelayApi _economicApi
 
-<ConfirmationPopUp IsVisible="ConfirmationIsVisible" Project="Project" Material="SelectedMaterial" Amount="Amount" RegistrationDate="RegistrationDate" Note="Note" OnCancel="CancelConfirm" OnConfirm="SaveRegistration"></ConfirmationPopUp>
+<ConfirmationPopUp IsVisible="ConfirmationIsVisible"
+                   Project="Project"
+                   Material="SelectedMaterial"
+                   Amount="Amount"
+                   RegistrationDate="RegistrationDate"
+                   Note="@Note"
+                   OnCancel="CancelConfirm"
+                   OnConfirm="SaveRegistration"></ConfirmationPopUp>
 
-<FullScreenModal IsVisible="ShowMaterialModal" ZIndex="120" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop" Title="Ny Materialeregistrering" OnClose="GoBack">
+<FullScreenModal IsVisible="ShowMaterialModal"
+                 ZIndex="120"
+                 SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop"
+                 Title="Ny Materialeregistrering"
+                 OnClose="GoBack">
 
     @* Form Content *@
     <div class="content">

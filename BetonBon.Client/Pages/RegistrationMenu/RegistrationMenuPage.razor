@@ -9,14 +9,31 @@
 @inject NavigationManager Navigation
 
 
-<AllProjectsView IsVisible="ProjectsIsVisible" OnClose="OnCloseProjects" OnProjectSelected="SelectProject"/>
-<AllActivitiesView IsVisible="ActivitiesIsVisible" OnClose="ReturnToProjects" SelectedProject="SelectedProject" OnActivitySelected="OpenRegistrationMenu"/>
+<AllProjectsView IsVisible="ProjectsIsVisible"
+                 OnClose="OnCloseProjects"
+                 OnProjectSelected="SelectProject"/>
+<AllActivitiesView IsVisible="ActivitiesIsVisible"
+                   OnClose="ReturnToProjects"
+                   SelectedProject="SelectedProject"
+                   OnActivitySelected="OpenRegistrationMenu"/>
 
-<PickActionView SelectedProject="SelectedProject" SelectedActivity="SelectedActivity"OnClose="ClosePickActionMenu" IsVisible="RegistrationMenuIsVisible"
-    OnViewMaterialHistory="OpenMaterialRegistrationHistory" OnViewTimeHistory="OpenTimeRegistrationHistory" OnOpenTimeRegistration="OpenTimeRegistration"
-    OnOpenMaterialRegistration="OpenMaterialRegistration" ChangeActivity="ReturnToActivities" ChangeProject="ReturnToProjects"/>
+<PickActionView SelectedProject="SelectedProject"
+                SelectedActivity="SelectedActivity"
+                OnClose="ClosePickActionMenu"
+                IsVisible="RegistrationMenuIsVisible"
+                OnViewMaterialHistory="OpenMaterialRegistrationHistory"
+                OnViewTimeHistory="OpenTimeRegistrationHistory"
+                OnOpenTimeRegistration="OpenTimeRegistration"
+                OnOpenMaterialRegistration="OpenMaterialRegistration"
+                ChangeActivity="ReturnToActivities"
+                ChangeProject="ReturnToProjects"/>
 
-<RegisterMaterialView Activity="SelectedActivity" Project="SelectedProject" OnClosed="CloseMaterialRegistration" ShowMaterialModal="MaterialRegistrationIsVisible" OnChangeActivity="ReturnToActivities" OnChangeProject="ReturnToProjects"></RegisterMaterialView>
+<RegisterMaterialView Activity="SelectedActivity"
+                      Project="SelectedProject"
+                      OnClosed="CloseMaterialRegistration"
+                      ShowMaterialModal="MaterialRegistrationIsVisible"
+                      OnChangeActivity="ReturnToActivities"
+                      OnChangeProject="ReturnToProjects"></RegisterMaterialView>
 
 @code {
 

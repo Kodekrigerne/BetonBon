@@ -20,7 +20,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
         public LocalStorage LocalStorage { get; set; } = null!;
 
         [Inject]
-        public IEconomicApi EconomicApi { get; set; } = null!;
+        public IEconomicRelayApi EconomicApi { get; set; } = null!;
 
         [Inject]
         public TimeEntryService TimeEntryService { get; set; } = null!;
