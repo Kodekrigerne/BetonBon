@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using System.Security.Claims;
 using BetonBon.Application;
 using BetonBon.Application.Authentication;
 using BetonBon.Shared.Models.Authentication;
@@ -20,11 +21,12 @@ namespace BetonBon.Infrastructure.Authentication
         async Task<LoginResponse?> IQueryHandler<RefreshTokenQuery, LoginResponse>.HandleAsync(RefreshTokenQuery query)
         {
             var principal = await _jwtTokenService.GetPrincipalFromExpiredToken(query.Token);
-            var username = principal.Identity?.Name
-                ?? principal.FindFirst("unique_name")?.Value
+            var userIdString = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value
                 ?? throw new AuthenticationException("Invalid token");
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var userId = Guid.Parse(userIdString);
+
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user is null ||
                 user.RefreshToken != query.RefreshToken ||
