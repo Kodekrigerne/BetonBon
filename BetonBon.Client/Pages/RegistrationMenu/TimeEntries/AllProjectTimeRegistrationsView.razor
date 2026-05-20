@@ -7,15 +7,17 @@
 
 @inject IEconomicRelayApi _economicApi
 @inject PopupService _popUp
+@inject RegistrationState State
+@inject NavigationManager Navigation
 
-<FullScreenModal IsVisible="IsVisible" OnClose="OnClose" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" Title="Tidsregistreringer" ZIndex="300">
+<FullScreenModal OnClose="Close" SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft" Title="Tidsregistreringer">
 
     @* Content *@
     <div class="content">
 
         <div class="context-banner">
             <div class="context-label">Aktivitet</div>
-            <div class="context-value">@Project.Name - @Activity.Name</div>
+            <div class="context-value">@State.SelectedProject.Name - @State.SelectedActivity.Name</div>
         </div>
 
         @if (Registrations == null || !Registrations.Any())
@@ -70,40 +72,39 @@
 
 @code {
 
-	[Parameter, EditorRequired]
-	public ActivityDTO Activity { get; set; }
-	[Parameter, EditorRequired]
-	public ProjectDTO Project { get; set; }
+    private List<TimeEntry> Registrations = [];
 
-	[Parameter, EditorRequired]
-	public bool IsVisible { get; set; }
+    protected async override Task OnParametersSetAsync()
+    {
+        if (State.SelectedActivity == null || State.SelectedProject == null)
+        {
+            Navigation.NavigateTo("registration/projects");
+        }
+        else
+        {
+            try
+            {
+                var result = await _economicApi.GetTimeEntriesAsync(State.SelectedProject.Number, State.SelectedActivity.Number, 1);
+                Registrations = result;
 
-	[Parameter, EditorRequired]
-	public EventCallback OnClose { get; set; }
+                //TODO: Hent EmployeeNumber
+            }
+            catch (Exception ex)
+            {
+                await _popUp.AlertAsync($"Der var et problem med at hente tidsregistreringer. Prøv at lukke af og på igen.\n\nFejlbesked: {ex.Message}");
+            }
+        }
 
-	private List<TimeEntry> Registrations = [];
+    }
+    private void DeleteRegistration(TimeEntry reg)
+    {
 
-	protected async override Task OnParametersSetAsync()
-	{
-		if (IsVisible == true && Activity != null && Project != null)
-		{
-			try
-			{
-				var result = await _economicApi.GetTimeEntriesAsync(Project.Number, Activity.Number, 1);
-				Registrations = result;
+    }
 
-				//TODO: Hent EmployeeNumber
-			}
-			catch (Exception ex)
-			{
-				await _popUp.AlertAsync($"Der var et problem med at hente tidsregistreringer. Prøv at lukke af og på igen.\n\nFejlbesked: {ex.Message}");
-			}
-		}
-	}
-	private void DeleteRegistration(TimeEntry reg)
-	{
-
-	}
+    private void Close()
+    {
+        Navigation.NavigateTo("/registration/menu");
+    }
 
 	private string FormatHours(double hours)
 	{

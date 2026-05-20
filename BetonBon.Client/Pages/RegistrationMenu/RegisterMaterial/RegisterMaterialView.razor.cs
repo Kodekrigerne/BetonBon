@@ -7,31 +7,9 @@ using Microsoft.AspNetCore.Components;
 namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 {
     public partial class RegisterMaterialView
-    {
-
-        [Parameter, EditorRequired]
-        public ProjectDTO Project { get; set; }
-
-        [Parameter, EditorRequired]
-        public ActivityDTO Activity { get; set; }
-
-        [Parameter, EditorRequired]
-        public bool ShowMaterialModal { get; set; } = false;
-
-        [Parameter, EditorRequired]
-        public EventCallback OnClosed { get; set; }
-
-        [Parameter, EditorRequired]
-        public EventCallback OnChangeActivity { get; set; }
-        [Parameter, EditorRequired]
-        public EventCallback OnChangeProject { get; set; }
-        
-        public int MyProperty { get; set; }
-
+    {        
         private DateTime RegistrationDate { get; set; } = DateTime.Today;
         private string Note { get; set; } = "";
-
-        private MaterialDTO? SelectedMaterial;
 
         private double Amount { get; set; }
 
@@ -46,19 +24,19 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         private async Task CloseMaterialPicker()
         {
             _materialsPickerIsVisible = false;
-            SelectedMaterial = null;
+            State.SelectedMaterial = null;
             StateHasChanged();
         }
 
         private async Task SelectMaterial(MaterialDTO material)
         {
-            SelectedMaterial = material;
+            State.SelectedMaterial = material;
             _materialsPickerIsVisible = false;
         }
 
         private async Task GoBack()
         {
-            await OnClosed.InvokeAsync();
+            Navigation.NavigateTo("/registration/menu");
         }
 
         private void OpenPicker()
@@ -68,19 +46,20 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 
         private async Task ChangeActivity()
         {
-            SelectedMaterial = null;
-            await OnChangeActivity.InvokeAsync();
+            State.SelectedMaterial = null;
+            Navigation.NavigateTo("registration/activities");
+
         }
 
         private async Task ChangeProject()
         {
-            SelectedMaterial = null;
-            await OnChangeProject.InvokeAsync();
+            State.SelectedMaterial = null;
+            Navigation.NavigateTo("/registration/projects");
         }
 
         private void SaveButtonPressed()
         {
-            if (SelectedMaterial != null && Amount > 0)
+            if (State.SelectedMaterial != null && Amount > 0)
             {
                 ConfirmationIsVisible = true;
             }
@@ -88,7 +67,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
 
         private async Task SaveRegistration()
         {
-            if (SelectedMaterial != null && Amount > 0)
+            if (State.SelectedProject!= null && State.SelectedActivity!= null && State.SelectedMaterial != null && Amount > 0)
             {
                 try
                 {
@@ -98,8 +77,8 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
                     {
                         Date = date,
                         Amount = Amount,
-                        ProjectNumber = Project.Number,
-                        CostTypeNumber = SelectedMaterial.Number,
+                        ProjectNumber = State.SelectedProject.Number,
+                        CostTypeNumber = State.SelectedMaterial.Number,
                         Text = Note
                     };
 

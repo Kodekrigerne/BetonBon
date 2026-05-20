@@ -4,17 +4,19 @@
 @inject NavigationManager Navigation
 @inject IEconomicRelayApi _economicApi
 @inject PopupService _popUp
+@inject RegistrationState State
+@page "/registration/materials"
 
 <ConfirmationPopUp IsVisible="ConfirmationIsVisible"
-                   Project="Project"
-                   Material="SelectedMaterial"
+                   Project="State.SelectedProject"
+                   Material="State.SelectedMaterial"
                    Amount="Amount"
                    RegistrationDate="RegistrationDate"
                    Note="@Note"
                    OnCancel="CancelConfirm"
                    OnConfirm="SaveRegistration"></ConfirmationPopUp>
 
-<FullScreenModal IsVisible="ShowMaterialModal"
+<FullScreenModal IsVisible="true"
                  ZIndex="120"
                  SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop"
                  Title="Ny Materialeregistrering"
@@ -27,13 +29,13 @@
         <div class="context-box">
             <div>
                 <div class="context-label">Projekt</div>
-                <div class="context-value" @onclick="@ChangeProject">@Project.Name</div>
+                <div class="context-value" @onclick="@ChangeProject">@State.SelectedProject.Name</div>
             </div>
             <div class="divider"></div>
             <div class="activity-row" @onclick="@ChangeActivity">
                 <div>
                     <div class="context-label">Valgt Aktivitet (Tryk for at ændre)</div>
-                    <div class="context-value">@Activity.Name</div>
+                    <div class="context-value">@State.SelectedActivity.Name</div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
             </div>
@@ -64,7 +66,7 @@
         <div class="card">
             <label class="card-label" style="display:block; margin-bottom: 1rem;">Hvilket materiale har du brugt?</label>
             
-            @if (SelectedMaterial == null)
+            @if (State.SelectedMaterial == null)
             {
                 <button @onclick="@OpenPicker" class="material-empty-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -75,7 +77,7 @@
             {
                 <div class="selected-material-card">
                     <div>
-                        <div class="smc-name">@SelectedMaterial.Name</div>
+                        <div class="smc-name">@State.SelectedMaterial.Name</div>
                     </div>
                     
                     <div class="smc-quantity-row">
@@ -110,4 +112,4 @@
 
 </FullScreenModal>
 
-<MaterialsPickView IsVisible="_materialsPickerIsVisible" OnClosed="CloseMaterialPicker" MaterialSelected="SelectMaterial" SelectedMaterial="SelectedMaterial"/>
+<MaterialsPickView IsVisible="_materialsPickerIsVisible" OnClosed="CloseMaterialPicker" MaterialSelected="SelectMaterial" SelectedMaterial="State.SelectedMaterial"/>

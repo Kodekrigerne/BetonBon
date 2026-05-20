@@ -234,15 +234,9 @@
     [Parameter, EditorRequired]
     public string Note { get; set; }
 
-    /// <summary>
-    /// Kaldes når brugeren trykker "Godkend og Gem".
-    /// </summary>
     [Parameter]
     public EventCallback OnConfirm { get; set; }
 
-    /// <summary>
-    /// Kaldes når brugeren trykker "Annuller" eller trykker uden for boksen.
-    /// </summary>
     [Parameter]
     public EventCallback OnCancel { get; set; }
 

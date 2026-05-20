@@ -1,4 +1,5 @@
 using BetonBon.Client.Auth;
+using BetonBon.Client.Pages.RegistrationMenu;
 using BetonBon.Client.Pages.StopwatchRegistration;
 using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
@@ -44,6 +45,7 @@ namespace BetonBon.Client
             builder.Services.AddTransient<AuthHeaderHandler>();
             builder.Services.AddScoped<PopupService>();
             builder.Services.AddScoped<TimeEntryService>();
+            builder.Services.AddScoped<RegistrationState>();
 
             await builder.Build().RunAsync();
         }

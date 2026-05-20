@@ -1,11 +1,13 @@
 ﻿@using BetonBon.Client.Shared.Components
 @using BetonBon.Shared.Models
 @using BetonBon.Shared.Models.Activities
+@inject RegistrationState State
+@inject NavigationManager Navigation
 
+@page "/registration/menu"
 
-@if (SelectedProject != null && SelectedActivity != null)
-{
-        <FullScreenModal IsVisible="IsVisible"
+        <FullScreenModal
+                        IsVisible="true"
                          Title="Hvad vil du?"
                          OnClose="@OnClosed"
                          SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop"
@@ -22,7 +24,7 @@
                         </div>
                         <div @onclick="@OnChangeProject">
                             <div class="context-label">Valgt projekt</div>
-                            <div class="context-value">@SelectedProject.Name</div>
+                            <div class="context-value">@State.SelectedProject.Name</div>
                         </div>
                     </div>
                     <div class="divider"></div>
@@ -32,7 +34,7 @@
                         </div>
                         <div @onclick="@OnChangeActivity">
                             <div class="context-label">Valgt aktivitet</div>
-                            <div class="context-value">@SelectedActivity.Name</div>
+                            <div class="context-value">@State.SelectedActivity.Name</div>
                         </div>
                     </div>
                 </div>
@@ -77,61 +79,50 @@
             </div>
         </div>
         </FullScreenModal>
-}
+
 @code {
-    [Parameter, EditorRequired]
-    public ProjectDTO SelectedProject { get; set; }
 
-    [Parameter, EditorRequired]
-    public ActivityDTO SelectedActivity { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnClose { get; set; }
-
-    [Parameter, EditorRequired]
-    public bool IsVisible { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnViewTimeHistory { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnOpenTimeRegistration { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnOpenMaterialRegistration { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback ChangeProject { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback ChangeActivity { get; set; }
-
-    private async Task OnClosed()
+    protected override async Task OnInitializedAsync()
     {
-        await OnClose.InvokeAsync();
+        if (State.SelectedActivity == null)
+        {
+            Navigation.NavigateTo("/registration/activities");
+        }
+        if (State.SelectedProject == null)
+        {
+            Navigation.NavigateTo("/registration/projects");
+        }
     }
 
-    private async Task ViewTimeHistory()
+    private void OnClosed()
     {
-        await OnViewTimeHistory.InvokeAsync();
+        
+        Navigation.NavigateTo("/registration/activities");
+    }
+
+    private void ViewTimeHistory()
+    {
+        Navigation.NavigateTo("/registration/time-entries");
     }
 
     private async Task OpenTimeRegistration()
     {
-        await OnOpenTimeRegistration.InvokeAsync();
+        // Navigation.NavigateTo("/");
     }
 
     private async Task OpenMaterialRegistration()
     {
-        await OnOpenMaterialRegistration.InvokeAsync();
+        Navigation.NavigateTo("/registration/materials");
     }
 
-    private async Task OnChangeProject()
+    private void OnChangeProject()
     {
-        await ChangeProject.InvokeAsync();
+        State.ClearState();
+        Navigation.NavigateTo("/registration/projects");
     }
-    private async Task OnChangeActivity()
+    private void OnChangeActivity()
     {
-        await ChangeActivity.InvokeAsync();
+        State.SelectedActivity = null;
+        Navigation.NavigateTo("/registration/activities");
     }
 }
