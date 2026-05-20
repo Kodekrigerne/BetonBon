@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
+using Scalar.AspNetCore;
 
 namespace BetonBon.API
 {
@@ -107,7 +108,7 @@ namespace BetonBon.API
             }));
 
             builder.Services.AddOpenApi();
-
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
@@ -117,6 +118,9 @@ namespace BetonBon.API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
