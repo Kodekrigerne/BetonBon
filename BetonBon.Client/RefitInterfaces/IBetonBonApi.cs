@@ -7,7 +7,7 @@ namespace BetonBon.Client.RefitInterfaces
     public interface IBetonBonApi
     {
         [Post("/createUser")]
-        Task<Guid> CreateUser(CreateUserRequest userToCreate);
+        Task<IApiResponse<Guid>> CreateUser(CreateUserRequest userToCreate);
 
         [Get("/viewUsers")]
         Task<List<UserResponse>> GetAllUsers();
@@ -19,6 +19,6 @@ namespace BetonBon.Client.RefitInterfaces
         Task DeleteUser(Guid id);
 
         [Post("/login")]
-        Task<LoginResponse?> LoginUser(UserLoginDto userToLogin);
+        Task<IApiResponse<LoginResponse>?> LoginUser(UserLoginDto userToLogin);
     }
 }

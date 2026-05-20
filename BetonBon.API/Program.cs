@@ -1,5 +1,3 @@
-using System.Text;
-using System.Text.Json.Serialization;
 using BetonBon.API.Endpoints;
 using BetonBon.API.Extensions;
 using BetonBon.API.RefitInterfaces;
@@ -13,6 +11,8 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
 using Scalar.AspNetCore;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace BetonBon.API
 {
@@ -112,7 +112,10 @@ namespace BetonBon.API
 
             var app = builder.Build();
 
-            await app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
+            if (app.Environment.EnvironmentName != "Testing")
+            {
+                await app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

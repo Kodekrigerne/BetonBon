@@ -74,12 +74,12 @@
         try
         {
             var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
-            var response = await Api.LoginUser(loginCredentials);
+            var apiResponse = await Api.LoginUser(loginCredentials);
 
-            if (response != null)
+            if (apiResponse != null && apiResponse.Content != null)
             {
-                await localStorage.SaveAsync(BetonBonStorage.Token, response.Token);
-                await localStorage.SaveAsync(BetonBonStorage.RefreshToken, response.RefreshToken);
+                await localStorage.SaveAsync(BetonBonStorage.Token, apiResponse.Content.Token);
+                await localStorage.SaveAsync(BetonBonStorage.RefreshToken, apiResponse.Content.RefreshToken);
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 
