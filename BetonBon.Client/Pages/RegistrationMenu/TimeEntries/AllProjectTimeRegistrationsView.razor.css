@@ -125,6 +125,16 @@
         background-color: #fef2f2;
     }
 
+.tick-icon {
+    border: none;
+    color: #269f0e;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .reg-body {
     display: flex;
     justify-content: space-between;

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using BetonBon.Shared.Models;
 using BetonBon.Shared.Models.Activities;
 using BetonBon.Shared.Models.DraftEntries;
