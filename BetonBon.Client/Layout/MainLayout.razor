@@ -79,6 +79,7 @@
     {
         await localStorage.RemoveAsync("bb_token");
         await localStorage.RemoveAsync("bb_refresh_token");
+        await localStorage.RemoveAsync("bb_timer");
 
         var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 
