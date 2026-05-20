@@ -1,0 +1,107 @@
+﻿.te-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.te-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.te-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.te-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid #e5e7eb;
+    font-size: 1rem;
+    color: #111827;
+    background-color: white;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+
+    .te-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+.te-time-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.te-time-field {
+    flex: 1;
+    position: relative;
+}
+
+.te-time-input {
+    padding-right: 3.5rem;
+}
+
+.te-time-suffix {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    color: #9ca3af;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.te-textarea {
+    resize: vertical;
+    min-height: 4rem;
+    font-family: inherit;
+}
+
+.te-validation-error {
+    font-size: 0.8rem;
+    color: #dc2626;
+    font-weight: 500;
+}
+
+.te-form-actions {
+    margin-top: 0.5rem;
+    padding-bottom: 2rem;
+}
+
+.te-btn-primary {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: none;
+    background-color: #2563eb;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+    .te-btn-primary:active {
+        background-color: #1d4ed8;
+        transform: scale(0.98);
+    }
+
+    .te-btn-primary:disabled {
+        background-color: #93c5fd;
+        cursor: not-allowed;
+    }
