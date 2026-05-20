@@ -15,6 +15,6 @@ namespace BetonBon.Client.Shared.UserModels
         [Required]
         public UserRole Role { get; set; }
 
-        public byte[] RowVersion { get; set; } = [];
+        public uint RowVersion { get; set; }
     }
 }

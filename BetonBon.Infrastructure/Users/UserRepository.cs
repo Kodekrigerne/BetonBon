@@ -51,7 +51,7 @@ namespace BetonBon.Infrastructure.Users
                 ?? throw new KeyNotFoundException($"User with ID {id} not found.");
         }
 
-        void IUserRepository.Update(User user, byte[] rowVersion)
+        void IUserRepository.Update(User user, uint rowVersion)
         {
             _dbContext.Entry(user)
                 .Property(u => u.RowVersion)

@@ -5,25 +5,25 @@
 namespace BetonBon.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddConcurrencyToUser : Migration
+    public partial class AddRowVersionOnUserForConcurrency : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<byte[]>(
-                name: "RowVersion",
+            migrationBuilder.AddColumn<uint>(
+                name: "xmin",
                 table: "Users",
-                type: "bytea",
+                type: "xid",
                 rowVersion: true,
                 nullable: false,
-                defaultValue: new byte[0]);
+                defaultValue: 0u);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "RowVersion",
+                name: "xmin",
                 table: "Users");
         }
     }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetonBon.Infrastructure.Migrations
 {
     [DbContext(typeof(BetonBonDbContext))]
-    [Migration("20260519130952_AddConcurrencyToUser")]
-    partial class AddConcurrencyToUser
+    [Migration("20260520071336_AddRowVersionOnUserForConcurrency")]
+    partial class AddRowVersionOnUserForConcurrency
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,11 +43,11 @@ namespace BetonBon.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("RowVersion")
+                    b.Property<uint>("RowVersion")
                         .IsConcurrencyToken()
-                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("Username")
                         .IsRequired()
