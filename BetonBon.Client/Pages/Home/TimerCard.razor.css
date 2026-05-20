@@ -87,3 +87,28 @@
     .btn-group .timer-btn {
         flex: 1;
     }
+
+.stopwatch-card {
+    position: relative;
+}
+
+.timer-reset-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.4rem;
+    color: #9ca3af;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+    .timer-reset-btn:active {
+        color: #ef4444;
+        border-color: #fca5a5;
+        background-color: #fef2f2;
+    }

@@ -1,8 +1,11 @@
 ﻿using BetonBon.Application;
+using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
+using BetonBon.Shared;
 using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
+using BetonBon.Shared.Models.UserModels;
 using System.Security.Authentication;
 
 namespace BetonBon.API.Endpoints
@@ -13,44 +16,79 @@ namespace BetonBon.API.Endpoints
         {
             public void MapUserEndpoints()
             {
-                app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserDTO userToCreate) =>
+                app.MapPost("/createUser", async (ICommandDispatcher commandDispatcher, CreateUserRequest userToCreate) =>
                 {
-                    var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role, userToCreate.EmployeeNumber);
+                    try
+                    {
+                        var command = new CreateUserCommand(userToCreate.Username, userToCreate.Password, userToCreate.Role, userToCreate.EmployeeNumber);
 
-                    var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
+                        var id = await commandDispatcher.DispatchAsync<CreateUserCommand, Guid>(command);
 
-                    return Results.Ok(id);
+                        return Results.Ok(id);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
+                    }
+
                 })
                 .RequireAuthorization(nameof(UserRole.Admin));
 
 
                 app.MapDelete("/deleteUser/{id}", async (ICommandDispatcher commandDispatcher, Guid id) =>
                 {
-                    var command = new DeleteUserCommand(id);
+                    try
+                    {
+                        var command = new DeleteUserCommand(id);
 
-                    await commandDispatcher.DispatchAsync(command);
+                        await commandDispatcher.DispatchAsync(command);
 
-                    return Results.NoContent();
-                });
+                        return Results.NoContent();
+                    }
+                    catch (Exception ex)
+                    {
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
+                    }
+                })
+                .RequireAuthorization(nameof(UserRole.Admin));
 
 
                 app.MapGet("/viewUsers", async (IQueryDispatcher dispatcher) =>
                 {
-                    var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserDto>>(new GetAllUsersQuery());
+                    try
+                    {
+                        var users = await dispatcher.DispatchAsync<GetAllUsersQuery, List<UserResponse>>(new GetAllUsersQuery());
 
-                    return Results.Ok(users);
+                        return Results.Ok(users);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
+                    }
                 })
-                .RequireAuthorization();
+                .RequireAuthorization(nameof(UserRole.Admin));
 
 
-                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserDTO dto) =>
+                app.MapPut("/updateUser", async (ICommandDispatcher commandDispatcher, UpdateUserRequest request) =>
                 {
-                    var command = new UpdateUserCommand(dto.Id, dto.Username, dto.Password, dto.Role);
+                    try
+                    {
+                        var command = new UpdateUserCommand(request.Id, request.Username, request.Password, request.Role, request.RowVersion);
 
-                    await commandDispatcher.DispatchAsync(command);
+                        await commandDispatcher.DispatchAsync(command);
 
-                    return Results.NoContent();
-                });
+                        return Results.NoContent();
+                    }
+                    catch (ConcurrencyException ex)
+                    {
+                        return Results.Conflict(new { message = ex.Message });
+                    }
+                    catch (Exception ex)
+                    {
+                        return Results.Problem(detail: ex.Message, statusCode: 500);
+                    }
+                })
+                .RequireAuthorization(nameof(UserRole.Admin));
 
 
                 app.MapPost("/login", async (IQueryDispatcher queryDispatcher, UserLoginDto userLogin) =>
@@ -64,6 +102,20 @@ namespace BetonBon.API.Endpoints
                         return Results.Ok(response);
                     }
 
+                    catch (AuthenticationException)
+                    {
+                        return Results.Unauthorized();
+                    }
+                });
+
+                app.MapPost("/refresh", async (IQueryDispatcher queryDispatcher, RefreshTokenRequest request) =>
+                {
+                    try
+                    {
+                        var query = new RefreshTokenQuery(request.Token, request.RefreshToken);
+                        var response = await queryDispatcher.DispatchAsync<RefreshTokenQuery, LoginResponse>(query);
+                        return Results.Ok(response);
+                    }
                     catch (AuthenticationException)
                     {
                         return Results.Unauthorized();

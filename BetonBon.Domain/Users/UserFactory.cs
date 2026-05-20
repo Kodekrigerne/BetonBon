@@ -1,4 +1,5 @@
-﻿using BetonBon.Shared.Enums;
+﻿using BetonBon.Shared;
+using BetonBon.Shared.Enums;
 
 namespace BetonBon.Domain.Users
 {
@@ -17,11 +18,11 @@ namespace BetonBon.Domain.Users
         {
             if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
             {
-                throw new ArgumentException("Password must be atleast 8 characters long.", nameof(password));
+                throw new DomainException("Password must be atleast 8 characters long.", nameof(password));
             }
 
             if (await _employeeNumberUniqueValidator.ValidateUniqueEmployeeNumberAsync(employeeNumber))
-                throw new ArgumentException("Employee Number must be unique", nameof(employeeNumber));
+                throw new DomainException("Employee Number must be unique", nameof(employeeNumber));
 
             var hashedPassword = _passwordHasher.HashPassword(password);
 
