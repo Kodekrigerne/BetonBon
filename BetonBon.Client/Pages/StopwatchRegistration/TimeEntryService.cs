@@ -15,7 +15,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             _economicApi = economicApi;
         }
 
-        public async Task<IEnumerable<IApiResponse<CreatedTimeEntryResult>>> CreateTimeEntries(StopwatchSession session, IEnumerable<AllocationDraft> drafts)
+        public async Task<IEnumerable<IApiResponse<CreatedTimeEntryResult>>> CreateTimeEntries(StopwatchSession session, IEnumerable<AllocationDraft> drafts, int employeeNumber)
         {
             //var text = session.GetSessionString();
             var date = new DateTimeOffset(session.StartTime);
@@ -27,7 +27,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
                 {
                     ProjectNumber = draft.ProjectDTO!.Number,
                     ActivityNumber = draft.ActivityDTO!.Number,
-                    EmployeeNumber = 1, //TODO: Get employeenumber from user profile
+                    EmployeeNumber = employeeNumber,
                     //Text = text,
                     NumberOfHours = draft.Minutes / 60d,
                     Date = date

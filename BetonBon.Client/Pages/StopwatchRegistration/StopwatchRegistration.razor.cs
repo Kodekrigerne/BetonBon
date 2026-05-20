@@ -119,15 +119,15 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
             }
 
             var authState = await AuthStateTask;
-            var employeeNumber = authState.User.FindFirst("employee_number")?.Value;
+            var employeeNumberString = authState.User.FindFirst("employee_number")?.Value;
 
-            if (employeeNumber == null)
+            if (employeeNumberString == null || !int.TryParse(employeeNumberString, out int employeeNumber))
             {
                 await PopupService.AlertAsync("Medarbejdernummer ikke fundet.");
                 return;
             }
 
-            var responses = await TimeEntryService.CreateTimeEntries(_session, _allocationDrafts);
+            var responses = await TimeEntryService.CreateTimeEntries(_session, _allocationDrafts, employeeNumber);
 
             if (responses.All(r => !r.IsSuccessful)) return;
 
