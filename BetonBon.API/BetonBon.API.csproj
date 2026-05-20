@@ -18,6 +18,8 @@
     <PackageReference Include="Refit" Version="10.1.6" />
     <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.14.14" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
   </ItemGroup>
 
   <ItemGroup>
