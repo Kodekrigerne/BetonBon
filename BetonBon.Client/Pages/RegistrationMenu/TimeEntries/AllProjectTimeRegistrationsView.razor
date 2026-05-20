@@ -23,7 +23,7 @@
 
         <div class="context-banner">
             <div class="context-label">Aktivitet</div>
-            <div class="context-value">@State.SelectedProject?.Name ?? "" - @State.SelectedActivity?.Name ?? ""</div>
+            <div class="context-value">@(State.SelectedProject?.Name ?? "") - @(State.SelectedActivity?.Name ?? "")</div>
         </div>
 
         @if (Registrations == null || !Registrations.Any())
