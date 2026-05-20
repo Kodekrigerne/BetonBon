@@ -52,6 +52,13 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
             return $"{minutes} minutter";
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            if (State.SelectedProject == null || State.SelectedActivity == null)
+            {
+                Navigation.NavigateTo("/registration");
+            }
+        }
         private async Task HandleSubmit()
         {
             showValidation = true;

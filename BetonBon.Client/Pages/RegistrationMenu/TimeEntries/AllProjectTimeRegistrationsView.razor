@@ -1,8 +1,5 @@
 ﻿@using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
-@using BetonBon.Client.Shared.Components
-@using BetonBon.Shared.Models
-@using BetonBon.Shared.Models.Activities
 @using BetonBon.Shared.Models.TimeEntries
 @page "/registration/time-entries"
 
@@ -26,7 +23,7 @@
 
         <div class="context-banner">
             <div class="context-label">Aktivitet</div>
-            <div class="context-value">@State.SelectedProject.Name - @State.SelectedActivity.Name</div>
+            <div class="context-value">@State.SelectedProject?.Name ?? "" - @State.SelectedActivity?.Name ?? ""</div>
         </div>
 
         @if (Registrations == null || !Registrations.Any())
@@ -82,7 +79,7 @@
 
     private List<TimeEntry> Registrations = [];
 
-    protected async override Task OnParametersSetAsync()
+    protected async override Task OnInitializedAsync()
     {
         if (State.SelectedActivity == null || State.SelectedProject == null)
         {

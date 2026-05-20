@@ -1,10 +1,5 @@
-﻿@using System.Globalization
-@using BetonBon.Client.RefitInterfaces
+﻿@using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
-@using BetonBon.Client.Shared.Components
-@using BetonBon.Shared.Models
-@using BetonBon.Shared.Models.TimeEntries
-@using Microsoft.AspNetCore.Components.Authorization
 @inject IEconomicRelayApi EconomicApi
 @inject PopupService PopupService
 @inject RegistrationState State
@@ -31,7 +26,7 @@
                     </div>
                     <div>
                         <div class="context-label">Valgt projekt</div>
-                    <div class="context-value">@State.SelectedProject.Name</div>
+                    <div class="context-value">@State.SelectedProject?.Name ?? ""</div>
                     </div>
                 </div>
                 <div class="divider"></div>
@@ -41,7 +36,7 @@
                     </div>
                     <div>
                         <div class="context-label">Valgt aktivitet</div>
-                        <div class="context-value">@State.SelectedActivity.Name</div>
+                        <div class="context-value">@State.SelectedActivity?.Name ?? ""</div>
                     </div>
                 </div>
             </div>

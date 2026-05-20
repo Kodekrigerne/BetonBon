@@ -16,6 +16,14 @@ namespace BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
         private bool ConfirmationIsVisible = false;
         private bool _materialsPickerIsVisible = false;
 
+        protected override async Task OnInitializedAsync()
+        {
+            if (State.SelectedProject == null || State.SelectedActivity == null)
+            {
+                Navigation.NavigateTo("/registration");
+            }
+        }
+
         private bool IsToday()
         {
             return RegistrationDate == DateTime.Today;

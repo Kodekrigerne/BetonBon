@@ -1,6 +1,6 @@
 ﻿@using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
-@using BetonBon.Client.Shared.Components
+
 @inject NavigationManager Navigation
 @inject IEconomicRelayApi _economicApi
 @inject PopupService _popUp
@@ -33,13 +33,13 @@
         <div class="context-box">
             <div>
                 <div class="context-label">Projekt</div>
-                <div class="context-value" @onclick="@ChangeProject">@State.SelectedProject.Name</div>
+                <div class="context-value" @onclick="@ChangeProject">@State.SelectedProject?.Name ?? ""</div>
             </div>
             <div class="divider"></div>
             <div class="activity-row" @onclick="@ChangeActivity">
                 <div>
                     <div class="context-label">Valgt Aktivitet (Tryk for at ændre)</div>
-                    <div class="context-value">@State.SelectedActivity.Name</div>
+                    <div class="context-value">@State.SelectedActivity?.Name ?? ""</div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
             </div>
