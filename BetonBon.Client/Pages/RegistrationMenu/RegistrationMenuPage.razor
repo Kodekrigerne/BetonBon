@@ -29,6 +29,12 @@
             ProjectsIsVisible = false;
             ActivitiesIsVisible = true;
         }
+        else 
+        {
+            State.ClearState();
+            ProjectsIsVisible = true;
+            ActivitiesIsVisible = false;
+        }
     }
 
     private void SelectProject(ProjectDTO project)
@@ -46,11 +52,14 @@
 
     private void ReturnToProjects()
     {
+        State.ClearState();
+        ProjectsIsVisible = true;
         ActivitiesIsVisible = false;
     }
 
     private void OnCloseProjects()
     {
         Navigation.NavigateTo("/");
+        State.ClearState();
     }
 }

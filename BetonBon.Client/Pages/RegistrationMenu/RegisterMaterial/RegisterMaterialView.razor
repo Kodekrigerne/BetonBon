@@ -16,11 +16,15 @@
                    OnCancel="CancelConfirm"
                    OnConfirm="SaveRegistration"></ConfirmationPopUp>
 
-<FullScreenModal IsVisible="true"
-                 ZIndex="120"
-                 SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop"
-                 Title="Ny Materialeregistrering"
-                 OnClose="GoBack">
+ <div class="action-page-header">
+            <button @onclick="GoBack" class="action-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span class="action-page-btn-text">Tilbage</span>
+            </button>
+            <h1 class="action-page-title">Hvad vil du?</h1>
+        </div>
 
     @* Form Content *@
     <div class="content">
@@ -99,17 +103,14 @@
             }
         </div>
        
-
-    </div>
-
-    @* Bottom Save Button *@
-    <div class="bottom-bar">
         <button @onclick="SaveButtonPressed" class="save-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             Gem registrering
         </button>
+
     </div>
 
-</FullScreenModal>
+    
+
 
 <MaterialsPickView IsVisible="_materialsPickerIsVisible" OnClosed="CloseMaterialPicker" MaterialSelected="SelectMaterial" SelectedMaterial="State.SelectedMaterial"/>
