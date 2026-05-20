@@ -2,7 +2,7 @@
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
 using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;

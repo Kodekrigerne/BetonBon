@@ -1,6 +1,6 @@
 ﻿using BetonBon.Infrastructure;
 using BetonBon.Shared.Enums;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -38,7 +38,7 @@ namespace BetonBon.API.Tests.UserEndpointsTests
             var adminToken = await _factory.GetValidAdminTokenAsync();
             var api = _factory.CreateRefitClient(adminToken);
 
-            var newUserDto = new CreateUserDTO("newAdmin", "newPassword", UserRole.User, 10);
+            var newUserDto = new CreateUserRequest("newAdmin", "newPassword", UserRole.User, 10);
 
             // Act
             var response = await api.CreateUser(newUserDto);
@@ -54,7 +54,7 @@ namespace BetonBon.API.Tests.UserEndpointsTests
             var userToken = await _factory.GetValidUserTokenAsync();
             var api = _factory.CreateRefitClient(userToken);
 
-            var newUserDto = new CreateUserDTO("newUser", "newPassword", UserRole.User, 10);
+            var newUserDto = new CreateUserRequest("newUser", "newPassword", UserRole.User, 10);
 
             // Act
             var response = await api.CreateUser(newUserDto);

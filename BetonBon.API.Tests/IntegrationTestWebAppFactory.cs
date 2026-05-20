@@ -1,4 +1,4 @@
-﻿using BetonBon.Application;
+﻿using BetonBon.Application.Authentication;
 using BetonBon.Client.RefitInterfaces;
 using BetonBon.Domain.Users;
 using BetonBon.Infrastructure;
