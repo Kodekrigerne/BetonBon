@@ -8,16 +8,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System.Net;
 
-namespace BetonBon.API.Tests
+namespace BetonBon.API.Tests.UserEndpointsTests
 {
-    public class UserEndpointsTests : IClassFixture<IntegrationTestWebAppFactory>, IAsyncLifetime
+    public class LoginEndpointTests : IClassFixture<IntegrationTestWebAppFactory>, IAsyncLifetime
     {
         private readonly IntegrationTestWebAppFactory _factory;
         private readonly IBetonBonApi _api;
 
-        public UserEndpointsTests(IntegrationTestWebAppFactory factory)
+        public LoginEndpointTests(IntegrationTestWebAppFactory factory)
         {
             _factory = factory;
+            //_api = _factory.CreateRefitClient();
             var client = factory.CreateClient();
             _api = RestService.For<IBetonBonApi>(client);
         }
@@ -51,7 +52,7 @@ namespace BetonBon.API.Tests
 
             dbContext.Database.EnsureCreated();
 
-            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 5);
+            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 1);
 
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -80,7 +81,7 @@ namespace BetonBon.API.Tests
 
             dbContext.Database.EnsureCreated();
 
-            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 5);
+            var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 1);
 
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -113,7 +114,7 @@ namespace BetonBon.API.Tests
 
             dbContext.Database.EnsureCreated();
 
-            var user = await userFactory.CreateAsync(usernameInDb, passwordInDb, UserRole.Admin, 5);
+            var user = await userFactory.CreateAsync(usernameInDb, passwordInDb, UserRole.Admin, 1);
 
             dbContext.Users.Add(user);
             await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
