@@ -25,7 +25,7 @@ namespace BetonBon.API.Tests
         {
             await _dbContainer.StartAsync();
 
-            using (var scope = this.Services.CreateScope())
+            using (var scope = Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
 
@@ -69,7 +69,7 @@ namespace BetonBon.API.Tests
 
         public async Task<string> GetValidAdminTokenAsync()
         {
-            using (var scope = this.Services.CreateScope())
+            using (var scope = Services.CreateScope())
             {
                 var userFactory = scope.ServiceProvider.GetRequiredService<UserFactory>();
                 var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
@@ -83,7 +83,7 @@ namespace BetonBon.API.Tests
 
         public async Task<string> GetValidUserTokenAsync()
         {
-            using (var scope = this.Services.CreateScope())
+            using (var scope = Services.CreateScope())
             {
                 var userFactory = scope.ServiceProvider.GetRequiredService<UserFactory>();
                 var jwtTokenService = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
