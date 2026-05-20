@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BetonBon.Client.Services;
 using BetonBon.Shared.Models.Authentication;
 
@@ -60,7 +62,12 @@ namespace BetonBon.Client.Auth
                 if (!response.IsSuccessStatusCode)
                     return false;
 
-                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Converters = { new JsonStringEnumConverter() }
+                    });
 
                 await _localStorage.SaveAsync("bb_token", loginResponse!.Token);
                 await _localStorage.SaveAsync("bb_refresh_token", loginResponse.RefreshToken);
