@@ -1,5 +1,4 @@
-﻿using BetonBon.Client.RefitInterfaces;
-using BetonBon.Infrastructure;
+﻿using BetonBon.Infrastructure;
 using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +10,10 @@ namespace BetonBon.API.Tests.UserEndpointsTests
     public class CreateUserEndpointTests : IClassFixture<IntegrationTestWebAppFactory>, IAsyncLifetime
     {
         private readonly IntegrationTestWebAppFactory _factory;
-        private readonly IBetonBonApi _api;
 
         public CreateUserEndpointTests(IntegrationTestWebAppFactory factory)
         {
             _factory = factory;
-            _api = factory.CreateRefitClient();
         }
 
         public ValueTask InitializeAsync()
@@ -38,18 +35,13 @@ namespace BetonBon.API.Tests.UserEndpointsTests
         public async Task CreateUser_WithAdminAuthorization_ReturnsStatus200()
         {
             // Arrange
-            _factory.AuthHandler.Token = await _factory.GetValidAdminTokenAsync();
+            var adminToken = await _factory.GetValidAdminTokenAsync();
+            var api = _factory.CreateRefitClient(adminToken);
 
             var newUserDto = new CreateUserDTO("newAdmin", "newPassword", UserRole.User, 10);
 
-            using var scope = _factory.Services.CreateScope();
-
-            var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-
-            dbContext.Database.EnsureCreated();
-
             // Act
-            var response = await _api.CreateUser(newUserDto);
+            var response = await api.CreateUser(newUserDto);
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -59,18 +51,13 @@ namespace BetonBon.API.Tests.UserEndpointsTests
         public async Task CreateUser_WithUserAuthorization_ReturnsStatus401()
         {
             // Arrange
-            _factory.AuthHandler.Token = await _factory.GetValidUserTokenAsync();
+            var userToken = await _factory.GetValidUserTokenAsync();
+            var api = _factory.CreateRefitClient(userToken);
 
             var newUserDto = new CreateUserDTO("newUser", "newPassword", UserRole.User, 10);
 
-            using var scope = _factory.Services.CreateScope();
-
-            var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-
-            dbContext.Database.EnsureCreated();
-
             // Act
-            var response = await _api.CreateUser(newUserDto);
+            var response = await api.CreateUser(newUserDto);
 
             // Assert
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);

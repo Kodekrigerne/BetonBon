@@ -21,8 +21,6 @@ namespace BetonBon.API.Tests
             .WithPassword("postgres")
             .Build();
 
-        public TestAuthHandler AuthHandler { get; } = new TestAuthHandler();
-
         public async ValueTask InitializeAsync()
         {
             await _dbContainer.StartAsync();
@@ -60,14 +58,11 @@ namespace BetonBon.API.Tests
             base.ConfigureClient(client);
         }
 
-        public IBetonBonApi CreateRefitClient()
+        public IBetonBonApi CreateRefitClient(string? token = null)
         {
-            //var serverHandler = this.Server.CreateHandler();
-            //var clientWithAuth = HttpClientFactory.Create(serverHandler, AuthHandler);
+            var authHandler = new TestAuthHandler { Token = token };
 
-            //clientWithAuth.BaseAddress = this.ClientOptions.BaseAddress;
-
-            var clientWithAuth = CreateDefaultClient(AuthHandler);
+            var clientWithAuth = CreateDefaultClient(authHandler);
 
             return RestService.For<IBetonBonApi>(clientWithAuth);
         }

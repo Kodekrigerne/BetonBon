@@ -5,7 +5,6 @@ using BetonBon.Shared.Enums;
 using BetonBon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Refit;
 using System.Net;
 
 namespace BetonBon.API.Tests.UserEndpointsTests
@@ -18,9 +17,7 @@ namespace BetonBon.API.Tests.UserEndpointsTests
         public LoginEndpointTests(IntegrationTestWebAppFactory factory)
         {
             _factory = factory;
-            //_api = _factory.CreateRefitClient();
-            var client = factory.CreateClient();
-            _api = RestService.For<IBetonBonApi>(client);
+            _api = _factory.CreateRefitClient();
         }
 
         public ValueTask InitializeAsync()
@@ -50,8 +47,6 @@ namespace BetonBon.API.Tests.UserEndpointsTests
             var userFactory = scope.ServiceProvider.GetRequiredService<UserFactory>();
             var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
 
-            dbContext.Database.EnsureCreated();
-
             var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 1);
 
             dbContext.Users.Add(user);
@@ -78,8 +73,6 @@ namespace BetonBon.API.Tests.UserEndpointsTests
 
             var userFactory = scope.ServiceProvider.GetRequiredService<UserFactory>();
             var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-
-            dbContext.Database.EnsureCreated();
 
             var user = await userFactory.CreateAsync(username, password, UserRole.Admin, 1);
 
@@ -111,8 +104,6 @@ namespace BetonBon.API.Tests.UserEndpointsTests
 
             var userFactory = scope.ServiceProvider.GetRequiredService<UserFactory>();
             var dbContext = scope.ServiceProvider.GetRequiredService<BetonBonDbContext>();
-
-            dbContext.Database.EnsureCreated();
 
             var user = await userFactory.CreateAsync(usernameInDb, passwordInDb, UserRole.Admin, 1);
 
