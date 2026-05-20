@@ -45,13 +45,13 @@
     {
         <div class="content">
             <div class="user-list">
-                @if (users == null)
+                @if (userViewModels == null)
                 {
                     <div class="loader">Henter brugere...</div>
                 }
                 else
                 {
-                    @foreach (var user in users)
+                    @foreach (var user in userViewModels)
                     {
                         <SingleUserCard User="@user" OnEditRequested="HandleEditUser" />
                     }

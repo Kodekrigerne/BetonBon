@@ -1,4 +1,5 @@
 ﻿using BetonBon.Domain.Users;
+using BetonBon.Shared;
 
 namespace BetonBon.Application.Users
 {
@@ -25,8 +26,16 @@ namespace BetonBon.Application.Users
                 user.SetPassword(command.Password, _passwordHasher);
             }
 
+            _userRepository.Update(user, command.RowVersion);
 
-            await _userRepository.SaveChangesAsync();
+            try
+            {
+                await _userRepository.SaveChangesAsync();
+            }
+            catch (ConcurrencyException ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

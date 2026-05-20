@@ -111,15 +111,28 @@
         isSubmitting = true;
         try
         {
-            var dto = new UpdateUserRequest(User.Id, User.Username, User.NewPassword, User.Role);
+            var request = new UpdateUserRequest(User.Id, User.Username, User.NewPassword, User.Role, User.RowVersion);
 
-            await Api.UpdateUser(dto);
+            await Api.UpdateUser(request);
+
+            await PopupService.AlertAsync("Medarbejderen blev opdateret!");
 
             await OnUserUpdated.InvokeAsync();
+
+        }
+        catch (Refit.ApiException)
+        {
+            await PopupService.AlertAsync("Denne bruger er blevet ændret imens du lavede ændringer. Prøv igen");
+
+            await OnUserUpdated.InvokeAsync();
+
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Error updating user: {ex.Message}");
+
+            await PopupService.AlertAsync($"Der skete en uventet fejl: {ex.Message}");
+
         }
         finally
         {
