@@ -1,10 +1,13 @@
 ﻿using BetonBon.Application;
+using BetonBon.Application.Authentication;
 using BetonBon.Application.Users;
 using BetonBon.Application.Users.UserQueries;
 using BetonBon.Domain.Users;
+using BetonBon.Infrastructure.Authentication;
 using BetonBon.Infrastructure.Services;
 using BetonBon.Infrastructure.Users;
-using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Authentication;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BetonBon.Infrastructure
@@ -20,8 +23,9 @@ namespace BetonBon.Infrastructure
                 collection.AddScoped<IQueryDispatcher, QueryDispatcher>();
                 collection.AddScoped<ICommandDispatcher, CommandDispatcher>();
 
-                collection.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserDto>>, GetAllUsersQueryHandler>();
+                collection.AddScoped<IQueryHandler<GetAllUsersQuery, List<UserResponse>>, GetAllUsersQueryHandler>();
                 collection.AddScoped<IQueryHandler<LoginQuery, LoginResponse>, LoginQueryHandler>();
+                collection.AddScoped<IQueryHandler<RefreshTokenQuery, LoginResponse>, RefreshTokenQueryHandler>();
 
                 collection.AddScoped<IEmployeeNumberUniqueValidator, EmployeeNumberUniqueValidator>();
 

@@ -1,11 +1,11 @@
-﻿@using BetonBon.Client.Shared.ViewModels
+﻿@using BetonBon.Client.Shared.UserModels.ViewModels
 
 
 <div class="user-card">
     <div class="user-avatar">
         @GetInitials(User.Name)
     </div>
-    <div class="user-info">
+    <div class="user-info" @onclick="() => OnEditRequested.InvokeAsync(User.Id)">
         <h3>@User.Name</h3>
         <p>@User.Role</p>
         <p>Medarbejdernr: @User.EmployeeNumber</p>

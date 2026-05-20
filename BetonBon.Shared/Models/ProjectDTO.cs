@@ -2,12 +2,10 @@
 
 namespace BetonBon.Shared.Models
 {
-    public class ProjectDTO(int number, string name)
+    public sealed record ProjectDTO
     {
-        [JsonPropertyName("number")]
-        public int Number { get; set; } = number;
+        public required int Number { get; init; }
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = name;
+        public required string Name { get; init; }
     }
 }

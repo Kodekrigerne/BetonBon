@@ -1,9 +1,9 @@
 ﻿@using BetonBon.Client.Services
-@using BetonBon.Client.Shared.ViewModels
+@using BetonBon.Client.Shared.UserModels
 @using BetonBon.Shared.Models
-@using BetonBon.Shared.Models.TimeEntries
 @using BetonBon.Shared.Enums
 @using BetonBon.Client.RefitInterfaces
+@using BetonBon.Shared.Models.UserModels
 @inject IBetonBonApi Api
 @inject IEconomicRelayApi EconomicApi
 @inject PopupService PopupService
@@ -18,6 +18,23 @@
 
     <EditForm EditContext="@editContext" OnValidSubmit="HandleSubmit">
         <DataAnnotationsValidator />
+
+        <div class="form-group">
+
+            <label>Medarbejder (e-conomic)</label>
+            <InputSelect Value="createUserModel.EmployeeNumber"
+                         ValueChanged="(int v) => OnEmployeeChanged(v)"
+                         ValueExpression="() => createUserModel.EmployeeNumber"
+                         class="form-input">
+                <option value="0">Vælg medarbejder...</option>
+                @foreach (var employee in _employees)
+                {
+                    <option value="@employee.Number">@employee.Number - @employee.Name</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => createUserModel.EmployeeNumber)" class="validation-error" />
+        
+        </div>
 
         <div class="form-group">
 
@@ -46,23 +63,6 @@
                 }
             </InputSelect>
             <ValidationMessage For="@(() => createUserModel.Role)" class="validation-error" />
-        </div>
-
-        <div class="form-group">
-
-            <label>Medarbejder (e-conomic)</label>
-            <InputSelect Value="createUserModel.EmployeeNumber"
-                ValueChanged="(int v) => OnEmployeeChanged(v)"
-                ValueExpression="() => createUserModel.EmployeeNumber"
-                class="form-input">
-                    <option value="0">Vælg medarbejder...</option>
-                    @foreach (var employee in _employees)
-                    {
-                        <option value="@employee.Number">@employee.Number - @employee.Name</option>
-                    }
-            </InputSelect>
-            <ValidationMessage For="@(() => createUserModel.EmployeeNumber)" class="validation-error" />
-
         </div>
 
         <div class="form-actions">
@@ -123,15 +123,15 @@
         isSubmitting = true;
         try
         {
-            var newUser = new CreateUserDTO(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
+            var newUser = new CreateUserRequest(createUserModel.Username, createUserModel.Password, createUserModel.Role, createUserModel.EmployeeNumber);
 
             await Api.CreateUser(newUser);
 
             await OnUserCreated.InvokeAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            //Snackbar ?
+            await PopupService.AlertAsync("Brugeren blev ikke oprettet");
         }
         finally
         {

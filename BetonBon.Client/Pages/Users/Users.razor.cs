@@ -1,4 +1,6 @@
-﻿using BetonBon.Client.Shared.ViewModels;
+﻿using BetonBon.Client.Shared.UserModels;
+using BetonBon.Client.Shared.UserModels.ViewModels;
+using BetonBon.Shared.Models.UserModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
@@ -9,7 +11,9 @@ namespace BetonBon.Client.Pages.Users
     {
         private UserViewModel? selectedUser;
         private UpdateUserModel? editModel;
-        private List<UserViewModel>? users;
+        private List<UserViewModel>? userViewModels;
+
+        private List<UserResponse>? allUsers;
 
         private bool isCreating { get; set; } = false;
         private bool isEditing = false;
@@ -30,8 +34,8 @@ namespace BetonBon.Client.Pages.Users
 
         private async Task LoadUsers()
         {
-            var userList = await Api.GetAllUsers();
-            users = userList.Select(u => new UserViewModel(u.Id, u.Username, u.Role, u.EmployeeNumber)).ToList();
+            allUsers = await Api.GetAllUsers();
+            userViewModels = allUsers.Select(u => new UserViewModel(u.Id, u.Username, u.Role, u.EmployeeNumber)).ToList();
         }
 
         public async Task CloseUsers()
@@ -84,10 +88,9 @@ namespace BetonBon.Client.Pages.Users
 
                 await LoadUsers();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                //Snackbar
+                await PopupService.AlertAsync("Fejl: Brugeren blev ikke slettet.");
             }
         }
 
@@ -102,16 +105,19 @@ namespace BetonBon.Client.Pages.Users
             await LoadUsers();
         }
 
-        private async Task HandleEditUser(Guid id)
+        private void HandleEditUser(Guid id)
         {
-            selectedUser = users?.FirstOrDefault(u => u.Id == id);
-            if (selectedUser != null)
+            var user = allUsers?.FirstOrDefault(u => u.Id == id);
+            if (user != null)
             {
+                selectedUser = userViewModels?.FirstOrDefault(u => u.Id == id);
+
                 editModel = new UpdateUserModel
                 {
-                    Id = selectedUser.Id,
-                    Username = selectedUser.Name,
-                    Role = selectedUser.Role
+                    Id = user.Id,
+                    Username = user.Username,
+                    Role = user.Role,
+                    RowVersion = user.RowVersion
                 };
                 isEditing = true;
             }

@@ -1,4 +1,5 @@
 ﻿using BetonBon.Domain.Users;
+using BetonBon.Shared;
 
 namespace BetonBon.Application.Users
 {
@@ -17,10 +18,10 @@ namespace BetonBon.Application.Users
         {
             if (await _userRepository.UsernameExistsAsync(command.Username))
             {
-                throw new ArgumentException("Username already exists.", nameof(command.Username));
+                throw new DomainException("Username already exists.", nameof(command.Username));
             }
 
-            var user = _userFactory.Create(command.Username, command.Password, command.Role, command.EmployeeNumber);
+            var user = await _userFactory.CreateAsync(command.Username, command.Password, command.Role, command.EmployeeNumber);
 
             await _userRepository.AddUserAsync(user);
             await _userRepository.SaveChangesAsync();

@@ -10,10 +10,10 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
         public bool IsVisible { get; set; }
 
         [Parameter, EditorRequired]
-        public EventCallback<ProjectDTO> SelectProject { get; set; }
+        public EventCallback<ProjectDTO> OnProjectSelected { get; set; }
 
         [Parameter, EditorRequired]
-        public EventCallback OnCloseProjects { get; set; }
+        public EventCallback OnClose { get; set; }
 
         public ProjectDTO? SelectedProject;
 
@@ -36,20 +36,40 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Projects
         }
 
 
-        private async Task ClickProject(ProjectDTO selectedProject) => await SelectProject.InvokeAsync(selectedProject);
+        private async Task ClickProject(ProjectDTO selectedProject) => await OnProjectSelected.InvokeAsync(selectedProject);
 
         protected override async Task OnInitializedAsync()
         {
-            if (IsVisible == true && (_projects == null || _projects.Count == 0)) _projects = await _economicApi.GetAllProjectsAsync();
-            _filteredProjects = _projects;
+            if (IsVisible == true && (_projects == null || _projects.Count == 0))
+            {
+                try
+                {
+                    _projects = await _economicApi.GetAllProjectsAsync();
+                    _filteredProjects = _projects;
+                }
+                catch (Exception e)
+                {
+                    await _popUpService.AlertAsync($"Der var et problem med at hente projekter. Prøv at lukke af og på igen.\n\nFejlbesked: {e.Message}");
+                }
+            }
         }
 
         protected override async Task OnParametersSetAsync()
         {
-            if (IsVisible == true && (_projects == null || _projects.Count == 0)) _projects = await _economicApi.GetAllProjectsAsync();
-            _filteredProjects = _projects;
-        }
 
-        private async Task CloseProjects() => await OnCloseProjects.InvokeAsync();
+            if (IsVisible == true && (_projects == null || _projects.Count == 0))
+            {
+                try
+                {
+                    _projects = await _economicApi.GetAllProjectsAsync();
+                    _filteredProjects = _projects;
+                }
+                catch (Exception e)
+                {
+                    await _popUpService.AlertAsync($"Der var et problem med at hente projekter. Prøv at lukke af og på igen.\n\nFejlbesked: {e.Message}");
+                }
+            }        }
+
+        private async Task CloseProjects() => await OnClose.InvokeAsync();
     }
 }

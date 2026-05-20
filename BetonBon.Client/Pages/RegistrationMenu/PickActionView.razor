@@ -1,15 +1,18 @@
-﻿@using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
-@using BetonBon.Client.Shared.Components
-@using BetonBon.Shared.Models
+﻿
+@inject RegistrationState State
+@inject NavigationManager Navigation
 
+@page "/registration/menu"
 
-@if (SelectedProject != null && SelectedActivity != null)
-{
-        <FullScreenModal IsVisible="IsVisible"
-                         Title="Hvad vil du?"
-                         OnClose="@OnClosed"
-                         SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.BottomToTop"
-                         ZIndex="102">
+        <div class="action-page-header">
+            <button @onclick="OnClosed" class="action-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span class="action-page-btn-text">Tilbage</span>
+            </button>
+            <h1 class="action-page-title">Hvad vil du?</h1>
+        </div>
 
             @* Content *@
             <div class="content">
@@ -22,7 +25,7 @@
                         </div>
                         <div @onclick="@OnChangeProject">
                             <div class="context-label">Valgt projekt</div>
-                            <div class="context-value">@SelectedProject.Name</div>
+                            <div class="context-value">@(State.SelectedProject?.Name ?? "")</div>
                         </div>
                     </div>
                     <div class="divider"></div>
@@ -32,7 +35,7 @@
                         </div>
                         <div @onclick="@OnChangeActivity">
                             <div class="context-label">Valgt aktivitet</div>
-                            <div class="context-value">@SelectedActivity.Name</div>
+                            <div class="context-value">@(State.SelectedActivity?.Name ?? "")</div>
                         </div>
                     </div>
                 </div>
@@ -74,80 +77,48 @@
                         <div class="history-text">Se tidsregistreringer</div>
 
                     </div>
-
-                    <div @onclick="ViewMaterialHistory" class="history-item">
-                        <div class="context-icon" style="background-color:#f3f4f6; color:#6b7280;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h7"/><path d="M11 16h7"/><path d="M11 8h7"/><path d="M3 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M3 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
-                        </div>
-                        <div class="history-text">Se materialeregistreringer</div>
-                    </div>
-                </div>
-
             </div>
-        </FullScreenModal>
-}
+        </div>
+
 @code {
-    [Parameter, EditorRequired]
-    public ProjectDTO SelectedProject { get; set; }
 
-    [Parameter, EditorRequired]
-    public ActivityDTO SelectedActivity { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnClose { get; set; }
-
-    [Parameter, EditorRequired]
-    public bool IsVisible { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnViewMaterialHistory { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnViewTimeHistory { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnOpenTimeRegistration { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback OnOpenMaterialRegistration { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback ChangeProject { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback ChangeActivity { get; set; }
-
-    private async Task OnClosed()
+    protected override async Task OnInitializedAsync()
     {
-        await OnClose.InvokeAsync();
+        if (State.SelectedActivity == null || State.SelectedProject == null)
+        {
+            Navigation.NavigateTo("/registration");
+        }
     }
 
-    private async Task ViewMaterialHistory()
+    private void OnClosed()
     {
-        await OnViewMaterialHistory.InvokeAsync();
+        
+        Navigation.NavigateTo("/registration");
     }
 
-    private async Task ViewTimeHistory()
+    private void ViewTimeHistory()
     {
-        await OnViewTimeHistory.InvokeAsync();
+        Navigation.NavigateTo("/registration/time-entries");
     }
 
     private async Task OpenTimeRegistration()
     {
-        await OnOpenTimeRegistration.InvokeAsync();
+        Navigation.NavigateTo("/registration/time-entry");
     }
 
     private async Task OpenMaterialRegistration()
     {
-        await OnOpenMaterialRegistration.InvokeAsync();
+        Navigation.NavigateTo("/registration/materials");
     }
 
-    private async Task OnChangeProject()
+    private void OnChangeProject()
     {
-        await ChangeProject.InvokeAsync();
+        State.ClearState();
+        Navigation.NavigateTo("/registration");
     }
-    private async Task OnChangeActivity()
+    private void OnChangeActivity()
     {
-        await ChangeActivity.InvokeAsync();
+        State.SelectedActivity = null;
+        Navigation.NavigateTo("/registration");
     }
 }

@@ -3,7 +3,8 @@
 @using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Icons
-@using BetonBon.Shared.Models
+@using BetonBon.Client.Shared
+@using BetonBon.Shared.Models.Authentication
 @using Microsoft.AspNetCore.Components.Authorization
 
 @inject IBetonBonApi Api;
@@ -73,12 +74,12 @@
         try
         {
             var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
-            var response = await Api.LoginUser(loginCredentials);
+            var apiResponse = await Api.LoginUser(loginCredentials);
 
-            if (response != null)
+            if (apiResponse != null && apiResponse.Content != null)
             {
-                await localStorage.SaveAsync("bb_token", response.Token);
-                await localStorage.SaveAsync("bb_refresh_token", response.RefreshToken);
+                await localStorage.SaveAsync(BetonBonStorage.Token, apiResponse.Content.Token);
+                await localStorage.SaveAsync(BetonBonStorage.RefreshToken, apiResponse.Content.RefreshToken);
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 

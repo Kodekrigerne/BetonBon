@@ -1,7 +1,9 @@
 ﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Components
 @using BetonBon.Shared.Models
 @inject IEconomicRelayApi _economicApi
+@inject PopupService _popUp
 
 <FullScreenModal SelectedAnimationStyle="FullScreenModal.ModalAnimationStyles.RightToLeft"
                  ZIndex="130"
@@ -46,7 +48,16 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (IsVisible == true && _materials == null) _materials = await _economicApi.GetAllMaterialsAsync();
+        if (IsVisible == true && _materials == null) 
+        {
+            try {
+                _materials = await _economicApi.GetAllMaterialsAsync();
+            }
+            catch (Exception ex)
+            {
+                await _popUp.AlertAsync($"Der var et problem med at hente materialer. Prøv at lukke af og på igen.\n\nFejlbesked: {ex.Message}");
+            }
+        }
     }
 
     private async Task OnClose()

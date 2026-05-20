@@ -1,4 +1,6 @@
 ﻿using BetonBon.Domain.Users;
+using BetonBon.Shared.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure.Users
 {
@@ -11,9 +13,9 @@ namespace BetonBon.Infrastructure.Users
             _db = db;
         }
 
-        public bool ValidateUniqueEmployeeNumber(int employeeNumber)
+        public async Task<bool> ValidateUniqueEmployeeNumberAsync(int employeeNumber)
         {
-            return _db.Users.Any(u => u.EmployeeNumber == employeeNumber);
+            return await _db.Users.AsNoTracking().Where(u => u.Role != UserRole.Admin).AnyAsync(u => u.EmployeeNumber == employeeNumber);
         }
     }
 }

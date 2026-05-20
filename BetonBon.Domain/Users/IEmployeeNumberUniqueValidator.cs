@@ -2,6 +2,6 @@
 {
     public interface IEmployeeNumberUniqueValidator
     {
-        bool ValidateUniqueEmployeeNumber(int employeeNumber);
+        Task<bool> ValidateUniqueEmployeeNumberAsync(int employeeNumber);
     }
 }

@@ -1,0 +1,186 @@
+﻿.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    height: 100dvh;
+    font-family: sans-serif;
+    background-color: #f9fafb;
+
+    width:100%;
+    overflow-x:hidden;
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #f9fafb;
+    min-height: 0;
+}
+
+.header-wrapper {
+    max-width: 430px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.content-wrapper {
+    max-width: 430px;
+    margin: 0 auto;
+    width: 100%;
+    min-height: 100%;
+    position: relative;
+    padding:0 1rem;
+    box-sizing: border-box;
+}
+
+.bottom-nav {
+    background-color: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.75rem;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 20;
+    max-width: 430px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    width: 5rem;
+    transition: color 0.2s ease-in-out;
+    text-decoration: none;
+}
+
+    .nav-link.active {
+        color: #2563eb;
+    }
+
+    .nav-link.inactive {
+        color: #9ca3af;
+    }
+
+        .nav-link.inactive:active {
+            color: #4b5563;
+        }
+
+.nav-text {
+    font-size: 0.75rem;
+    margin-top: 0.375rem;
+    font-weight: bold;
+}
+
+/* Header */
+.header {
+    background-color: white;
+    padding: 0.5rem, 1rem, 0.5rem, 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    flex-shrink: 0;
+}
+
+.header-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 2rem;
+    height: 2rem;
+    margin-left:1rem;
+}
+
+.header-info {
+    width: 8rem;
+    height: 4rem;
+}
+
+    .header-info p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+.icon-btn {
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right:1rem;
+}
+
+
+/* Settings Dropdown Container */
+.settings-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+/* The Floating Menu */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem); /* Just below the cogwheel */
+    right: 0; /* Anchors menu to the right edge! */
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    min-width: 9.5rem;
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* Menu Items (Mobile Touch Targets) */
+.dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background-color 0.2s;
+    box-sizing: border-box; /* Prevents padding from breaking width */
+}
+
+/* Logout Specific Styling */
+.logout-item {
+    color: #ef4444;
+}
+
+    .logout-item:active {
+        background-color: #fef2f2;
+    }
+
+.dropdown-overlay {
+    position: fixed; /* Locks it to the browser window */
+    top: 0;
+    left: 0;
+    width: 100vw; /* 100% of the viewport width */
+    height: 100vh; /* 100% of the viewport height */
+    z-index: 90; /* High enough to cover the app, but... */
+    cursor: default; /* Keeps the normal mouse pointer */
+}
+

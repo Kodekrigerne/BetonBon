@@ -1,0 +1,96 @@
+﻿@using BetonBon.Client.RefitInterfaces
+@using BetonBon.Client.Services
+@inject IEconomicRelayApi EconomicApi
+@inject PopupService PopupService
+@inject RegistrationState State
+@inject NavigationManager Navigation
+@page "/registration/time-entry"
+
+     <div class="action-page-header">
+            <button @onclick="OnClosed" class="action-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span class="action-page-btn-text">Tilbage</span>
+            </button>
+            <h1 class="action-page-title">Registrer timer</h1>
+        </div>
+
+        <div class="content">
+
+            @* Context Card *@
+            <div class="context-card">
+                <div class="context-row">
+                    <div class="context-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="context-label">Valgt projekt</div>
+                    <div class="context-value">@(State.SelectedProject?.Name ?? "")</div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="context-row">
+                    <div class="context-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h7" /><path d="M11 16h7" /><path d="M11 8h7" /><path d="M3 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M3 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M3 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+                    </div>
+                    <div>
+                        <div class="context-label">Valgt aktivitet</div>
+                        <div class="context-value">@(State.SelectedActivity?.Name ?? "")</div>
+                    </div>
+                </div>
+            </div>
+
+            @* Time Entry Form *@
+            <div class="te-form-container">
+
+                <div class="te-form-group">
+                    <label class="te-label">Dato</label>
+                    <input type="date" class="te-input" value="@selectedDate.ToString("yyyy-MM-dd")" @onchange="OnDateChanged" />
+                </div>
+
+                <div class="te-form-group">
+                    <label class="te-label">Tid</label>
+                    <div class="te-time-row">
+                        <div class="te-time-field">
+                            <input type="number" class="te-input te-time-input" inputmode="numeric"
+                                   min="0" max="24" step="1"
+                                   value="@hours" @onchange="OnHoursChanged"
+                                   placeholder="0" />
+                            <span class="te-time-suffix">timer</span>
+                        </div>
+                        <div class="te-time-field">
+                            <input type="number" class="te-input te-time-input" inputmode="numeric"
+                                   min="0" max="59" step="5"
+                                   value="@minutes" @onchange="OnMinutesChanged"
+                                   placeholder="0" />
+                            <span class="te-time-suffix">min</span>
+                        </div>
+                    </div>
+                    @if (showValidation && hours == 0 && minutes == 0)
+                    {
+                        <span class="te-validation-error">Angiv venligst tid</span>
+                    }
+                </div>
+
+                <div class="te-form-group">
+                    <label class="te-label">Beskrivelse <span style="color: #9ca3af; font-weight: normal;">(valgfri)</span></label>
+                    <textarea class="te-input te-textarea" rows="3" @bind="description" placeholder="Evt. bemærkninger..."></textarea>
+                </div>
+
+                <div class="te-form-actions">
+                    <button class="te-btn-primary" @onclick="HandleSubmit" disabled="@isSubmitting">
+                        @if (isSubmitting)
+                        {
+                            <span>Gemmer...</span>
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                            <span>Gem tidsregistrering</span>
+                        }
+                    </button>
+                </div>
+
+            </div>
+        </div>

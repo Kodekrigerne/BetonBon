@@ -1,4 +1,6 @@
 ﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
+using BetonBon.Shared.Models.DraftEntries;
 using BetonBon.Shared.Models.TimeEntries;
 using Refit;
 
@@ -7,7 +9,7 @@ namespace BetonBon.Client.RefitInterfaces
     public interface IEconomicRelayApi
     {
         [Get("/api/projects")]
-        Task<List<ProjectDTO>> GetAllProjectsAsync();
+        Task<List<ProjectDTO>> GetAllProjectsAsync(CancellationToken cancellation = default);
 
         [Get("/api/activitiesByProjectNumber")]
         Task<List<ActivityDTO>> GetAllActivitiesByProjectAsync(int projectNumber);
@@ -23,5 +25,8 @@ namespace BetonBon.Client.RefitInterfaces
 
         [Get("/api/employees")]
         Task<CursorResults<Employee>> GetEmployeesAsync([Query] string? cursor = null, CancellationToken cancellationToken = default);
+
+        [Get("/api/timeEntries")]
+        Task<List<TimeEntry>> GetTimeEntriesAsync([Query] int projectNumber, int activityNumber, int employeeNumber, CancellationToken cancellation = default);
     }
 }

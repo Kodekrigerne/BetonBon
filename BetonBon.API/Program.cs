@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Refit;
+using Scalar.AspNetCore;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -17,7 +18,7 @@ namespace BetonBon.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -107,16 +108,22 @@ namespace BetonBon.API
             }));
 
             builder.Services.AddOpenApi();
-
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
+            if (app.Environment.EnvironmentName != "Testing")
+            {
+                await app.ApplyMigrationsAndSeedAdmin(adminUsername!, adminPassword!);
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
