@@ -1,9 +1,6 @@
 name: Pull Request Tests
 
 on:
-  push:
-    branches:
-      - 'tests/api-tests'
   pull_request:
     branches:
       - '**'
