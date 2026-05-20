@@ -1,4 +1,5 @@
 ﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
 
 namespace BetonBon.Client.Pages.StopwatchRegistration
 {

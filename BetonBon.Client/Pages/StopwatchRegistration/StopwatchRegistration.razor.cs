@@ -4,6 +4,7 @@ using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
 using BetonBon.Client.Shared;
 using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;

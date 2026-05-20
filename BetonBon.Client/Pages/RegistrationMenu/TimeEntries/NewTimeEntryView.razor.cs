@@ -7,21 +7,6 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
 {
     public partial class NewTimeEntryView
     {
-        [Parameter, EditorRequired]
-        public ProjectDTO Project { get; set; } = default!;
-
-        [Parameter, EditorRequired]
-        public ActivityDTO Activity { get; set; } = default!;
-
-        [Parameter, EditorRequired]
-        public bool IsVisible { get; set; }
-
-        [Parameter, EditorRequired]
-        public EventCallback OnClose { get; set; }
-
-        [Parameter]
-        public EventCallback OnTimeEntryCreated { get; set; }
-
         [CascadingParameter]
         private Task<AuthenticationState> AuthStateTask { get; set; } = null!;
 
@@ -67,6 +52,13 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
             return $"{minutes} minutter";
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            if (State.SelectedProject == null || State.SelectedActivity == null)
+            {
+                Navigation.NavigateTo("/registration");
+            }
+        }
         private async Task HandleSubmit()
         {
             showValidation = true;
@@ -93,8 +85,8 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
 
                 var timeEntry = new TimeEntry
                 {
-                    ProjectNumber = Project.Number,
-                    ActivityNumber = Activity.Number,
+                    ProjectNumber = State.SelectedProject.Number,
+                    ActivityNumber = State.SelectedActivity.Number,
                     EmployeeNumber = employeeNumber,
                     Date = new DateTimeOffset(DateTime.SpecifyKind(selectedDate, DateTimeKind.Utc), TimeSpan.Zero),
                     NumberOfHours = TotalHours,
@@ -107,7 +99,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
                 {
                     await PopupService.AlertAsync("Tidsregistrering gemt!");
                     ResetForm();
-                    await OnTimeEntryCreated.InvokeAsync();
+                    Navigation.NavigateTo("/registration/menu");
                 }
                 else
                 {
@@ -136,7 +128,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
         private async Task OnClosed()
         {
             ResetForm();
-            await OnClose.InvokeAsync();
+            Navigation.NavigateTo("/registration/menu");
         }
     }
 }

@@ -8,5 +8,6 @@
         public required DateTimeOffset Date { get; init; }
         public string? Text { get; init; }
         public required double NumberOfHours { get; init; }
+        public bool IsApproved { get; init; }
     }
 }

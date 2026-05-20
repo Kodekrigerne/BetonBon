@@ -1,4 +1,5 @@
 ﻿using BetonBon.Shared.Models;
+using BetonBon.Shared.Models.Activities;
 using Microsoft.AspNetCore.Components;
 
 namespace BetonBon.Client.Pages.RegistrationMenu.Activities
@@ -44,8 +45,18 @@ namespace BetonBon.Client.Pages.RegistrationMenu.Activities
 
         protected override async Task OnParametersSetAsync()
         {
-            if (SelectedProject != null && IsVisible == true && (_activities == null || _activities.Count == 0)) _activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
-            _filteredActivities = _activities;
+            if (SelectedProject != null && IsVisible == true && (_activities == null || _activities.Count == 0))
+            {
+                try
+                {
+                    _activities = await _economicApi.GetAllActivitiesByProjectAsync(SelectedProject.Number);
+                    _filteredActivities = _activities;
+                }
+                catch (Exception ex)
+                {
+                    await _popUpService.AlertAsync($"Der var et problem med at hente aktiviteter. Prøv at lukke af og på igen.\n\nFejlbesked: {ex.Message}");
+                }
+            }
         }
 
     }

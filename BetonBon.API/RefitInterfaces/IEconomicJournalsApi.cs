@@ -1,4 +1,4 @@
-﻿using BetonBon.Shared.Models;
+﻿using BetonBon.Shared.Models.DraftEntries;
 using Refit;
 
 namespace BetonBon.API.RefitInterfaces
@@ -7,9 +7,9 @@ namespace BetonBon.API.RefitInterfaces
     {
 
         [Post("/draft-entries")]
-        Task<EntryNumberResponseDTO> PostNewEntryAsync(NewDraftEntryDTO newDraftEntry);
+        Task<EntryNumberResponseDTO> PostNewEntryAsync(NewDraftEntryDTO newDraftEntry, CancellationToken cancellationToken = default);
 
         [Post("/journals/1/bookdraftentries")]
-        Task<HttpResponseMessage> BookDraftEntryAsync(BookEntryNumberDTO entryNumberDTO);
+        Task<HttpResponseMessage> BookDraftEntryAsync(BookEntryNumberDTO entryNumberDTO, CancellationToken cancellationToken = default);
     }
 }
