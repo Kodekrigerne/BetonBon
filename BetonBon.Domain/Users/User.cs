@@ -61,7 +61,7 @@ namespace BetonBon.Domain.Users
 
             if (username.Length > 50)
             {
-                throw new DomainException("Username cannot be longer than 20 characters.", nameof(username));
+                throw new DomainException("Username cannot be longer than 50 characters.", nameof(username));
             }
         }
 
