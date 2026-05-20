@@ -3,6 +3,7 @@
 @using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
 @using BetonBon.Client.Shared.Icons
+@using BetonBon.Client.Shared
 @using BetonBon.Shared.Models.Authentication
 @using Microsoft.AspNetCore.Components.Authorization
 
@@ -77,8 +78,8 @@
 
             if (response != null)
             {
-                await localStorage.SaveAsync("bb_token", response.Token);
-                await localStorage.SaveAsync("bb_refresh_token", response.RefreshToken);
+                await localStorage.SaveAsync(BetonBonStorage.Token, response.Token);
+                await localStorage.SaveAsync(BetonBonStorage.RefreshToken, response.RefreshToken);
 
                 var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 

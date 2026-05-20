@@ -1,5 +1,6 @@
 ﻿@using BetonBon.Client.Auth
 @using BetonBon.Client.Services
+@using BetonBon.Client.Shared
 @using BetonBon.Client.Shared.Icons
 @using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
@@ -77,9 +78,9 @@
 
     public async Task Logout()
     {
-        await localStorage.RemoveAsync("bb_token");
-        await localStorage.RemoveAsync("bb_refresh_token");
-        await localStorage.RemoveAsync("bb_timer");
+        await localStorage.RemoveAsync(BetonBonStorage.Token);
+        await localStorage.RemoveAsync(BetonBonStorage.RefreshToken);
+        await localStorage.RemoveAsync(BetonBonStorage.Timer);
 
         var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using BetonBon.Client.Services;
+using BetonBon.Client.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace BetonBon.Client.Pages.Home
@@ -30,7 +31,7 @@ namespace BetonBon.Client.Pages.Home
         {
             if (firstRender)
             {
-                var json = await LocalStorage.LoadAsync("bb_timer");
+                var json = await LocalStorage.LoadAsync(BetonBonStorage.Timer);
                 if (json != null)
                 {
                     var session = JsonSerializer.Deserialize<StopwatchSession>(json)
@@ -84,9 +85,6 @@ namespace BetonBon.Client.Pages.Home
             _session = null;
 
             NavigationManager.NavigateTo($"/stopwatch-registration");
-
-            //TODO: Flyt dette til efter timer er registrerede
-            //await JS.InvokeVoidAsync("storage.remove", "bb_timer");
         }
 
         private async Task PauseTimer()
@@ -138,14 +136,14 @@ namespace BetonBon.Client.Pages.Home
         private async Task SaveSession()
         {
             var json = JsonSerializer.Serialize(_session);
-            await LocalStorage.SaveAsync("bb_timer", json);
+            await LocalStorage.SaveAsync(BetonBonStorage.Timer, json);
         }
 
         public async Task ResetTimer()
         {
             var confirmed = await PopupService.ConfirmAsync("Nulstil timer?");
             if (!confirmed) return;
-            await LocalStorage.RemoveAsync("bb_timer");
+            await LocalStorage.RemoveAsync(BetonBonStorage.Timer);
             StopTicking();
             _session = null;
             _stopwatch = null;

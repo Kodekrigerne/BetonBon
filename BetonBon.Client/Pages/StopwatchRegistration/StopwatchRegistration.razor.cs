@@ -2,6 +2,7 @@
 using BetonBon.Client.Pages.Home;
 using BetonBon.Client.RefitInterfaces;
 using BetonBon.Client.Services;
+using BetonBon.Client.Shared;
 using BetonBon.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -50,7 +51,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
         {
             if (firstRender)
             {
-                var json = await LocalStorage.LoadAsync("bb_timer")
+                var json = await LocalStorage.LoadAsync(BetonBonStorage.Timer)
                     ?? throw new InvalidOperationException("Invalid state: Navigated to stopwatch-registration with no session recorded.");
 
                 _session = JsonSerializer.Deserialize<StopwatchSession>(json)
@@ -131,7 +132,7 @@ namespace BetonBon.Client.Pages.StopwatchRegistration
 
             if (responses.All(r => !r.IsSuccessful)) return;
 
-            await LocalStorage.RemoveAsync("bb_timer");
+            await LocalStorage.RemoveAsync(BetonBonStorage.Timer);
             NavigationManager.NavigateTo("/");
         }
 
