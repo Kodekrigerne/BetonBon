@@ -1,6 +1,7 @@
 ﻿@using BetonBon.Client.Pages.RegistrationMenu.Activities
 @using BetonBon.Client.Pages.RegistrationMenu.Projects
 @using BetonBon.Client.Pages.RegistrationMenu.RegisterMaterial
+@using BetonBon.Client.Pages.RegistrationMenu.TimeEntries
 @using BetonBon.Client.Shared.Components
 @using BetonBon.Client.Shared.Icons
 @using BetonBon.Shared.Models
@@ -35,6 +36,12 @@
                       OnChangeActivity="ReturnToActivities"
                       OnChangeProject="ReturnToProjects"></RegisterMaterialView>
 
+<NewTimeEntryView Project="SelectedProject"
+                  Activity="SelectedActivity"
+                  IsVisible="TimeRegistrationIsVisible"
+                  OnClose="CloseTimeRegistration"
+                  OnTimeEntryCreated="CloseTimeRegistration" />
+
 @code {
 
     private ProjectDTO? SelectedProject;
@@ -46,6 +53,7 @@
     private bool ProjectsIsVisible = true;
     private bool ActivitiesIsVisible = false;
     private bool RegistrationMenuIsVisible = false;
+    private bool TimeRegistrationIsVisible = false;
 
     private void SelectProject(ProjectDTO project)
     {
@@ -105,7 +113,7 @@
 
     private void OpenTimeRegistration()
     {
-
+        TimeRegistrationIsVisible = true;
     }
 
     private void OpenMaterialRegistration()
@@ -116,6 +124,11 @@
     private void CloseMaterialRegistration()
     {
         MaterialRegistrationIsVisible = false;
+    }
+
+    private void CloseTimeRegistration()
+    {
+        TimeRegistrationIsVisible = false;
     }
 
 }
