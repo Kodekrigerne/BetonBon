@@ -1,5 +1,6 @@
 ﻿using BetonBon.Application.Users;
 using BetonBon.Domain.Users;
+using BetonBon.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetonBon.Infrastructure.Users
@@ -26,6 +27,14 @@ namespace BetonBon.Infrastructure.Users
 
         async Task IUserRepository.SaveChangesAsync()
         {
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new ConcurrencyException("Data blev ændret af en anden bruger.");
+            }
             await _dbContext.SaveChangesAsync();
         }
 
@@ -40,6 +49,13 @@ namespace BetonBon.Infrastructure.Users
             return await _dbContext.Users
                 .FindAsync(id)
                 ?? throw new KeyNotFoundException($"User with ID {id} not found.");
+        }
+
+        void IUserRepository.Update(User user, uint rowVersion)
+        {
+            _dbContext.Entry(user)
+                .Property(u => u.RowVersion)
+                .OriginalValue = rowVersion;
         }
     }
 }

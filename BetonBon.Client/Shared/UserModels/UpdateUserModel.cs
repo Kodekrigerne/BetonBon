@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BetonBon.Shared.Enums;
+﻿using BetonBon.Shared.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BetonBon.Client.Shared.UserModels
 {
-    //TODO: Det her er da vidst ikke en view model?
     public class UpdateUserModel
     {
         public Guid Id { get; set; }
@@ -15,5 +14,7 @@ namespace BetonBon.Client.Shared.UserModels
 
         [Required]
         public UserRole Role { get; set; }
+
+        public uint RowVersion { get; set; }
     }
 }
