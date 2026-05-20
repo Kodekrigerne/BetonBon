@@ -13,6 +13,9 @@ namespace BetonBon.Client.Pages.Home
         [Inject]
         private LocalStorage LocalStorage { get; set; } = null!;
 
+        [Inject]
+        private PopupService PopupService { get; set; } = null!;
+
         private bool _initialized = false;
         private enum TimerState { NotStarted, Paused, Running }
         private TimerState _timerState = TimerState.NotStarted;
@@ -136,6 +139,18 @@ namespace BetonBon.Client.Pages.Home
         {
             var json = JsonSerializer.Serialize(_session);
             await LocalStorage.SaveAsync("bb_timer", json);
+        }
+
+        public async Task ResetTimer()
+        {
+            var confirmed = await PopupService.ConfirmAsync("Nulstil timer?");
+            if (!confirmed) return;
+            await LocalStorage.RemoveAsync("bb_timer");
+            StopTicking();
+            _session = null;
+            _stopwatch = null;
+            _timerState = TimerState.NotStarted;
+            StateHasChanged();
         }
 
         public async ValueTask DisposeAsync()
