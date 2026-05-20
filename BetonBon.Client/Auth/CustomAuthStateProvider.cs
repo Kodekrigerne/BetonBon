@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using BetonBon.Client.Services;
+using BetonBon.Client.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
 
@@ -23,7 +24,7 @@ namespace BetonBon.Client.Auth
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _localStorage.LoadAsync("bb_token");
+            var token = await _localStorage.LoadAsync(BetonBonStorage.Token);
 
             if (string.IsNullOrWhiteSpace(token))
             {
