@@ -96,7 +96,7 @@ namespace BetonBon.Client.Pages.RegistrationMenu.TimeEntries
                     ProjectNumber = Project.Number,
                     ActivityNumber = Activity.Number,
                     EmployeeNumber = employeeNumber,
-                    Date = new DateTimeOffset(selectedDate, TimeSpan.Zero),
+                    Date = new DateTimeOffset(DateTime.SpecifyKind(selectedDate, DateTimeKind.Utc), TimeSpan.Zero),
                     NumberOfHours = TotalHours,
                     Text = string.IsNullOrWhiteSpace(description) ? null : description.Trim()
                 };
