@@ -19,6 +19,6 @@ namespace BetonBon.Client.RefitInterfaces
         Task DeleteUser(Guid id);
 
         [Post("/login")]
-        Task<IApiResponse<LoginResponse>?> LoginUser(UserLoginDto userToLogin);
+        Task<IApiResponse<LoginResponse>> LoginUser(UserLoginDto userToLogin);
     }
 }

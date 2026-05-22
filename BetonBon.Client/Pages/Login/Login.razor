@@ -71,24 +71,21 @@
     {
         ErrorMessage = null;
 
-        try
+        var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
+        var apiResponse = await Api.LoginUser(loginCredentials);
+
+        if (apiResponse.IsSuccessful)
         {
-            var loginCredentials = new UserLoginDto(UserLogin.Username, UserLogin.Password);
-            var apiResponse = await Api.LoginUser(loginCredentials);
+            await localStorage.SaveAsync(BetonBonStorage.Token, apiResponse.Content.Token);
+            await localStorage.SaveAsync(BetonBonStorage.RefreshToken, apiResponse.Content.RefreshToken);
 
-            if (apiResponse != null && apiResponse.Content != null)
-            {
-                await localStorage.SaveAsync(BetonBonStorage.Token, apiResponse.Content.Token);
-                await localStorage.SaveAsync(BetonBonStorage.RefreshToken, apiResponse.Content.RefreshToken);
+            var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
 
-                var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationStatus();
 
-                await customAuthStateProvider.UpdateAuthenticationStatus();
-
-                NavigationManager.NavigateTo("/");
-            }
+            NavigationManager.NavigateTo("/");
         }
-        catch (Exception)
+        else
         {
             ErrorMessage = "Ugyldigt brugernavn eller adgangskode.";
         }
