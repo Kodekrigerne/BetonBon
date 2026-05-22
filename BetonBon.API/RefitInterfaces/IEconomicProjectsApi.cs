@@ -7,7 +7,7 @@ namespace BetonBon.API.RefitInterfaces
 {
     public interface IEconomicProjectsApi
     {
-        [Get("/Projects")]
+        [Get("/Projects?filter=isClosed$eq:false")]
         Task<CursorResults<ProjectDTO>> GetProjectsAsync(CancellationToken cancellation = default);
 
         [Get("/project-activities?filter=projectNumber$eq:{projectnumber}")]
