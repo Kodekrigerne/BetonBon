@@ -2,12 +2,15 @@
 
 @using BetonBon.Client.RefitInterfaces
 @using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Components.Headers
 @using BetonBon.Shared.Enums
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = nameof(UserRole.Admin))]
 
 @inject IBetonBonApi Api
 @inject PopupService PopupService
+
+<StandardHeader Title="Brugere" ShowBack="true"/>
 
 <div class="users-page-container">
     <div class="users-header">
