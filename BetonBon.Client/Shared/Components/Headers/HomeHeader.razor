@@ -1,0 +1,19 @@
+﻿@using BetonBon.Client.Services
+@inject HeaderService Header
+@implements IDisposable
+
+@code {
+    protected override void OnInitialized()
+    {
+        Header.Set(
+            left: @<img src="/BbLogoUdenNavn.png" class="home-header-avatar" />,
+            center: @<img src="/HolmsgaardsLogo.png" class="home-header-logo" />,
+            right: @<SettingsDropdown />
+        );
+    }
+
+    public void Dispose()
+    {
+        Header.Clear();
+    }
+}

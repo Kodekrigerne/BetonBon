@@ -22,26 +22,6 @@
         padding-right: 5rem;
     }
 
-.back-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.5rem;
-    margin-left: -0.5rem;
-    color: #2563eb;
-    font-weight: 700;
-    font-size: 1.125rem;
-    background: #eff6ff;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-}
-
-.back-icon {
-    font-size: 1.75rem;
-    line-height: 1;
-}
-
 .allocate-content {
     flex: 1;
     overflow-y: auto;
