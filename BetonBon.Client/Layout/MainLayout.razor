@@ -8,35 +8,26 @@
 @inject IJSRuntime jsRuntime
 @inject AuthenticationStateProvider AuthStateProvider
 @inject LocalStorage localStorage
+@inject HeaderService Header
 
 <div class="layout-container">
 
-    @* Header *@
-    <div class="header-wrapper">
-    <div class="header">
-            <img src="/BbLogoUdenNavn.png" class="avatar"/>
-            
-            <img src="/HolmsgaardsLogo.png" class="header-info"/>
-        
-        <div class="settings-dropdown-container">
-            <button class="icon-btn" @onclick="@ToggleDropdown">
-                <CogWheelIcon />
-            </button>
-            
-            @if (IsDropdownVisible)
-            {
-                <div class="dropdown-overlay" @onclick="() => IsDropdownVisible = false"></div>
-                
-                <div class="dropdown-menu">
-                    <button class="dropdown-item logout-item" @onclick="@Logout">
-                        <LogoutIcon/>
-                        Log ud
-                    </button>
+    @if (Header.Left != null || Header.Center != null || Header.Right != null)
+    {
+        <div class="header-wrapper">
+            <div class="header">
+                <div class="header-slot header-left">
+                    @Header.Left
                 </div>
-            }
+                <div class="header-slot header-center">
+                    @Header.Center
+                </div>
+                <div class="header-slot header-right">
+                    @Header.Right
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
+    }
 
     @* Main Content Area *@
     <div class="main-content">
@@ -54,7 +45,7 @@
             </svg>
             <span class="nav-text">Hjem</span>
         </a>
-            
+
         <a href="/more" class="nav-link inactive">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="1"></circle>
@@ -67,23 +58,14 @@
 </div>
 
 
-@code{
-
-    public bool IsDropdownVisible = false;
-
-    public void ToggleDropdown()
+@code {
+    protected override void OnInitialized()
     {
-        IsDropdownVisible = !IsDropdownVisible;
+        Header.OnChange += StateHasChanged;
     }
 
-    public async Task Logout()
+    public void Dispose()
     {
-        await localStorage.RemoveAsync(BetonBonStorage.Token);
-        await localStorage.RemoveAsync(BetonBonStorage.RefreshToken);
-        await localStorage.RemoveAsync(BetonBonStorage.Timer);
-
-        var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
-
-        await customAuthStateProvider.UpdateAuthenticationStatus();
+        Header.OnChange -= StateHasChanged;
     }
 }
