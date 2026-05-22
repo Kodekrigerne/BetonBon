@@ -1,19 +1,19 @@
 ﻿.layout-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     height: 100dvh;
+    width: 100%;
+    overflow: hidden;
     font-family: sans-serif;
     background-color: #f9fafb;
-    width: 100%;
-    overflow-x: hidden;
 }
 
 .main-content {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch; 
     background-color: #f9fafb;
-    min-height: 0;
+    min-height: 0; 
 }
 
 .header-wrapper {
@@ -21,6 +21,7 @@
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
+    flex-shrink:0;
 }
 
 .content-wrapper {
@@ -42,11 +43,10 @@
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
     box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
     flex-shrink: 0;
-    position: relative;
-    z-index: 20;
     max-width: 430px;
     margin: 0 auto;
     width: 100%;
+    z-index: 20;
 }
 
 .nav-link {

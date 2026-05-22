@@ -5,9 +5,9 @@ name: Deploy Docker Compose
 on:
   push:
     branches:
-      - main # Ret dette hvis din default branch hedder f.eks. 'master'
+      - main 
     paths:
-      - 'docker-compose.prod.yml' # Ret stien, hvis filen ligger i en undermappe, f.eks. 'app/docker-compose.yml'
+      - 'docker-compose.prod.yml' 
 
 # Jobs to run
 jobs:
@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            # Gå til mappen på din VPS, hvor din docker-compose fil ligger
+            # Gå til mappen på VPS, hvor docker-compose filen ligger
             cd /root/betonbon
             
             # Vi tjekker om filen eksisterer for at undgå fejl ved allerførste deploy

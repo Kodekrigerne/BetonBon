@@ -1,8 +1,11 @@
 ﻿@page "/administration"
 @using BetonBon.Client.Pages.Home
+@using BetonBon.Client.Shared.Components.Headers
 @using BetonBon.Shared.Enums
 @attribute [Authorize(Roles = nameof(UserRole.Admin))]
 @inject NavigationManager _nav
+
+<StandardHeader Title="Administration" ShowBack="true"/>
 
 <div class="admin-container">
     <h1>Administration</h1>
