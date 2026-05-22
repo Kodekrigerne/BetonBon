@@ -1,0 +1,107 @@
+﻿@using BetonBon.Client.Auth
+@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Icons
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject LocalStorage localStorage
+
+<div class="settings-dropdown-container">
+    <button class="icon-btn" @onclick="ToggleDropdown">
+        <CogWheelIcon />
+    </button>
+
+    @if (isDropdownVisible)
+    {
+        <div class="dropdown-overlay" @onclick="() => isDropdownVisible = false"></div>
+        <div class="dropdown-menu">
+            <button class="dropdown-item logout-item" @onclick="Logout">
+                <LogoutIcon />
+                Log ud
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isDropdownVisible;
+
+    private void ToggleDropdown()
+    {
+        isDropdownVisible = !isDropdownVisible;
+    }
+
+    private async Task Logout()
+    {
+        await localStorage.RemoveAsync(BetonBonStorage.Token);
+        await localStorage.RemoveAsync(BetonBonStorage.RefreshToken);
+        await localStorage.RemoveAsync(BetonBonStorage.Timer);
+
+        var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationStatus();
+    }
+}
+
+<style>
+    .settings-dropdown-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .icon-btn {
+        color: #6b7280;
+        background-color: #f3f4f6;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        right: 0;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        min-width: 9.5rem;
+        z-index: 100;
+        overflow: hidden;
+    }
+
+    .dropdown-item {
+        width: 100%;
+        text-align: left;
+        padding: 1rem 1.25rem;
+        background: transparent;
+        border: none;
+        font-size: 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: background-color 0.2s;
+        box-sizing: border-box;
+    }
+
+    .logout-item {
+        color: #ef4444;
+    }
+
+        .logout-item:active {
+            background-color: #fef2f2;
+        }
+
+    .dropdown-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 90;
+        cursor: default;
+    }
+</style>

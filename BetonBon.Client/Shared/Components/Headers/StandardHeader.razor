@@ -1,0 +1,69 @@
+﻿@using BetonBon.Client.Services
+@inject HeaderService Header
+@inject IJSRuntime JS
+@implements IDisposable
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool ShowBack { get; set; }
+    [Parameter] public RenderFragment? Right { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Header.Set(
+            left: ShowBack? @<button class="std-header-back-btn" @onclick="GoBack">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span class="std-header-btn-text">Tilbage</span>
+            </button> : null,
+            center: Title != null ? @<h1 class="std-header-title">@Title</h1> : null,
+    right: Right
+        );
+    }
+
+    private async Task GoBack()
+    {
+        await JS.InvokeVoidAsync("history.back");
+    }
+
+    public void Dispose()
+    {
+        Header.Clear();
+    }
+}
+
+<style>
+    .std-header-back-btn {
+        padding: 0.5rem;
+        margin-left: -0.5rem;
+        color: #2563eb;
+        background-color: #eff6ff;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .std-header-back-btn:active {
+            background-color: #dbeafe;
+        }
+
+    .std-header-btn-text {
+        font-weight: bold;
+        margin-left: 0.25rem;
+        font-size: 1.125rem;
+    }
+
+    .std-header-title {
+        margin: 0;
+        font-weight: bold;
+        font-size: 1.25rem;
+        color: #111827;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
