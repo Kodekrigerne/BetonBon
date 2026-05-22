@@ -1,0 +1,42 @@
+﻿@using BetonBon.Client.Auth
+@using BetonBon.Client.Services
+@using BetonBon.Client.Shared.Icons
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject LocalStorage localStorage
+
+<div class="settings-dropdown-container">
+    <button class="icon-btn" @onclick="ToggleDropdown">
+        <CogWheelIcon />
+    </button>
+
+    @if (isDropdownVisible)
+    {
+        <div class="dropdown-overlay" @onclick="() => isDropdownVisible = false"></div>
+        <div class="dropdown-menu">
+            <button class="dropdown-item logout-item" @onclick="Logout">
+                <LogoutIcon />
+                Log ud
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isDropdownVisible;
+
+    private void ToggleDropdown()
+    {
+        isDropdownVisible = !isDropdownVisible;
+    }
+
+    private async Task Logout()
+    {
+        await localStorage.RemoveAsync(BetonBonStorage.Token);
+        await localStorage.RemoveAsync(BetonBonStorage.RefreshToken);
+        await localStorage.RemoveAsync(BetonBonStorage.Timer);
+
+        var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationStatus();
+    }
+}

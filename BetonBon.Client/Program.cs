@@ -45,6 +45,7 @@ namespace BetonBon.Client
             builder.Services.AddTransient<AuthHeaderHandler>();
             builder.Services.AddScoped<PopupService>();
             builder.Services.AddScoped<TimeEntryService>();
+            builder.Services.AddScoped<HeaderService>();
             builder.Services.AddScoped<RegistrationState>();
 
             await builder.Build().RunAsync();

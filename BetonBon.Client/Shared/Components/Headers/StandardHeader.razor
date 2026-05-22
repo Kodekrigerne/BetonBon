@@ -1,0 +1,34 @@
+﻿@using BetonBon.Client.Services
+@inject HeaderService Header
+@inject IJSRuntime JS
+@implements IDisposable
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool ShowBack { get; set; }
+    [Parameter] public RenderFragment? Right { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Header.Set(
+            left: ShowBack? @<button class="std-header-back-btn" @onclick="GoBack">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span class="std-header-btn-text">Tilbage</span>
+            </button> : null,
+            center: Title != null ? @<h1 class="std-header-title">@Title</h1> : null,
+    right: Right
+        );
+    }
+
+    private async Task GoBack()
+    {
+        await JS.InvokeVoidAsync("history.back");
+    }
+
+    public void Dispose()
+    {
+        Header.Clear();
+    }
+}

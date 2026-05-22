@@ -1,7 +1,10 @@
 ﻿@page "/stopwatch-registration"
     
-    @using BetonBon.Client.Pages.RegistrationMenu.Activities
+@using BetonBon.Client.Pages.RegistrationMenu.Activities
 @using BetonBon.Client.Pages.RegistrationMenu.Projects
+@using BetonBon.Client.Shared.Components.Headers
+
+<StandardHeader Title="Fordel tid" ShowBack="true" />
 
 @if (_initialized)
 {
@@ -9,14 +12,6 @@
     <AllActivitiesView IsVisible="_activitiesIsVisible" SelectedProject="_selectedProject" OnClose="HandleActivitiesClosed" OnActivitySelected="HandleActivitySelected" />
 
     <div class="allocate-page">
-        @* Header *@
-        <div class="allocate-header">
-            <button class="back-btn" @onclick="NavigateBack">
-                <span class="back-icon">‹</span>
-                <span>Hjem</span>
-            </button>
-            <h1>Fordel tid</h1>
-        </div>
 
         <div class="allocate-content">
             @* Total time summary *@

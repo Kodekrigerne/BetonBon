@@ -1,12 +1,12 @@
 ﻿@using BetonBon.Client.Pages.RegistrationMenu.Activities
 @using BetonBon.Client.Pages.RegistrationMenu.Projects
+@using BetonBon.Client.Shared.Components.Headers
 @using BetonBon.Shared.Models
 @using BetonBon.Shared.Models.Activities
 @inject RegistrationState State
 
 @page "/registration"
 @inject NavigationManager Navigation
-
 
 <AllProjectsView IsVisible="ProjectsIsVisible"
                  OnClose="OnCloseProjects"
